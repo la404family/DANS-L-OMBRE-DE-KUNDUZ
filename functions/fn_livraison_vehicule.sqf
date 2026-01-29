@@ -15,7 +15,7 @@ if (!isServer) exitWith {};
 params [["_targetPos", [0,0,0], [[]]]];
 
 if (_targetPos isEqualTo [0,0,0] || {count _targetPos < 2}) exitWith {
-    diag_log "[LIVRAISON] Erreur: Position invalide";
+    // diag_log "[LIVRAISON] Erreur: Position invalide";
 };
 
 // Assurer que la position a 3 éléments
@@ -34,11 +34,28 @@ private _spawnPos = _targetPos getPos [_spawnDist, _dir];
 _spawnPos set [2, _flyHeight];
 
 // 1. SPAWN HÉLICOPTÈRE - directement en vol
-private _heli = createVehicle [_helicoClass, _spawnPos, [], 0, "FLY"];
-_heli setPos _spawnPos;
-_heli setDir (_dir + 180);
-_heli flyInHeight _flyHeight;
-_heli allowDamage false;
+private _heli = objNull;
+private _spawnAttempts = 0;
+
+while {isNull _heli && _spawnAttempts < 5} do {
+    _spawnAttempts = _spawnAttempts + 1;
+    _heli = createVehicle [_helicoClass, _spawnPos, [], 0, "FLY"];
+    
+    // Vérification rapide de réussite
+    if (!isNull _heli) then {
+        _heli setPos _spawnPos;
+        _heli setDir (_dir + 180);
+        _heli flyInHeight _flyHeight;
+        _heli allowDamage false;
+    } else {
+        // diag_log format ["[LIVRAISON] Echec spawn hélico tentative %1", _spawnAttempts];
+        sleep 1;
+    };
+};
+
+if (isNull _heli) exitWith {
+    // diag_log "[LIVRAISON] CRITIQUE: Impossible de faire spawner l'hélicoptère après 5 essais";
+};
 
 // Créer l'équipage
 private _group = createGroup [WEST, true];
@@ -86,9 +103,9 @@ _cargo setMass 800; // Allègement pour transport
 _heli setSlingLoad _cargo;
 
 // Message radio global
-(localize "STR_LIVRAISON_INBOUND") remoteExec ["systemChat", 0];
+// (localize "STR_LIVRAISON_INBOUND") remoteExec ["systemChat", 0];
 
-diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _spawnPos, _targetPos];
+// diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _spawnPos, _targetPos];
 
 // 3. BOUCLE DE GESTION
 [_heli, _cargo, _targetPos, _group, _crew, _spawnPos, _originalMass, _hoverHeight] spawn {
@@ -117,9 +134,9 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     if (!isNull _closestWp) then {
         _dropPos = getPos _closestWp;
         if (count _dropPos < 3) then { _dropPos set [2, 0]; };
-        diag_log format ["[LIVRAISON] Waypoint SÉCURISÉ trouvé: %1 à %2m", _closestWp, _minDist];
+        // diag_log format ["[LIVRAISON] Waypoint SÉCURISÉ trouvé: %1 à %2m", _closestWp, _minDist];
     } else {
-        diag_log "[LIVRAISON] AVERTISSEMENT: Aucun waypoint_livraison trouvé, utilisation position cible";
+        // diag_log "[LIVRAISON] AVERTISSEMENT: Aucun waypoint_livraison trouvé, utilisation position cible";
         
         // Vérification terrain plat (uniquement si pas de waypoint)
         if (count _dropPos >= 2) then {
@@ -130,7 +147,7 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
                     if (_safePos distance2D _dropPos < 500) then {
                         _dropPos = _safePos;
                         if (count _dropPos < 3) then { _dropPos set [2, 0]; };
-                        diag_log format ["[LIVRAISON] Position ajustée: %1", _dropPos];
+                        // diag_log format ["[LIVRAISON] Position ajustée: %1", _dropPos];
                     };
                 };
             };
@@ -158,7 +175,7 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     _wp1 setWaypointSpeed "FULL";
     _heli doMove _dropPos;
 
-    diag_log "[LIVRAISON] Phase 1: Approche en cours";
+    // diag_log "[LIVRAISON] Phase 1: Approche en cours";
 
     // Attendre approche (< 200m ou timeout 180s)
     private _approachTimeout = 0;
@@ -169,11 +186,11 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     };
 
     if (!alive _heli) exitWith {
-        diag_log "[LIVRAISON] Hélicoptère détruit pendant l'approche";
+        // diag_log "[LIVRAISON] Hélicoptère détruit pendant l'approche";
     };
 
     // --- PHASE 2: DESCENTE ET HOVER ---
-    diag_log "[LIVRAISON] Phase 2: Descente pour largage";
+    // diag_log "[LIVRAISON] Phase 2: Descente pour largage";
     
     deleteWaypoint _wp1;
     
@@ -198,17 +215,17 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     };
 
     if (!alive _heli) exitWith {
-        diag_log "[LIVRAISON] Hélicoptère détruit pendant le positionnement";
+        // diag_log "[LIVRAISON] Hélicoptère détruit pendant le positionnement";
     };
 
     // Arrêt stationnaire
     doStop _heli;
     _heli flyInHeight _hoverHeight;
 
-    diag_log format ["[LIVRAISON] Hover à %1m, distance horizontale: %2m", _hoverHeight, _heli distance2D _dropPos];
+    // diag_log format ["[LIVRAISON] Hover à %1m, distance horizontale: %2m", _hoverHeight, _heli distance2D _dropPos];
 
     // --- PHASE 3: ATTENTE CONTACT SOL DU VÉHICULE ---
-    diag_log "[LIVRAISON] Phase 3: Attente contact sol du véhicule";
+    // diag_log "[LIVRAISON] Phase 3: Attente contact sol du véhicule";
     
     private _dropTimeout = 0;
     private _cargoGrounded = false;
@@ -225,25 +242,25 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
         
         // Le véhicule est au sol si son altitude ATL < 3m
         _cargoGrounded = (getPosATL _cargo select 2) < 3;
-        // si l'hélico est à moins de 3 metre du sol on passe à la phase 4
+        // si l'hélico est à moins de 4 metre du sol on passe à la phase 4
         //Si vous vouliez vérifier la hauteur, il faudrait utiliser (getPosATL _heli select 2) < 3
-        if ((getPosATL _heli select 2) < 3) then {
+        if ((getPosATL _heli select 2) < 4) then {
             _cargoGrounded = true;
         };
         _cargoGrounded || _dropTimeout > 30 || !alive _heli || !alive _cargo
     };
 
     if (!alive _heli || !alive _cargo) exitWith {
-        diag_log "[LIVRAISON] Hélicoptère ou véhicule détruit pendant le largage";
+        // diag_log "[LIVRAISON] Hélicoptère ou véhicule détruit pendant le largage";
        
     };
 
     // --- PHASE 4: LARGAGE FORCÉ ---
-    diag_log "[LIVRAISON] Phase 4: Largage forcé";
+    // diag_log "[LIVRAISON] Phase 4: Largage forcé";
     
     
     private _dropTime = time;
-      sleep 2;
+      sleep 1;
     // 1. DÉTRUIRE TOUS LES CÂBLES
     private _allRopes = ropes _heli;
     {
@@ -254,19 +271,8 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     _heli setSlingLoad objNull;
     
     // 3. PAUSE COURTE POUR LAISSER LA PHYSIQUE SE STABILISER
-    sleep 5;
+    sleep 1;
     
-    // 4. FORCER LE VÉHICULE AU SOL (TÉLÉPORTATION DOUCE)
-    private _cargoPos = getPos _cargo;
-    private _groundZ = 0;
-    
-    // Obtenir l'altitude du terrain
-    if (count _cargoPos >= 2) then {
-        _groundZ = getTerrainHeightASL [_cargoPos select 0, _cargoPos select 1];
-    };
-    
-    // Positionner le véhicule juste au-dessus du sol
-    _cargo setPosASL [_cargoPos select 0, _cargoPos select 1, _groundZ + 0.3];
     _cargo setVelocity [0, 0, 0];
     _cargo setVectorUp [0, 0, 1];
     
@@ -275,11 +281,11 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     _cargo allowDamage true;
     
     // Message global
-    (localize "STR_LIVRAISON_DROPPED") remoteExec ["systemChat", 0];
-    diag_log format ["[LIVRAISON] Véhicule largué en %1", _dropPos];
+    // (localize "STR_LIVRAISON_DROPPED") remoteExec ["systemChat", 0];
+    // diag_log format ["[LIVRAISON] Véhicule largué en %1", _dropPos];
 
     // --- PHASE 5: DÉPART ---
-    diag_log "[LIVRAISON] Phase 5: Retour à la base";
+    // diag_log "[LIVRAISON] Phase 5: Retour à la base";
     
     sleep 1;
     
@@ -310,5 +316,5 @@ diag_log format ["[LIVRAISON] Hélicoptère créé en %1, direction cible %2", _
     deleteVehicle _heli;
     deleteGroup _group;
 
-    diag_log "[LIVRAISON] Hélicoptère et équipage supprimés - Mission terminée";
+    // diag_log "[LIVRAISON] Hélicoptère et équipage supprimés - Mission terminée";
 };
