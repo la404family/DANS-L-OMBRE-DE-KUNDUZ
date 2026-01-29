@@ -5,6 +5,7 @@
 // waypoint_invisible_000 à waypoint_invisible_340 sont des road_invisible CUP_A1_Road_road_invisible pour déterminer des waypoints
 // civil_template_00  à civil_template_28 sont des civils dans l'éditeur qui servent de templates pour les civils
 // ezan_00 à ezan_09 sont des haut parleur de type : Loudspeaker
+// waypoint_livraison_000 à waypoint_livraison_127 sont des waypoints pour déterminer des points où l'hélicoptère peut atterir en sécurité
 
 
 if (isServer) then {
@@ -23,7 +24,7 @@ if (isServer) then {
     [] spawn Mission_fnc_ezan;
 
     // Appel à l'introduction cinématique
-    // [] spawn Mission_fnc_task_x_intro; 
+    //[] spawn Mission_fnc_task_x_intro; 
 
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;

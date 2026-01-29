@@ -108,5 +108,10 @@
             <French>PC à toutes les unités : Véhicule largué. Transport terminé.</French>
             <English>HQ to all units: Vehicle dropped. transport complete.</English>
         </Key>
+        <Key ID="STR_LIVRAISON_MARKER_TEXT">
+            <Original>Vehicle Delivery</Original>
+            <French>Livraison Véhicule</French>
+            <English>Vehicle Delivery</English>
+        </Key>
     </Package>
 </Project>

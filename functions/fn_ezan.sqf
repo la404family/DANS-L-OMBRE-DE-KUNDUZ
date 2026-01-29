@@ -10,7 +10,7 @@ if (!isServer) exitWith {}; // Only run on server
 private _soundRange = 2500; // Portée du son en mètres
 // Liste des noms de variables des objets minarets
 //ezan_00 à ezan_08
-private _minaretsVars = ["ezan_00", "ezan_01", "ezan_02", "ezan_03", "ezan_04", "ezan_05", "ezan_06", "ezan_07", "ezan_08", "ezan_09"];
+private _minaretsVars = ["ezan_00", "ezan_01", "ezan_02", "ezan_03", "ezan_04", "ezan_05", "ezan_06", "ezan_07", "ezan_08", "ezan_09","ezan_10"];
 
 // Attente initiale (aléatoire entre 5 minutes et 15 minutes)
 sleep (300 + (random 600));
