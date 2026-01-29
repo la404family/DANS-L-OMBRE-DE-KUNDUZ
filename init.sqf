@@ -44,6 +44,9 @@ if (isServer) then {
     // Système de fin de mission (Extraction)
     [] spawn Mission_fnc_task_fin;
     
+    // Modif Identité BLUFOR
+    [] spawn Mission_fnc_ajust_BLUFOR_identity;
+
     // Force badge France AMF
     [] spawn Mission_fnc_ajuste_badge;
 

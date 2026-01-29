@@ -65,6 +65,8 @@ class CfgFunctions
             class task_insurg {};
             // La fonction sera appelée: Mission_fnc_ajust_team_leader
             class ajust_team_leader {};
+            // La fonction sera appelée: Mission_fnc_ajust_BLUFOR_identity
+            class ajust_BLUFOR_identity {};
             // La fonction sera appelée: Mission_fnc_task_fin
             class task_fin {};
             // La fonction sera appelée: Mission_fnc_ajuste_badge
