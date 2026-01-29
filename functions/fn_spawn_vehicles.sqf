@@ -41,6 +41,12 @@ switch (_mode) do {
             "",
             "player inArea vehicles_request" // Visible dans la zone dédiée
         ];
+
+        // AJOUT SUPPORT (Menu Communications 0-8)
+        if (player == _unit) then {
+            [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
+            systemChat "Support logistique disponible (Menu 0-8).";
+        };
     };
 
     case "OPEN_UI": {

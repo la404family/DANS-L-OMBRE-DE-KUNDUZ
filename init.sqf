@@ -18,10 +18,22 @@ if (isServer) then {
     MISSION_var_model_player = [
         ["model_player", "", "", "", "", getUnitLoadout _p] 
     ];
+
     // Appel à la prière des ezan
     [] spawn Mission_fnc_ezan;
+
     // Appel à l'introduction cinématique
-    [] spawn Mission_fnc_task_x_intro; 
+    // [] spawn Mission_fnc_task_x_intro; 
+
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;
+    
+    // Appel à la gestion des compétences IA
+    [] spawn Mission_fnc_ajust_AI_skills;
+    
+    // Appel à la logique civile
+    [] spawn Mission_fnc_civilian_logique;
+
+    // Appel à la livraison de véhicule
+    // [getPos _p] spawn Mission_fnc_livraison_vehicule;
 };

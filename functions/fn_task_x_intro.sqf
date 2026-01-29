@@ -395,7 +395,7 @@ if (hasInterface) then {
         while { !isTouchingGround _camHeli && (getPos _camHeli select 2) > 1 } do {
             
             // ✅ MOUVEMENT CORRIGE : Descente limitée et Zoom optique
-            private _progress = (time - _plan5StartTime) / 10;
+            private _progress = (time - _plan5StartTime) / 5;
             
             // Calcul de la hauteur avec sécurité anti-clipping (minimum 10m au-dessus du QG)
             private _baseHeight = 35;

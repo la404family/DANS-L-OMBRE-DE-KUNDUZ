@@ -93,5 +93,20 @@
             <French>FERMER</French>
             <English>CLOSE</English>
         </Key>
+        <Key ID="STR_ACTION_DELIVERY">
+            <Original>Request Delivery</Original>
+            <French>Demander Livraison Véhicule</French>
+            <English>Request Vehicle Delivery</English>
+        </Key>
+        <Key ID="STR_LIVRAISON_INBOUND">
+            <Original>Delivery inbound</Original>
+            <French>PC à toutes les unités : Transport de véhicule en route sur vos coordonnées.</French>
+            <English>HQ to all units: Vehicle transport inbound to your coordinates.</English>
+        </Key>
+        <Key ID="STR_LIVRAISON_DROPPED">
+            <Original>Package dropped</Original>
+            <French>PC à toutes les unités : Véhicule largué. Transport terminé.</French>
+            <English>HQ to all units: Vehicle dropped. transport complete.</English>
+        </Key>
     </Package>
 </Project>

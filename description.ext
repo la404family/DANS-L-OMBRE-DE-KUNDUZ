@@ -1,6 +1,6 @@
 author = "Kevin";
-onLoadName = "Secure Kunduz";
-onLoadMission = "Operation Secure Kunduz";
+onLoadName = "Operation SAYE";
+onLoadMission = "Sous l'ombre de Kunduz";
 loadScreen = ""; 
 
 class Header
@@ -50,8 +50,30 @@ class CfgFunctions
 			class task_x_intro {};
             // La fonction sera appelée: Mission_fnc_spawn_vehicles
             class spawn_vehicles {};
+            // La fonction sera appelée: Mission_fnc_ajust_AI_skills
+            class ajust_AI_skills {};
+            // La fonction sera appelée: Mission_fnc_civilian_logique
+            // La fonction sera appelée: Mission_fnc_civilian_logique
+            class civilian_logique {};
+            // La fonction sera appelée: Mission_fnc_livraison_vehicule
+            class livraison_vehicule {};
 		};
 	};
+};
+
+// --- SUPPORT REQUESTS (Menu Communications) ---
+class CfgCommunicationMenu
+{
+    class VehicleDrop
+    {
+        text = "Livraison Véhicule"; // Texte affiché
+        submenu = ""; // Pas de sous-menu
+        expression = "[_pos] spawn Mission_fnc_livraison_vehicule"; // Code exécuté (_pos est la position curseur/carte)
+        icon = "\a3\ui_f\data\gui\cfg\communicationMenu\supplydrop_ca.paa"; // Icône
+        cursor = "\a3\ui_f\data\igui\cfg\cursors\iconCursorSupport_ca.paa"; // Curseur 3D
+        enable = "1"; // Condition d'activation
+        removeAfterExpressionCall = 1; // 1 = Supprimer après usage (si item unique), 0 = Garder
+    };
 };
 
 // --- REMOTE EXECUTION (Sécurité Multijoueur) ---
