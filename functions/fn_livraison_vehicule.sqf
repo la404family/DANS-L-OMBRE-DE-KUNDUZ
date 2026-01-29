@@ -75,17 +75,36 @@ diag_log format ["[LIVRAISON] Créé en %1, cible %2", _spawnPos, _targetPos];
 [_heli, _cargo, _targetPos, _group, _crew, _spawnPos, _originalMass] spawn {
     params ["_heli", "_cargo", "_targetPos", "_group", "_crew", "_homeBase", "_originalMass"];
     
-    // Trouver point de largage (Priorité: waypoint_invisible > route)
+    // Trouver point de largage OBLIGATOIRE sur waypoint_invisible (routes sécurisées)
     private _dropPos = _targetPos;
-    private _wps = nearestObjects [_targetPos, ["CUP_A1_Road_road_invisible"], 300];
-    if (count _wps > 0) then {
-        _dropPos = getPos (_wps select 0);
-    } else {
-        private _roads = _targetPos nearRoads 150;
-        if (count _roads > 0) then { _dropPos = getPos (_roads select 0); };
+    private _closestWp = objNull;
+    private _minDist = 999999;
+    
+    // Chercher manuellement le waypoint le plus proche (plus fiable que BIS_fnc)
+    for "_i" from 0 to 340 do {
+        private _suffix = "";
+        if (_i < 10) then { _suffix = format ["00%1", _i] }
+        else { if (_i < 100) then { _suffix = format ["0%1", _i] } else { _suffix = str _i } };
+        
+        private _wp = missionNamespace getVariable [format ["waypoint_invisible_%1", _suffix], objNull];
+        
+        if (!isNull _wp) then {
+            private _dist = _wp distance2D _targetPos;
+            if (_dist < _minDist) then {
+                _minDist = _dist;
+                _closestWp = _wp;
+            };
+        };
     };
     
-    // Waypoint approche
+    if (!isNull _closestWp) then {
+        _dropPos = getPos _closestWp;
+        diag_log format ["[LIVRAISON] Waypoint trouvé: %1 à %2m", _closestWp, _minDist];
+    } else {
+        diag_log "[LIVRAISON] AVERTISSEMENT: Aucun waypoint trouvé (Fallback position cible)";
+    };
+    
+    // -- APPROCHE --
     private _wp1 = _group addWaypoint [_dropPos, 0];
     _wp1 setWaypointType "MOVE";
     _wp1 setWaypointBehaviour "CARELESS";
@@ -93,39 +112,34 @@ diag_log format ["[LIVRAISON] Créé en %1, cible %2", _spawnPos, _targetPos];
     
     _heli doMove _dropPos;
     
-    waitUntil { sleep 1; (_heli distance2D _dropPos) < 300 || !alive _heli };
-    if (!alive _heli) exitWith { diag_log "[LIVRAISON] Détruit pendant approche"; };
-
+    // 1. Approche rapide
+    waitUntil { sleep 1; (_heli distance2D _dropPos) < 200 || !alive _heli };
+    if (!alive _heli) exitWith {};
+    
+    // 2. Ralentir et descendre en approchant
     deleteWaypoint _wp1;
-    
-    // Descente
-    _heli flyInHeight 15;
-    _heli flyInHeightASL [15, 15, 15];
-    
-    private _wp2 = _group addWaypoint [_dropPos, 0];
-    _wp2 setWaypointType "MOVE";
-    _wp2 setWaypointBehaviour "CARELESS";
-    
+    _group setSpeedMode "LIMITED";
+    _heli flyInHeight 30;
     _heli doMove _dropPos;
     
-    private _timeout = 0;
+    // 3. Attendre d'être TRÈS PROCHE (< 20m) avant de stopper (Timeout 30s)
+    private _approchTimer = 0;
     waitUntil { 
-        sleep 0.5; 
-        _timeout = _timeout + 0.5;
-        ((_heli distance2D _dropPos) < 50) || _timeout > 60 || !alive _heli 
+        sleep 0.2; 
+        _approchTimer = _approchTimer + 0.2;
+        (_heli distance2D _dropPos) < 20 || _approchTimer > 30 || !alive _heli 
     };
     
-    if (!alive _heli) exitWith { diag_log "[LIVRAISON] Détruit pendant descente"; };
-
-    // Stationnaire
+    // -- DESCENTE FINALE --
     doStop _heli;
-    _heli flyInHeight 5;
+    _heli flyInHeight 5; // Descente rapide
     
+    // Attente stabilisation basse altitude
     private _dropTimeout = 0;
     waitUntil {
-        sleep 0.5;
-        _dropTimeout = _dropTimeout + 0.5;
-        ((getPosATL _heli select 2) < 15) || _dropTimeout > 20
+        sleep 0.2;
+        _dropTimeout = _dropTimeout + 0.2;
+        ((getPosATL _heli select 2) < 15) || _dropTimeout > 10
     };
     
     sleep 2;
@@ -137,7 +151,13 @@ diag_log format ["[LIVRAISON] Créé en %1, cible %2", _spawnPos, _targetPos];
         detach _cargo;
         _cargo setVelocity [0,0,0];
         
-        waitUntil { sleep 0.1; (getPosATL _cargo select 2) < 1 };
+        // Attente sol (Timeout 5s) pour éviter blocage si toit/arbre
+        private _groundTimer = 0;
+        waitUntil { 
+            sleep 0.1; 
+            _groundTimer = _groundTimer + 0.1;
+            (getPosATL _cargo select 2) < 1 || _groundTimer > 5
+        };
         
         _cargo setMass _originalMass;
         _cargo allowDamage true;
