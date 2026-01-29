@@ -61,6 +61,8 @@ class CfgFunctions
             class livraison_munitions {};
             // La fonction sera appelée: Mission_fnc_livraison_soutienAR
             class livraison_soutienAR {};
+            // La fonction sera appelée: Mission_fnc_civilian_change
+            class civilian_change {};
 		};
 	};
 };
