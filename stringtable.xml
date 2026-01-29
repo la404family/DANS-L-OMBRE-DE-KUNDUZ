@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project name="SecureKunduz">
+    <Package name="Intro">
+        <Key ID="STR_INTRO_AUTHOR">
+            <Original>@la404family</Original>
+            <French>@la404family</French>
+            <English>@la404family</English>
+        </Key>
+        <Key ID="STR_INTRO_PRESENTS">
+            <Original>Presents</Original>
+            <French>présente...</French>
+            <English>presents...</English>
+        </Key>
+        <Key ID="STR_INTRO_TITLE">
+            <Original>Secure Kunduz</Original>
+            <French>DANS L&apos;OMBRE DE KUNDUZ</French>
+            <English>IN THE SHADOW OF KUNDUZ</English>
+        </Key>
+        <Key ID="STR_INTRO_SUBTITLE">
+            <Original>French Army Deployment</Original>
+            <French>Nous pensions apporter la lumière, mais nous n&apos;avons fait qu&apos;allonger les ombres.</French>
+            <English>We came to bring light, but we only lengthened the shadows.</English>
+        </Key>
+        <Key ID="STR_MISSION_START">
+            <Original>Mission Start</Original>
+            <French>OPERATION S.A.Y.E</French>
+            <English>OPERATION S.A.Y.E</English>
+        </Key>
+        <Key ID="STR_MISSION_START_SUBTITLE">
+            <Original>Good Luck</Original>
+            <French>LISEZ ATTENTIVEMENT LE BRIEFING.</French>
+            <English>READ THE BRIEFING CAREFULLY.</English>
+        </Key>
+    </Package>
+    <Package name="VehicleSystem">
+        <Key ID="STR_ACTION_GARAGE">
+            <Original>Garage</Original>
+            <French>Accéder au Parc Véhicules</French>
+            <English>Access Vehicle Park</English>
+        </Key>
+        <Key ID="STR_ERR_NO_VEHICLE_SELECTED">
+            <Original>No vehicle selected</Original>
+            <French>Aucun vecteur sélectionné.</French>
+            <English>No vehicle selected.</English>
+        </Key>
+        <Key ID="STR_VEHICLE_AVAILABLE">
+            <Original>Vehicle ready: %1</Original>
+            <French>Vecteur %1 perçu et prêt.</French>
+            <English>Vehicle %1 ready.</English>
+        </Key>
+        <Key ID="STR_VEHICLES_DELETED">
+            <Original>%1 vehicles deleted.</Original>
+            <French>%1 vecteur(s) réintégré(s).</French>
+            <English>%1 vehicle(s) returned.</English>
+        </Key>
+        <Key ID="STR_DEBUG_NO_SPAWNER">
+            <Original>ERROR: Spawner not found</Original>
+            <French>ERREUR: Zone de déploiement introuvable.</French>
+            <English>ERROR: Deployment zone not found.</English>
+        </Key>
+        <Key ID="STR_HEADER_AMF">
+            <Original>--- AMF VEHICLES ---</Original>
+            <French>--- VECTEURS AMF ---</French>
+            <English>--- AMF VEHICLES ---</English>
+        </Key>
+        <Key ID="STR_HEADER_OTHER">
+            <Original>--- OTHER VEHICLES ---</Original>
+            <French>--- AUTRES VECTEURS ---</French>
+            <English>--- OTHER VEHICLES ---</English>
+        </Key>
+        <Key ID="STR_ERR_INVALID_SELECTION">
+            <Original>Invalid selection</Original>
+            <French>Sélection invalide.</French>
+            <English>Invalid selection.</English>
+        </Key>
+        <Key ID="STR_GARAGE_TITLE">
+            <Original>Vehicle Park</Original>
+            <French>PARC VÉHICULES</French>
+            <English>VEHICLE PARK</English>
+        </Key>
+        <Key ID="STR_GARAGE_TAKE_OUT">
+            <Original>Take Out</Original>
+            <French>PERCEVOIR</French>
+            <English>TAKE OUT</English>
+        </Key>
+        <Key ID="STR_BTN_DELETE">
+            <Original>Store</Original>
+            <French>RÉINTÉGRER</French>
+            <English>STORE</English>
+        </Key>
+        <Key ID="STR_CLOSE">
+            <Original>Close</Original>
+            <French>FERMER</French>
+            <English>CLOSE</English>
+        </Key>
+    </Package>
+</Project>

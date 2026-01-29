@@ -1,0 +1,27 @@
+// EXPERT SQF arma3 -- code optimisé pour jeux multijoueurs et solo
+// MIssion arma 3 unités françaises et jargon militaire français
+// Nom de la mission : Operation PAMIR - Dans l'ombre de Kunduz
+// player_0 à player_4 sont les unités joueur ou jouables
+// waypoint_invisible_000 à waypoint_invisible_340 sont des road_invisible CUP_A1_Road_road_invisible pour déterminer des waypoints
+// civil_template_00  à civil_template_28 sont des civils dans l'éditeur qui servent de templates pour les civils
+// ezan_00 à ezan_09 sont des haut parleur de type : Loudspeaker
+
+
+if (isServer) then {
+    // INIT VARIABLES
+    MISSION_var_helicopters = [
+        ["task_x_helicoptere", "amf_nh90_tth_transport", "Huron Intro", 0, 0, []]
+    ];
+    
+    // Définir le modèle d'équipement basé sur le joueur actuel (ou player_0 si défini dans l'éditeur)
+    private _p = if (!isNil "player_0") then { player_0 } else { player };
+    MISSION_var_model_player = [
+        ["model_player", "", "", "", "", getUnitLoadout _p] 
+    ];
+    // Appel à la prière des ezan
+    [] spawn Mission_fnc_ezan;
+    // Appel à l'introduction cinématique
+    [] spawn Mission_fnc_task_x_intro; 
+    // Appel à la fonction de spawn des véhicules
+    [] spawn Mission_fnc_spawn_vehicles;
+};

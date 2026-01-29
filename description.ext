@@ -1,0 +1,108 @@
+author = "Kevin";
+onLoadName = "Secure Kunduz";
+onLoadMission = "Operation Secure Kunduz";
+loadScreen = ""; 
+
+class Header
+{
+	gameType = COOP; // Type de jeu (COOP, DM, TDM, CTF, SC, CTI, RPG, SANDBOX, ZGM, ENDGAME, Warlords)
+	minPlayers = 1;  // Nombre minimum de joueurs supporté
+	maxPlayers = 40; // Nombre maximum de joueurs supporté
+};
+
+// --- SETTINGS (Paramètres Généraux) ---
+// disabledAI: 1 = Supprime les IA des slots jouables (recommandé pour MP sérieux). 0 = Garde les IA si personne ne rejoint le slot.
+disabledAI = 1;             
+enableDebugConsole = 1;     // 1 = Disponible pour l'hôte et les admins connectés. 0 = Désactivé. 2 = Disponible pour tous (Déconseillé).
+allowFunctionsLog = 0;      // 0 = Désactivé, 1 = Activé (pour le débuggage RPT).
+
+// --- RESPAWN (Gestion de la réapparition) ---
+// respawn: 3 = "BASE" (nécessite un marqueur "respawn_west" sur la carte). 
+// Autres options: 0 = "NONE" (pas de respawn), 1 = "BIRD" (spectateur), 2 = "INSTANT" (sur place), 4 = "GROUP" (sur le chef de groupe), 5 = "SIDE" (sur un membre du camp).
+respawn = 3;                
+respawnDelay = 10;          // Temps en secondes avant de réapparaître.
+respawnOnStart = -1;        // -1 = Ne pas respawn au lancement (exécute les scripts d'init normalement). 0 = Respawn forcé au début.
+
+// --- GARBAGE COLLECTOR (Optimisation Performances) ---
+// Le GC nettoie les cadavres et épaves pour économiser les FPS.
+corpseManagerMode = 1;      // 1 = Gère toutes les unités. 0 = Désactivé.
+corpseLimit = 15;           // Nombre max de cadavres simultanés. Si dépassé, les plus vieux sont supprimés.
+corpseRemovalMinTime = 60;  // Temps minimum (secondes) avant qu'un cadavre PUISSE être supprimé (si limite atteinte).
+corpseRemovalMaxTime = 1200;// Temps maximum (secondes) après lequel un cadavre EST supprimé (même si limite non atteinte).
+wreckManagerMode = 1;       // 1 = Gère tous les véhicules détruits.
+wreckLimit = 10;            // Nombre max d'épaves simultanées.
+wreckRemovalMinTime = 60;   // Temps min pour épaves.
+wreckRemovalMaxTime = 1800; // Temps max pour épaves.
+minPlayerDistance = 50;     // Distance de sécurité (mètres). On ne supprime rien si un joueur est à moins de 50m.
+
+// --- FUNCTIONS (Déclaration des scripts) ---
+// Déclarer les fonctions ici permet de les compiler au chargement (plus rapide) et de les sécuriser pour le MP.
+class CfgFunctions
+{
+	class Mission
+	{
+		class Main
+		{
+			file = "functions"; // Dossier où sont les fichiers .sqf
+            // La fonction sera appelée: Mission_fnc_ezan
+			class ezan {};
+            // La fonction sera appelée: Mission_fnc_task_x_intro
+			class task_x_intro {};
+            // La fonction sera appelée: Mission_fnc_spawn_vehicles
+            class spawn_vehicles {};
+		};
+	};
+};
+
+// --- REMOTE EXECUTION (Sécurité Multijoueur) ---
+// Définit qui a le droit d'exécuter du code à distance sur les autres clients ou le serveur.
+class CfgRemoteExec
+{
+	class Functions
+	{
+		mode = 2; // 0 = Bloque tout, 1 = Config seulement, 2 = Config + Liste blanche (Recommandé).
+		jip = 1;  // 1 = Permet aux joueurs rejoignant en cours de partie (JIP) de recevoir les commandes passées.
+        
+        // Autoriser l'exécution globale pour ces fonctions spécifiques :
+        class Mission_fnc_ezan { allowedTargets = 0; }; // 0 = Peut être exécuté partout (Serveur et Clients).
+	};
+    class Commands
+    {
+        mode = 2; // Pareil pour les commandes script engine natives.
+    };
+};
+
+// --- SOUNDS & MUSIC (Sons et Musiques) ---
+class CfgSounds
+{
+    sounds[] = {ezan};
+    class ezan
+    {
+        // Nom utilisé dans playSound "ezan"
+        name = "ezan";
+        // Fichier, Volume (+5dB), Pitch (1.0), Distance max (1500m)
+        sound[] = {"music\ezan.ogg", db+5, 1.0, 1500}; 
+        titles[] = {};
+    };
+};
+
+class CfgMusic
+{
+    tracks[] = {ezan, intro_00};
+
+    class ezan
+    {
+        name = "ezan";
+        sound[] = {"music\ezan.ogg", db+5, 1.0};
+    };
+    
+    class intro_00
+    {
+        name = "Intro";
+        sound[] = {"music\intro.ogg", db+15, 1.0};
+    };
+};
+
+// --- DIALOGS (Interfaces Graphiques) ---
+#include "dialogs\defines.hpp"
+#include "dialogs\vehicle_menu.hpp"
