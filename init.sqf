@@ -24,7 +24,7 @@ if (isServer) then {
     [] spawn Mission_fnc_ezan;
 
     // Appel à l'introduction cinématique
-    //[] spawn Mission_fnc_task_x_intro; 
+    // [] spawn Mission_fnc_task_x_intro; 
 
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;
@@ -35,6 +35,19 @@ if (isServer) then {
     // Appel à la logique civile
     [] spawn Mission_fnc_civilian_logique;
 
-    // Appel à la livraison de véhicule
+    // Appel à la livraison de véhicule (TEST SERVEUR UNIQUEMENT - A COMMENTER EN PROD)
     // [getPos _p] spawn Mission_fnc_livraison_vehicule;
+};
+
+// --- CLIENT (JOUEUR) UNIQUEMENT ---
+if (hasInterface) then {
+    // Attendre que le joueur soit initialisé
+    waitUntil {!isNull player};
+    
+    // Ajouter les options au menu Support (0-8)
+    [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
+    [player, "AmmoDrop"] call BIS_fnc_addCommMenuItem;
+    
+    // Message de bienvenue (Optionnel)
+    // systemChat "Support logistique disponible (Menu 0-8)";
 };

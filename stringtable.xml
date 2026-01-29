@@ -98,6 +98,11 @@
             <French>Demander Livraison Véhicule</French>
             <English>Request Vehicle Delivery</English>
         </Key>
+        <Key ID="STR_ACTION_AMMO_DELIVERY">
+            <Original>Request Ammo Supply</Original>
+            <French>Demander Ravitaillement Munitions</French>
+            <English>Request Ammo Supply</English>
+        </Key>
         <Key ID="STR_LIVRAISON_INBOUND">
             <Original>Delivery inbound</Original>
             <French>PC à toutes les unités : Transport de véhicule en route sur vos coordonnées.</French>
@@ -112,6 +117,21 @@
             <Original>Vehicle Delivery</Original>
             <French>Livraison Véhicule</French>
             <English>Vehicle Delivery</English>
+        </Key>
+        <Key ID="STR_LIVRAISON_AMMO_INBOUND">
+            <Original>Ammo drop inbound</Original>
+            <French>PC à toutes les unités : Ravitaillement munitions en route sur vos coordonnées.</French>
+            <English>HQ to all units: Ammo resupply inbound to your coordinates.</English>
+        </Key>
+        <Key ID="STR_LIVRAISON_AMMO_DROPPED">
+            <Original>Ammo dropped</Original>
+            <French>PC à toutes les unités : Munitions larguées.</French>
+            <English>HQ to all units: Ammo dropped.</English>
+        </Key>
+        <Key ID="STR_LIVRAISON_AMMO_MARKER">
+            <Original>Ammo Drop</Original>
+            <French>Livraison Munitions</French>
+            <English>Ammo Drop</English>
         </Key>
     </Package>
 </Project>

@@ -185,23 +185,27 @@ if (hasInterface) then {
         // === PAUSE : 3 secondes pour admirer la vue (fondu + vue) ===
         sleep 3;
         
-        // TEXTE 1 : Auteur & Présente (5 secondes)
-        // TEXTE 1 : Auteur & Présente (5 secondes)
-        // Effet machine à écrire, en haut à gauche de l'écran, police ordinateur
+        // TEXTE 1 : Auteur & Présente (6 secondes)
+        // Utilisation de BIS_fnc_dynamicText pour un fondu entrée/sortie fluide et police harmonisée
         [
-            [
-                [localize "STR_INTRO_AUTHOR", "<t align='left' size='2.0' font='EtelkaMonospacePro' color='#ffffff'>%1</t><br/>"],
-                [localize "STR_INTRO_PRESENTS", "<t align='left' size='1.5' font='EtelkaMonospacePro' color='#a0a0a0'>%1</t>", 30] 
+            format [
+                "<t size='2.0' color='#ffffff' font='PuristaBold' shadow='2'>%1</t><br/>" +
+                "<t size='1.2' color='#ffffff' font='PuristaBold' shadow='2'>%2</t>",
+                localize "STR_INTRO_AUTHOR",
+                localize "STR_INTRO_PRESENTS"
             ],
             safeZoneX + 0.1,  // X (Gauche avec marge)
-            safeZoneY + 0.2   // Y (Haut avec marge)
-        ] spawn BIS_fnc_typeText;
+            safeZoneY + 0.2,  // Y (Haut avec marge)
+            6,    // Durée
+            2,    // Fondu entrée (2s)
+            0,
+            790   // ID Layer
+        ] spawn BIS_fnc_dynamicText;
         
-        sleep 5;
-        titleText ["", "PLAIN", 0.5];
-        sleep 1;
+        sleep 8; // Attente (Fade In 2s + Durée 6s)
+        // titleText ["", "PLAIN", 0.5]; // SUPPRIMÉ : On laisse le dynamicText s'estomper naturellement
         
-        // TEXTE 2 : Titre de la Mission (5 secondes)
+        // TEXTE 2 : Titre de la Mission (3.5 secondes)
         titleText [
             format [
                 "<t size='3.0' color='#ffffff' font='PuristaBold' shadow='2'>%1</t>",
@@ -210,7 +214,7 @@ if (hasInterface) then {
             "PLAIN", 1, true, true
         ];
         
-        sleep 5;
+        sleep 3.5;
         titleText ["", "PLAIN", 0.5];
 
         // ##############################################################################################

@@ -43,10 +43,13 @@ switch (_mode) do {
         ];
 
         // AJOUT SUPPORT (Menu Communications 0-8)
+        // AJOUT SUPPORT (Menu Communications 0-8) - DÉPLACÉ DANS INIT.SQF
+        /*
         if (player == _unit) then {
             [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
             systemChat "Support logistique disponible (Menu 0-8).";
         };
+        */
     };
 
     case "OPEN_UI": {
