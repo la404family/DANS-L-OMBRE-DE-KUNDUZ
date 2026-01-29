@@ -47,6 +47,7 @@ if (hasInterface) then {
     // Ajouter les options au menu Support (0-8)
     [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
     [player, "AmmoDrop"] call BIS_fnc_addCommMenuItem;
+    [player, "CASDrop"] call BIS_fnc_addCommMenuItem;
     
     // Message de bienvenue (Optionnel)
     // systemChat "Support logistique disponible (Menu 0-8)";

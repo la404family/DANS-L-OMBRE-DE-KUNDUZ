@@ -59,6 +59,8 @@ class CfgFunctions
             class livraison_vehicule {};
             // La fonction sera appelée: Mission_fnc_livraison_munitions
             class livraison_munitions {};
+            // La fonction sera appelée: Mission_fnc_livraison_soutienAR
+            class livraison_soutienAR {};
 		};
 	};
 };
@@ -82,6 +84,16 @@ class CfgCommunicationMenu
         submenu = ""; 
         expression = "[_pos] spawn Mission_fnc_livraison_munitions"; 
         icon = "\a3\ui_f\data\gui\cfg\communicationMenu\supplydrop_ca.paa"; 
+        cursor = "\a3\ui_f\data\igui\cfg\cursors\iconCursorSupport_ca.paa"; 
+        enable = "1"; 
+        removeAfterExpressionCall = 1; 
+    };
+    class CASDrop
+    {
+        text = "$STR_ACTION_CAS"; 
+        submenu = ""; 
+        expression = "[_pos] spawn Mission_fnc_livraison_soutienAR"; 
+        icon = "\a3\ui_f\data\gui\cfg\communicationMenu\cas_ca.paa"; 
         cursor = "\a3\ui_f\data\igui\cfg\cursors\iconCursorSupport_ca.paa"; 
         enable = "1"; 
         removeAfterExpressionCall = 1; 

@@ -133,5 +133,15 @@
             <French>Livraison Munitions</French>
             <English>Ammo Drop</English>
         </Key>
+        <Key ID="STR_ACTION_CAS">
+            <Original>Request Air Support</Original>
+            <French>Demander Soutien Aérien (50m)</French>
+            <English>Request Air Support (50m)</English>
+        </Key>
+        <Key ID="STR_CAS_MARKER">
+            <Original>Air Support</Original>
+            <French>Zone Soutien Aérien</French>
+            <English>Air Support Zone</English>
+        </Key>
     </Package>
 </Project>
