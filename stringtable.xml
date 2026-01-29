@@ -143,5 +143,15 @@
             <French>Zone Soutien Aérien</French>
             <English>Air Support Zone</English>
         </Key>
+        <Key ID="STR_TASK_INSURG_TITLE">
+            <Original>Neutralize Insurgents</Original>
+            <French>NEUTRALISER CELLULE INSURGÉE</French>
+            <English>NEUTRALIZE INSURGENT CELL</English>
+        </Key>
+        <Key ID="STR_TASK_INSURG_DESC">
+            <Original>Intelligence reports armed insurgents disguised as civilians. Eliminate them.</Original>
+            <French>Une bande d&apos;insurgés a connaissance de nos positions, détecté par nos vecteurs aériens. La forte imbrication civile interdit tout appui feu lourd. Les informations tactiques sont relayées sur carte et mises à jour fréquemment. Interceptez et neutralisez la menace.</French>
+            <English>Insurgents are aware of our positions, detected by aerial vectors. Heavy civilian presence prevents heavy fire support. Tactical info is updated frequently on the map. Intercept and neutralize the threat.</English>
+        </Key>
     </Package>
 </Project>

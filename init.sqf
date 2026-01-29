@@ -35,6 +35,12 @@ if (isServer) then {
     // Appel à la logique civile
     [] spawn Mission_fnc_civilian_logique;
 
+    // Appel au changement de civil en insurgé
+    [] spawn Mission_fnc_task_insurg;
+    
+    // Gestion automatique du Team Leader (IA -> Joueur)
+    [] spawn Mission_fnc_ajust_team_leader;
+
     // Appel à la livraison de véhicule (TEST SERVEUR UNIQUEMENT - A COMMENTER EN PROD)
     // [getPos _p] spawn Mission_fnc_livraison_vehicule;
 };
