@@ -2,7 +2,7 @@
 // MIssion arma 3 unités françaises et jargon militaire français
 // Nom de la mission : Operation PAMIR - Dans l'ombre de Kunduz
 // player_0 à player_4 sont les unités joueur ou jouables
-// waypoint_invisible_000 à waypoint_invisible_340 sont des road_invisible CUP_A1_Road_road_invisible pour déterminer des waypoints
+// waypoint_invisible_000 à waypoint_invisible_340 sont des road_invisible CUP_A1_Road_road_invisible pour déterminer le lieu des missions.
 // civil_template_00  à civil_template_28 sont des civils dans l'éditeur qui servent de templates pour les civils
 // ezan_00 à ezan_09 sont des haut parleur de type : Loudspeaker
 // waypoint_livraison_000 à waypoint_livraison_127 sont des waypoints pour déterminer des points où l'hélicoptère peut atterir en sécurité
@@ -23,6 +23,9 @@ if (isServer) then {
     // Appel à la prière des ezan
     [] spawn Mission_fnc_ezan;
 
+    // Mémorisation des gabarits civils (Templates)
+    call Mission_fnc_civilian_template;
+
     // Appel à l'introduction cinématique
     // [] spawn Mission_fnc_task_x_intro; 
 
@@ -34,15 +37,23 @@ if (isServer) then {
     
     // Appel à la logique civile
     [] spawn Mission_fnc_civilian_logique;
-
-    // Appel au changement de civil en insurgé
-    [] spawn Mission_fnc_task_insurg;
     
     // Gestion automatique du Team Leader (IA -> Joueur)
     [] spawn Mission_fnc_ajust_team_leader;
+    
+    // Système de fin de mission (Extraction)
+    [] spawn Mission_fnc_task_fin;
+    
+    // Force badge France AMF
+    [] spawn Mission_fnc_ajuste_badge;
 
     // Appel à la livraison de véhicule (TEST SERVEUR UNIQUEMENT - A COMMENTER EN PROD)
     // [getPos _p] spawn Mission_fnc_livraison_vehicule;
+    // ------------------------------
+    // --- TACHES DE LA MISSION ---
+    // ------------------------------
+    // Appel au changement de civil en insurgé
+    // [] spawn Mission_fnc_task_insurg;
 };
 
 // --- CLIENT (JOUEUR) UNIQUEMENT ---

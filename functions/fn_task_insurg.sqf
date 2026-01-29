@@ -3,7 +3,7 @@ if (!isServer) exitWith {};
 // --- CONFIGURATION ---
 CIVIL_CHANGE_MinDistance  = 500;    // Distance minimum du joueur pour être éligible
 CIVIL_CHANGE_RequiredCount = 2 + round(random 7);    // Nombre d'insurgés à créer (2 à 9)
-CIVIL_CHANGE_Debug        = true; // Mode debug ACTIVE
+CIVIL_CHANGE_Debug        = false; // Mode debug ACTIVE
 
 // --- FONCTION UTILITAIRE: LOG ---
 CIVIL_CHANGE_fnc_log = {
