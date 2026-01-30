@@ -147,8 +147,11 @@ if (_isFemale) then {
     "Yalda Hakim", "Yasmin Levy", "Zainab Salbi", "Zara Kayani", "Zarghona Walid",
     "Zarifa Ghafari", "Zohra Karimi"
 ];
-    private _nameData = selectRandom _femaleNames;
-    _nameData params ["_fullName", "_firstName", "_lastName"];
+    private _fullNameStr = selectRandom _names;
+    private _nameParts = _fullNameStr splitString " ";
+    private _firstName = _nameParts select 0;
+    private _lastName = if (count _nameParts > 1) then {_nameParts joinString " " select [count _firstName + 1]} else {""};
+    private _fullName = _fullNameStr;
     
     // FORCER LE NOM (remoteExec pour synchronisation MP)
     [_unit, [_fullName, _firstName, _lastName]] remoteExec ["setName", 0, _unit];

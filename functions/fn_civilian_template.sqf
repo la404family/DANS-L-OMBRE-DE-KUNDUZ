@@ -18,7 +18,7 @@ diag_log "[TEMPLATE] === Démarrage mémorisation des templates civils ===";
 MISSION_CivilianTemplates = [];
 
 // Boucle sur les 29 templates possibles (00 à 28)
-for "_i" from 0 to 28 do {
+for "_i" from 0 to 33 do {
     private _suffix = if (_i < 10) then { "0" + str _i } else { str _i };
     private _varName = format ["civil_template_%1", _suffix];
     

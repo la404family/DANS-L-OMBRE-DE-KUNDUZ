@@ -1,16 +1,30 @@
 /*
-    Auteur: Kevin
-    Nom: fn_ajust_BLUFOR_identity.sqf
-    Description: Assigne une identité, un visage et une voix française à tous les BLUFOR.
-    Vérifie toutes les 10 secondes pour les nouvelles unités.
-    Gère les ethnies (Africain, Arabe, Blanc) en fonction du nom.
+    File: fn_ajust_BLUFOR_identity.sqf
+    Description: Système d'identité dynamique pour les unités BLUFOR.
     
-    IMPORTANT: Cette fonction doit tourner sur TOUTES les machines (pas seulement serveur)
-    pour que les identités soient correctement appliquées localement.
+    [ANALYSE & LOGIQUE]
+    Ce script assure la cohérence des identités (Nom, Visage, Voix) en multijoueur.
+    
+    1. PROBLÉMATIQUE MULTIJOUEUR :
+       - Les commandes `setName`, `setSpeaker` et `setIdentity` ont un effet LOCAL.
+       - Si le serveur change le nom d'une unité, les joueurs ne le voient pas forcément mis à jour.
+       - Il faut donc exécuter ces commandes sur TOUTES les machines (Clients + Serveur + JIP).
+    
+    2. STRATÉGIE (Calcul Centralisé -> Application Globale) :
+       - Le script (si exécuté sur le serveur) détecte les nouvelles unités.
+       - Il choisit ALÉATOIREMENT mais UNE SEULE FOIS l'identité (Nom + Visage).
+       - Il envoie ensuite ces données précises à TOUT LE MONDE via `remoteExec`.
+       - Cela garantit que tous les joueurs voient le MEME visage et le MEME nom pour une unité donnée.
+       
+    3. GESTION DES ETHNIES :
+       - Le script associe des visages spécifiques (White, African, Asian, etc.) en fonction de l'origine du nom.
+       - Cela évite d'avoir un "Moussa Diop" avec un visage de type caucasien.
 */
 
-// Listes des noms classés par ethnie pour l'attribution des visages
-// Format: [nom_complet, prénom, nom_famille]
+// --- 1. BASES DE DONNÉES DES NOMS ---
+// Classés par ethnie pour assurer une correspondance Nom <-> Visage cohérente
+
+// Noms Africains -> Visages "AfricanHead_0x"
 private _names_african = [
     ["Moussa Diallo", "Moussa", "Diallo"], 
     ["Mamadou Traoré", "Mamadou", "Traoré"], 
@@ -21,6 +35,7 @@ private _names_african = [
     ["Ismaël Koné", "Ismaël", "Koné"]
 ];
 
+// Noms Maghrébins/Arabes -> Visages Perses/Grecs (Proches visuellement)
 private _names_arab = [
     ["Mehdi Benali", "Mehdi", "Benali"], 
     ["Sofiane Haddad", "Sofiane", "Haddad"], 
@@ -35,17 +50,22 @@ private _names_arab = [
     ["Rayane Meriah", "Rayane", "Meriah"]
 ];
 
-// Noms asiatiques
+// Noms Asiatiques -> Visages "AsianHead_A3_0x"
 private _names_asian = [
-    ["Minh Tuan Nguyen", "Minh Tuan", "Nguyen"], 
-    ["David Pham", "David", "Pham"], 
-    ["Julien Tran", "Julien", "Tran"], 
-    ["Yong Ly", "Yong", "Ly"], 
-    ["Miho Nguyen", "Miho", "Nguyen"], 
-    ["Eric Do", "Eric", "Do"]
+    ["Minh Tuan Nguyen", "Minh Tuan", "Nguyen"],
+    ["Kevin Le", "Kevin", "Le"],
+    ["Thomas Vo", "Thomas", "Vo"],
+    ["Nicolas Hoang", "Nicolas", "Hoang"],
+    ["Pierre Dang", "Pierre", "Dang"],
+    ["Jun Li", "Jun", "Li"],
+    ["Hao Wang", "Hao", "Wang"],
+    ["Kenji Sato", "Kenji", "Sato"],
+    ["Jun-ho Kang", "Jun-ho", "Kang"],
+    ["Si-woo Cho", "Si-woo", "Cho"],
+    ["Yer Xiong", "Yer", "Xiong"]
 ];
 
-// Noms du pacifique/autres
+// Noms du Pacifique -> Visages "TanoanHead_A3_0x"
 private _names_pacific = [
     ["Teiva Tehuiotoa", "Teiva", "Tehuiotoa"], 
     ["Manaarii Puarai", "Manaarii", "Puarai"], 
@@ -56,7 +76,7 @@ private _names_pacific = [
     ["Ariitea Tehei", "Ariitea", "Tehei"]
 ];
 
-// Tous les autres noms (type européen/blanc par défaut)
+// Noms Standards (Européens) -> Visages "WhiteHead_0x"
 private _names_standard = [
     ["Julien Martin", "Julien", "Martin"], ["Thomas Bernard", "Thomas", "Bernard"], 
     ["Nicolas Petit", "Nicolas", "Petit"], ["Alexandre Dubois", "Alexandre", "Dubois"], 
@@ -125,50 +145,81 @@ private _names_standard = [
     ["Pierre Marchal", "Pierre", "Marchal"]
 ];
 
-// Fonction locale pour appliquer l'identité à une unité
-// Cette fonction doit être exécutée localement sur la machine qui contrôle l'unité
-private _fnc_applyIdentity = {
-    params ["_unit", "_nameData", "_selectedFace", "_selectedSpeaker"];
+// --- 2. FONCTION D'APPLICATION LOCALE ---
+// Cette fonction sera exécutée sur TOUTES les machines via remoteExec
+Mission_fnc_applyIdentity_Impl = {
+    params ["_unit", "_nameData", "_selectedFace", "_selectedSpeaker", "_pitch"];
     
+    // Sécurité : ne jamais traiter une unité invalide ou morte
     if (isNull _unit || !alive _unit) exitWith {};
     
-    // Extraire les données du nom
+    // Extraction des composants du nom
     _nameData params ["_fullName", "_firstName", "_lastName"];
     
-    // Appliquer le visage (doit être fait avant setName)
+    // 1. Application du visage
+    // setFace a un effet global, mais l'appliquer partout assure une synchro immédiate
     _unit setFace _selectedFace;
     
-    // Appliquer le nom - Format: [nom_complet, prénom, nom_famille]
-    // Le 3ème paramètre est le "nameSound" utilisé pour les voix radio
+    // 2. Application du nom
+    // setName a un effet LOCAL (doit être exécuté sur chaque client)
     if !(_nameData isEqualTo []) then {
         _unit setName [_fullName, _firstName, _lastName];
     };
     
-    // Appliquer la voix française
+    // 3. Application de la voix
+    // setSpeaker a un effet LOCAL
     _unit setSpeaker _selectedSpeaker;
     
-    // Forcer la mise à jour de l'identité
+    // 3.5 Application du pitch (tonalité)
+    // setPitch est local
+    _unit setPitch _pitch;
+    
+    // 4. Force la mise à jour de l'identité dans le moteur
     _unit setIdentity "";
+    
+    // Debug local (uniquement pour vérifier si les clients reçoivent l'info)
+    // if (hasInterface) then { systemChat format ["Identité reçue pour %1", name _unit]; };
 };
 
-// Fonction pour déterminer le type de visage et appliquer l'identité
+// --- 3. FONCTION DE TRAITEMENT (Serveur/Source) ---
+// Sélectionne l'identité et diffuse l'ordre d'application
+// --- 3. FONCTION DE TRAITEMENT (Serveur/Source) ---
+// Sélectionne l'identité et diffuse l'ordre d'application
 private _fnc_processUnit = {
-    params ["_unit", "_names_african", "_names_arab", "_names_asian", "_names_pacific", "_names_standard", "_fnc_applyIdentity"];
+    params ["_unit", "_names_african", "_names_arab", "_names_asian", "_names_pacific", "_names_standard"];
     
-    // Créer la liste complète avec type d'ethnie
+    // A. Construction de la "Pool" de noms avec leur type ethnique associé
     private _all_names_typed = [];
     { _all_names_typed pushBack [_x, "Black"]; } forEach _names_african;
     { _all_names_typed pushBack [_x, "Arab"]; } forEach _names_arab;
     { _all_names_typed pushBack [_x, "Asian"]; } forEach _names_asian;
     { _all_names_typed pushBack [_x, "Pacific"]; } forEach _names_pacific;
-    { _all_names_typed pushBack [_x, "White"]; } forEach _names_standard;
+    { _all_names_typed pushBack [_x, "White"]; } forEach _names_standard; // La majorité sera White
     
-    // Sélectionner un nom aléatoire avec son type
-    private _selected = selectRandom _all_names_typed;
-    private _nameData = _selected select 0;
-    private _faceType = _selected select 1;
+    // Init de la liste des noms déjà utilisés (Global variable on Server)
+    if (isNil "MISSION_UsedNames") then { MISSION_UsedNames = []; };
     
-    // Sélectionner un visage spécifique selon l'ethnie
+    // B. Filtrage des doublons
+    // On ne garde que les noms qui ne sont PAS dans MISSION_UsedNames
+    private _available_names = _all_names_typed select { !((_x select 0 select 0) in MISSION_UsedNames) };
+    
+    // Sécurité : Si tous les noms ont été utilisés, on reset la liste (ou on autorise les doublons temporairement)
+    if (count _available_names == 0) then {
+        diag_log "[IDENTITY] WARNING: Tous les noms ont été utilisés ! Reset du cache de noms uniques.";
+        MISSION_UsedNames = [];
+        _available_names = _all_names_typed;
+    };
+    
+    // C. Tirage aléatoire de l'identité
+    // C'est ici que se décide le visage que TOUT LE MONDE verra
+    private _selected = selectRandom _available_names;
+    private _nameData = _selected select 0; // Ex: ["Moussa Diallo", ...]
+    
+    // Enregistrement du nom comme "Utilisé"
+    MISSION_UsedNames pushBack (_nameData select 0);
+    private _faceType = _selected select 1; // Ex: "Black"
+    
+    // C. Sélection d'un visage cohérent avec l'ethnie
     private _faces = [];
     switch (_faceType) do {
         case "Black": { 
@@ -190,43 +241,62 @@ private _fnc_processUnit = {
     
     private _selectedFace = selectRandom _faces;
     
-    // Sélectionner une voix française
-    private _speakers = ["Male01FRE", "Male02FRE", "Male03FRE"];
-    private _selectedSpeaker = selectRandom _speakers;
+    // D. Sélection d'une voix cohérente avec l'ethnie
+    private _selectedSpeaker = "";
     
-    // Appliquer l'identité sur toutes les machines
-    // On utilise remoteExecCall avec l'unité comme cible pour exécuter là où l'unité est locale
-    [[_unit, _nameData, _selectedFace, _selectedSpeaker], _fnc_applyIdentity] remoteExec ["call", 0, _unit];
+    switch (_faceType) do {
+        case "White": { 
+             // "Standard" -> Male01FRE
+            _selectedSpeaker = "Male01FRE"; 
+        };
+        case "Black": { 
+            // "African" -> Male02FRE
+            _selectedSpeaker = "Male02FRE"; 
+        };
+        default { 
+            // Maghrébins, Asiatiques, du Pacifique -> Male03FRE
+            _selectedSpeaker = "Male03FRE"; 
+        };
+    };
     
-    // Marquer l'unité comme traitée (synchronisé sur le réseau)
+    // Generation d'une variation de tonalité (0.90 à 1.10)
+    private _pitch = 0.90 + (random 0.20);
+    
+    // E. DIFFUSION GLOBALE (Le point clé)
+    // On envoie le résultat du tirage (_selectedFace, _nameData...) à tout le réseau.
+    // Target 0 = Tous les clients + Serveur. _unit (JIP) = Les joueurs qui se connectent après recevront aussi l'info.
+    [_unit, _nameData, _selectedFace, _selectedSpeaker, _pitch] remoteExec ["Mission_fnc_applyIdentity_Impl", 0, _unit];
+    
+    // F. MARQUAGE
+    // On marque l'unité comme "traitée" en global (true) pour éviter qu'une autre machine ne refasse le travail.
     _unit setVariable ["MISSION_IdentitySet", true, true];
     
-    // Stocker les infos d'identité pour référence
+    // Sauvegarde optionnelle pour persistance ou debug
     _unit setVariable ["MISSION_Identity", [_nameData select 0, _faceType, _selectedFace], true];
-    
-    // Debug (décommenter si besoin)
-    // diag_log format ["[IDENTITE] %1 -> %2 (%3) visage: %4", _unit, _nameData select 0, _faceType, _selectedFace];
 };
 
-// Boucle principale infinie
+// --- 4. BOUCLE PRINCIPALE ---
 while {true} do {
     
     // On itère sur allUnits pour trouver les BLUFOR non traités
     {
         private _unit = _x;
         
-        // Vérifie si l'unité est BLUFOR, vivante et n'a pas déjà été traitée (Joueurs et IA)
+        // Critères de selection :
+        // 1. BLUFOR (West)
+        // 2. Vivant
+        // 3. Pas encore traité (Variable MISSION_IdentitySet)
         if (
             side _unit == west && 
             alive _unit && 
             !(_unit getVariable ["MISSION_IdentitySet", false])
         ) then {
-            // Traiter l'unité
-            [_unit, _names_african, _names_arab, _names_asian, _names_pacific, _names_standard, _fnc_applyIdentity] call _fnc_processUnit;
+            // Lancer le traitement
+            [_unit, _names_african, _names_arab, _names_asian, _names_pacific, _names_standard] call _fnc_processUnit;
         };
         
     } forEach allUnits;
     
-    // Attendre 45 secondes avant la prochaine vérification
+    // Check toutes les 45 secondes pour économiser les ressources
     sleep 45;
 };
