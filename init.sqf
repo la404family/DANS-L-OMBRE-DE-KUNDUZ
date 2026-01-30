@@ -23,7 +23,7 @@ if (isServer) then {
     // Appel à la prière des ezan
     [] spawn Mission_fnc_ezan;
 
-    // Mémorisation des gabarits civils (Templates)
+    // Mémorisation des gabarits civils (Templates civil_template_XX)
     call Mission_fnc_civilian_template;
 
     // Appel à l'introduction cinématique
@@ -47,11 +47,11 @@ if (isServer) then {
     // Modif Identité BLUFOR
     [] spawn Mission_fnc_ajust_BLUFOR_identity;
     
-    // Modif Identité OPFOR / IND / CIV
-    [] spawn Mission_fnc_ajust_OTHER_identity;
+    // Modif Identité OPFOR / IND / CIV (Désactivé - remplacé par fn_apply_civilian_profile)
+    // [] spawn Mission_fnc_ajust_OTHER_identity;
     
-    // Modif Identité et voix FEMME (Burqa/Dress)
-    [] spawn Mission_fnc_ajust_WOMAN_identity;
+    // Modif Identité et voix FEMME (Burqa/Dress) (Désactivé - remplacé par fn_apply_civilian_profile)
+    // [] spawn Mission_fnc_ajust_WOMAN_identity;
 
 
     // Force badge France AMF

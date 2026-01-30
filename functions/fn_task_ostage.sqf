@@ -60,122 +60,79 @@ _marker setMarkerBrush "Border";
 // --- 3. SPAWN OTAGE ---
 private _civGroup = createGroup [civilian, true];
 private _civType = "C_man_polo_1_F";
-private _civLoadout = [];
-
-// Utilisation du Template Civil si disponible
-private _civType = "C_man_polo_1_F";
-private _templateData = [];
-
-// MISSION_var_CivilianTemplates contient [Uniforme, Lunettes, Casque]
-if (!isNil "MISSION_var_CivilianTemplates" && {count MISSION_var_CivilianTemplates > 0}) then {
-    _templateData = selectRandom MISSION_var_CivilianTemplates;
-};
 
 private _hostage = _civGroup createUnit [_civType, _posObjective, [], 0, "NONE"];
 _hostage setPos [getPos _hostage select 0, getPos _hostage select 1, 0.7]; // Spawn à 0.7m du sol
 
-// Appliquer le template visuel
-if (count _templateData > 0) then {
-    _templateData params ["_uniform", "_facewear", "_headgear"];
-    
-    // Nettoyer d'abord
-    removeUniform _hostage;
-    removeGoggles _hostage;
-    removeHeadgear _hostage;
-    
-    // Appliquer
-    if (_uniform != "") then { _hostage forceAddUniform _uniform; };
-    if (_facewear != "") then { _hostage addGoggles _facewear; };
-    if (_headgear != "") then { _hostage addHeadgear _headgear; };
-};
+// APPLICATION DU PROFIL CIVIL (Tenue + Identité)
+// Le genre sera auto-détecté selon l'uniforme (Burqa = femme)
+[_hostage] call Mission_fnc_apply_civilian_profile;
 
-// Configuration Otage
+// Configuration Otage (spécifique mission)
 _hostage setCaptive true;
-removeAllWeapons _hostage;
-removeBackpack _hostage;
+// Note: removeAllWeapons déjà fait dans fn_apply_civilian_profile
 _hostage disableAI "ANIM";
 _hostage disableAI "MOVE";
 _hostage switchMove "Acts_ExecutionVictim_Loop";
 _hostage setVariable ["isCaptive", true, true];
 
-// --- IDENTITE FORCÉE (Avoid default greek names) ---
-private _uniformH = toLower (uniform _hostage);
-if ((_uniformH find "burqa" > -1) || (_uniformH find "dress" > -1) || (_uniformH find "woman" > -1)) then {
-    // FEMME
-    private _faceIndex = floor (random 17) + 1; 
-    private _faceName = format ["max_female%1", _faceIndex];
-    [_hostage, _faceName] remoteExec ["setFace", 0, _hostage];
-    
-    private _speakers = ["Male01PER", "Male02PER", "Male03PER"];
-    private _selectedSpeaker = selectRandom _speakers;
-    [_hostage, _selectedSpeaker] remoteExec ["setSpeaker", 0, _hostage];
-    
-    private _pitch = selectRandom [1.2, 1.4];
-    [_hostage, _pitch] remoteExec ["setPitch", 0, _hostage];
-    
-    private _names = [
-        "Aadila Nouri", "Aaliyah Massoud", "Amani Rahimi", "Anahita Ratebzad", "Anisa Wahab",
-        "Arezoo Tanha", "Aryana Sayeed", "Asma Jahangir", "Atefa Mamanoor", "Aziza Siddiqui",
-        "Bahar Pars", "Banu Ghazanfar", "Baran Kosari", "Behnaz Jafari", "Benafsha Yaqoobi",
-        "Bibi Aisha", "Bushra Maneka", "Darya Safai", "Deana Uppal", "Delaram Karkhir",
-        "Donya Dadrasan", "Elaha Soroor", "Elham Shahin", "Faiza Darkhani", "Farah Pahlavi",
-        "Fariba Hachtroudi", "Farkhunda Zahra", "Fatima Bhutto", "Fawzia Koofi", "Fereshteh Kazemi",
-        "Forough Farrokhzad", "Freshta Karim", "Ghazal Sadat", "Golshifteh Farahani", "Googoosh Atashin",
-        "Habiba Sarabi", "Haifa Wehbe", "Hamida Barmaki", "Hania Amir", "Hasina Safi",
-        "Hawa Alam", "Hayat Mirshad", "Hediyeh Tehrani", "Hina Rabbani", "Homira Qaderi",
-        "Huda Kattan", "Jamila Afghani", "Kamila Sidiqi", "Kubra Khademi", "Laila Freivalds",
-        "Latifa Nabizada", "Leena Alam", "Leila Hatami", "Lina Ben Mhenni", "Mahbouba Seraj",
-        "Mahira Khan", "Malalai Joya", "Manal al-Sharif", "Mariam Ghani", "Marjane Satrapi",
-        "Maryam Monsef", "Massouda Jalal", "Meena Keshwar", "Mehrenegar Rostami", "Mina Mangal",
-        "Mitra Hajjar", "Mozhdah Jamalzadah", "Muniba Mazari", "Nadia Anjuman", "Nahid Persson",
-        "Nargis Fakhri", "Nasrin Sotoudeh", "Nelofer Pazira", "Niki Karimi", "Niloufar Ardalan",
-        "Noor Jehan", "Parvin Etesami", "Qamar Gul", "Rabea Balkhi", "Rahima Jami",
-        "Rola Ghani", "Roya Mahboob", "Saba Qamar", "Sahraa Karimi", "Sajal Aly",
-        "Samira Makhmalbaf", "Sanam Baloch", "Sarah Shahi", "Seeta Qasemi", "Shabana Azmi",
-        "Shaharzad Akbar", "Shirin Ebadi", "Shukria Barakzai", "Sima Samar", "Soheila Siddiq",
-        "Soraya Tarzi", "Tahmineh Milani", "Taraneh Alidoosti", "Yasmin Levy", "Zarifa Ghafari"
-    ];
-    
-    private _randomName = selectRandom _names;
-    private _nameParts = _randomName splitString " ";
-    private _firstName = _nameParts select 0;
-    private _lastName = "";
-    if (count _nameParts > 1) then { _lastName = _nameParts select 1; };
-    [_hostage, [_randomName, _firstName, _lastName]] remoteExec ["setName", 0, _hostage];
-    
-    _hostage setVariable ["Mission_var_isWoman", true, true];
-    
-} else {
-    // HOMME (Arabe générique)
-    private _face = selectRandom ["PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03","GreekHead_A3_01"];
-    [_hostage, _face] remoteExec ["setFace", 0, _hostage];
-
-    private _speaker = selectRandom ["Male01PER", "Male02PER", "Male03PER"];
-    [_hostage, _speaker] remoteExec ["setSpeaker", 0, _hostage];
-    
-    // LISTE DES NOMS ARABES (Hommes)
-    private _names_arab_full = [
-        ["Afaq Khan", "Afaq", "Khan"], ["Ahd Rahimi", "Ahd", "Rahimi"], ["Ahlam Zadran", "Ahlam", "Zadran"],
-        ["Akhtar Durrani", "Akhtar", "Durrani"], ["Almas Wardak", "Almas", "Wardak"], ["Amal Shinwari", "Amal", "Shinwari"],
-        ["Amani Popal", "Amani", "Popal"], ["Anis Kakar", "Anis", "Kakar"], ["Anwar Niazi", "Anwar", "Niazi"],
-        ["Aram Ahmadi", "Aram", "Ahmadi"], ["Areej Mohammadi", "Areej", "Mohammadi"], ["Arya Rostami", "Arya", "Rostami"],
-        ["Ashna Karimi", "Ashna", "Karimi"], ["Asil Faizi", "Asil", "Faizi"], ["Atish Noori", "Atish", "Noori"],
-        ["Ava Hashemi", "Ava", "Hashemi"], ["Awad Saleh", "Awad", "Saleh"], ["Ayin Zare", "Ayin", "Zare"],
-        ["Azad Mousavi", "Azad", "Mousavi"], ["Azar Hosseini", "Azar", "Hosseini"], ["Badr Rezaei", "Badr", "Rezaei"],
-        ["Bahar Jafari", "Bahar", "Jafari"], ["Baran Sadeghi", "Baran", "Sadeghi"], ["Barin Heidari", "Barin", "Heidari"],
-        ["Bayan Moradi", "Bayan", "Moradi"], ["Dana Ghasemi", "Dana", "Ghasemi"], ["Darya Ebrahimi", "Darya", "Ebrahimi"],
-        ["Del Amiri", "Del", "Amiri"], ["Delaram Taheri", "Delaram", "Taheri"], ["Delshad Shams", "Delshad", "Shams"]
-    ];
-    
-    private _selectedNameData = selectRandom _names_arab_full;
-    _selectedNameData params ["_fullName", "_firstName", "_lastName"];
-    [_hostage, [_fullName, _firstName, _lastName]] remoteExec ["setName", 0, _hostage];
-};
-
-// Marquer comme traité pour éviter que les boucles ne changent tout
-_hostage setVariable ["Mission_var_identitySet", true, true];
-
 // Action Holster
+[
+    _hostage,
+    localize "STR_ACTION_FREE_HOSTAGE",
+    "\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_unbind_ca.paa",
+    "\a3\ui_f\data\IGUI\Cfg\holdactions\holdAction_unbind_ca.paa",
+    "alive _target && _target getVariable ['isCaptive', false]",
+    "true",
+    {},
+    {},
+    {
+        params ["_target", "_caller", "_actionId", "_arguments"];
+        _target setVariable ["isCaptive", false, true];
+        
+        // Animation et libération
+        [_target] spawn {
+            params ["_civ"];
+            [_civ, "Acts_ExecutionVictim_Unbow"] remoteExec ["switchMove", 0];
+            sleep 8;
+            _civ setCaptive false;
+            _civ enableAI "ANIM";
+            _civ enableAI "MOVE";
+            _civ switchMove "";
+            
+            // Logique de suivi du joueur
+            [_civ] spawn {
+                params ["_unit"];
+                _unit setBehaviour "CARELESS";
+                _unit setUnitPos "UP";
+                
+                while {alive _unit && !(_unit getVariable ["inHeli", false])} do {
+                    private _nearest = objNull;
+                    private _distMin = 9999;
+                    {
+                        if (alive _x && isPlayer _x) then {
+                            private _d = _x distance _unit;
+                            if (_d < _distMin) then { _distMin = _d; _nearest = _x; };
+                        };
+                    } forEach allPlayers;
+                    
+                    if (!isNull _nearest) then {
+                        if (_distMin > 5) then {
+                            _unit doMove (getPos _nearest);
+                        };
+                    };
+                    sleep 3;
+                };
+            };
+        };
+    },
+    {},
+    [],
+    2,
+    0,
+    true,
+    false
+] call BIS_fnc_holdActionAdd;
 [
     _hostage,
     localize "STR_ACTION_FREE_HOSTAGE",
@@ -251,26 +208,11 @@ while {_unitsToSpawn > 0} do {
         private _unit = _group createUnit ["O_Soldier_F", _spawnPos, [], 0, "NONE"];
         _unit setPos [getPos _unit select 0, getPos _unit select 1, 0.7]; // Spawn à 0.7m du sol
         
-        // 1. VIDEZ TOUT
-        removeAllWeapons _unit;
-        removeAllItems _unit;
-        removeAllAssignedItems _unit;
-        removeBackpack _unit;
-        removeUniform _unit;
-        removeVest _unit;
-        removeHeadgear _unit;
-        removeGoggles _unit;
+        // 1. APPLICATION DU PROFIL CIVIL (Tenue + Identité)
+        [_unit] call Mission_fnc_apply_civilian_profile;
         
-        // 2. TEMPLATE CIVIL
-        private _templates = missionNamespace getVariable ["MISSION_var_CivilianTemplates", []];
-        if (count _templates > 0) then {
-            (selectRandom _templates) params ["_uniform", "_facewear", "_headgear"];
-            if (_uniform != "") then { _unit forceAddUniform _uniform; };
-            if (_facewear != "") then { _unit addGoggles _facewear; };
-            if (_headgear != "") then { _unit addHeadgear _headgear; };
-        };
-        
-        // 3. EQUIPEMENT INSURGÉ (AKMN + Sac bandoulière)
+        // 2. RE-ARMEMENT INSURGÉ (AKMN + Sac bandoulière)
+        // Le profil a nettoyé les armes/sacs, on rajoute l'équipement de combat
         _unit addBackpack "B_Messenger_Coyote_F";
         
         _unit addWeapon "rhs_weap_akmn";
@@ -284,17 +226,6 @@ while {_unitsToSpawn > 0} do {
         _unit linkItem "ItemMap";
         _unit linkItem "ItemCompass";
         _unit linkItem "ItemRadio";
-        
-        // 4. IDENTITY (Manuelle pour éviter que fn_ajust_OTHER_identity n'écrase l'uniforme)
-        // On marque l'unité comme "Traitée" pour le script d'identité global
-        _unit setVariable ["MISSION_IdentitySet", true, true];
-        
-        // Visage et Voix (car on a bloqué le script global)
-        _unit setFace (selectRandom [
-            "PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03",
-            "GreekHead_A3_01","GreekHead_A3_02","GreekHead_A3_03"
-        ]);
-        _unit setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
     };
     
     // Patrouille de GROUPE

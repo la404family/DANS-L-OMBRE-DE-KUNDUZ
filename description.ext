@@ -77,6 +77,8 @@ class CfgFunctions
             class task_ostage {};
             // La fonction sera appelée: Mission_fnc_ajust_OTHER_identity
             class ajust_OTHER_identity {};
+            // La fonction sera appelée: Mission_fnc_apply_civilian_profile
+            class apply_civilian_profile {};
             // La fonction sera appelée: Mission_fnc_ajust_WOMAN_identity
             class ajust_WOMAN_identity {};
 		};

@@ -32,15 +32,60 @@ private _fnc_log = {
     if (CIV_Debug) then { systemChat format ["[CIV] %1", _msg]; };
 };
 
-// --- CRÉATION AGENT (Depuis Template) ---
+// --- CRÉATION AGENT (Depuis Template) avec IDENTITÉ COMPLÈTE ---
 private _fnc_spawnAgent = {
     params ["_data", "_pos"];
-    _data params ["_type", "_loadout", "_face"];
+    _data params ["_type", "_loadout", "_face", ["_isFemale", false]];
 
     private _agent = createAgent [_type, _pos, [], 0, "NONE"];
     _agent setDir (random 360);
     _agent setUnitLoadout _loadout;
-    _agent setFace _face;
+    
+    // --- APPLICATION IDENTITÉ SELON LE GENRE ---
+    if (_isFemale) then {
+        // PROFIL FEMME
+        private _faceIndex = floor (random 17) + 1;
+        _agent setFace format ["max_female%1", _faceIndex];
+        _agent setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
+        _agent setPitch (selectRandom [1.2, 1.3, 1.4]);
+        
+        // Noms féminins afghans
+        private _names = [
+            "Aadila Nouri", "Aaliyah Massoud", "Amani Rahimi", "Anisa Wahab",
+            "Bahar Pars", "Fatima Bhutto", "Ghazal Sadat", "Jamila Afghani",
+            "Kubra Khademi", "Latifa Nabizada", "Malalai Joya", "Sima Samar"
+        ];
+        private _randomName = selectRandom _names;
+        private _nameParts = _randomName splitString " ";
+        _agent setName [_randomName, _nameParts select 0, _nameParts select 1];
+    } else {
+        // PROFIL HOMME
+        _agent setFace (selectRandom ["PersianHead_A3_01", "PersianHead_A3_02", "PersianHead_A3_03", "GreekHead_A3_01", "GreekHead_A3_02"]);
+        _agent setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
+        _agent setPitch 1.0;
+        
+        // BARBE OBLIGATOIRE
+        removeGoggles _agent;
+        if (isClass (configFile >> "CfgGlasses" >> "fsob_Beard01_Dark")) then {
+            _agent addGoggles "fsob_Beard01_Dark";
+        };
+        
+        // Noms masculins afghans
+        private _names = [
+            ["Afaq Khan", "Afaq", "Khan"], ["Akhtar Durrani", "Akhtar", "Durrani"],
+            ["Anis Kakar", "Anis", "Kakar"], ["Azad Mousavi", "Azad", "Mousavi"],
+            ["Badr Rezaei", "Badr", "Rezaei"], ["Faisal Karimi", "Faisal", "Karimi"],
+            ["Habib Noori", "Habib", "Noori"], ["Jalil Hashemi", "Jalil", "Hashemi"],
+            ["Karim Jafari", "Karim", "Jafari"], ["Omar Faizi", "Omar", "Faizi"]
+        ];
+        private _selectedName = selectRandom _names;
+        _selectedName params ["_fullName", "_firstName", "_lastName"];
+        _agent setName [_fullName, _firstName, _lastName];
+    };
+    
+    // Marquer comme traité
+    _agent setVariable ["Mission_var_identitySet", true, true];
+    _agent setVariable ["Mission_var_isWoman", _isFemale, true];
     
     // Optimisation & Setup
     _agent disableAI "FSM"; 
@@ -50,23 +95,21 @@ private _fnc_spawnAgent = {
     _agent disableAI "AUTOTARGET";
     _agent disableAI "TARGET";
     _agent disableAI "WEAPONAIM";
-    // Force peaceful/slow behavior by default
     _agent setBehaviour "CARELESS"; 
-    _agent setUnitPos "UP"; // FORCE DEBOUT (CRITIQUE)
+    _agent setUnitPos "UP";
     _agent setSpeedMode "LIMITED";
-    _agent forceSpeed 2; // FORCE WALK (approx 2m/s)
+    _agent forceSpeed 2;
     
     // Event Handler PEUR DU TIR (FiredNear)
     _agent addEventHandler ["FiredNear", {
         params ["_unit", "_firer", "_distance", "_weapon", "_muzzle", "_mode", "_ammo", "_gunner"];
         if (_distance < CIV_DistanceTir && {isPlayer _firer}) then {
-             // OPTIMIZATION: If already fleeing, just extend timer without resetting animation
              if ((_unit getVariable ["CIV_State", "IDLE"]) == "FLEEING") then {
-                 _unit setVariable ["CIV_StateTimer", time + 15]; // Extend to 15s
+                 _unit setVariable ["CIV_StateTimer", time + 15];
                  _unit setVariable ["CIV_ThreatPos", getPos _firer];
              } else {
                  _unit setVariable ["CIV_State", "FLEEING"];
-                 _unit setVariable ["CIV_StateTimer", time + 15]; // Run for 15s
+                 _unit setVariable ["CIV_StateTimer", time + 15];
                  _unit setVariable ["CIV_ThreatPos", getPos _firer];
                  _unit switchMove ""; 
              };
@@ -194,22 +237,10 @@ private _fnc_gererComportement = {
 
 // --- MAIN SETUP ---
 
-// 0. INIT & DATA COLLECTION
-if (isNil "MISSION_CivilianTemplates") then {
-    MISSION_CivilianTemplates = [];
-    for "_i" from 0 to 41 do {
-        private _varName = format ["civil_%1", if (_i < 10) then {"0" + str _i} else {str _i}];
-        private _unit = missionNamespace getVariable [_varName, objNull];
-        if (!isNull _unit) then {
-            MISSION_CivilianTemplates pushBack [typeOf _unit, getUnitLoadout _unit, face _unit];
-            deleteVehicle _unit;
-        };
-    };
-    if (count MISSION_CivilianTemplates == 0) then {
-         // Fallback default
-         MISSION_CivilianTemplates = [["C_man_polo_1_F", [], "WhiteHead_01"]];
-    };
-};
+// 0. UTILISER LES TEMPLATES DÉJÀ CHARGÉS PAR fn_civilian_template
+// Attendre que les templates soient disponibles
+waitUntil {!isNil "MISSION_CivilianTemplates" && {count MISSION_CivilianTemplates > 0}};
+diag_log format ["[CIV] Using %1 pre-loaded templates from MISSION_CivilianTemplates", count MISSION_CivilianTemplates];
 
 private _poolTemplates = MISSION_CivilianTemplates; // Utilise la globale définie dans initServer.sqf ou ci-desssus
 private _activeAgents = [];  // Agents spawnés
