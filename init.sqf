@@ -27,7 +27,7 @@ if (isServer) then {
     call Mission_fnc_civilian_template;
 
     // Appel à l'introduction cinématique
-    //[] spawn Mission_fnc_task_x_intro; 
+    // [] spawn Mission_fnc_task_intro; 
 
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;
@@ -49,6 +49,10 @@ if (isServer) then {
     
     // Modif Identité OPFOR / IND / CIV
     [] spawn Mission_fnc_ajust_OTHER_identity;
+    
+    // Modif Identité FEMME (Burqa/Dress)
+    [] spawn Mission_fnc_ajust_WOMAN_identity;
+
 
     // Force badge France AMF
     [] spawn Mission_fnc_ajuste_badge;

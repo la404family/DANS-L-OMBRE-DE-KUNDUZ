@@ -46,8 +46,8 @@ class CfgFunctions
 			file = "functions"; // Dossier où sont les fichiers .sqf
             // La fonction sera appelée: Mission_fnc_ezan
 			class ezan {};
-            // La fonction sera appelée: Mission_fnc_task_x_intro
-			class task_x_intro {};
+            // La fonction sera appelée: Mission_fnc_task_intro
+			class task_intro {};
             // La fonction sera appelée: Mission_fnc_spawn_vehicles
             class spawn_vehicles {};
             // La fonction sera appelée: Mission_fnc_ajust_AI_skills
@@ -77,6 +77,8 @@ class CfgFunctions
             class task_ostage {};
             // La fonction sera appelée: Mission_fnc_ajust_OTHER_identity
             class ajust_OTHER_identity {};
+            // La fonction sera appelée: Mission_fnc_ajust_WOMAN_identity
+            class ajust_WOMAN_identity {};
 		};
 	};
 };

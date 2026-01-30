@@ -142,68 +142,77 @@ _hostage setVariable ["isCaptive", true, true];
 
 
 // --- 4. SPAWN ENNEMIS (3 à 7) ---
-private _enemyGroup = createGroup [east, true];
-private _nbEnemies = 3 + floor(random 5); // 3 à 7
+// --- 4. SPAWN ENNEMIS (3 à 7) ---
+private _unitsToSpawn = 3 + floor(random 5); // 3 à 7
 
-for "_i" from 1 to _nbEnemies do {
-    private _spawnPos = _posObjective getPos [10 + random 20, random 360];
+while {_unitsToSpawn > 0} do {
+    // Détermine la taille du groupe (2 ou 3)
+    private _groupSize = 2;
+    if (_unitsToSpawn == 3) then { _groupSize = 3; }; 
+    _unitsToSpawn = _unitsToSpawn - _groupSize;
+
     private _group = createGroup [east, true];
-    private _unit = _group createUnit ["O_Soldier_F", _spawnPos, [], 0, "NONE"];
-    _unit setPos [getPos _unit select 0, getPos _unit select 1, 0.7]; // Spawn à 0.7m du sol
-    
-    // 1. VIDEZ TOUT
-    removeAllWeapons _unit;
-    removeAllItems _unit;
-    removeAllAssignedItems _unit;
-    removeBackpack _unit;
-    removeUniform _unit;
-    removeVest _unit;
-    removeHeadgear _unit;
-    removeGoggles _unit;
-    
-    // 2. TEMPLATE CIVIL
-    private _templates = missionNamespace getVariable ["MISSION_var_CivilianTemplates", []];
-    if (count _templates > 0) then {
-        (selectRandom _templates) params ["_uniform", "_facewear", "_headgear"];
-        if (_uniform != "") then { _unit forceAddUniform _uniform; };
-        if (_facewear != "") then { _unit addGoggles _facewear; };
-        if (_headgear != "") then { _unit addHeadgear _headgear; };
+    private _spawnPos = _posObjective getPos [10 + random 20, random 360];
+
+    for "_i" from 1 to _groupSize do {
+        private _unit = _group createUnit ["O_Soldier_F", _spawnPos, [], 0, "NONE"];
+        _unit setPos [getPos _unit select 0, getPos _unit select 1, 0.7]; // Spawn à 0.7m du sol
+        
+        // 1. VIDEZ TOUT
+        removeAllWeapons _unit;
+        removeAllItems _unit;
+        removeAllAssignedItems _unit;
+        removeBackpack _unit;
+        removeUniform _unit;
+        removeVest _unit;
+        removeHeadgear _unit;
+        removeGoggles _unit;
+        
+        // 2. TEMPLATE CIVIL
+        private _templates = missionNamespace getVariable ["MISSION_var_CivilianTemplates", []];
+        if (count _templates > 0) then {
+            (selectRandom _templates) params ["_uniform", "_facewear", "_headgear"];
+            if (_uniform != "") then { _unit forceAddUniform _uniform; };
+            if (_facewear != "") then { _unit addGoggles _facewear; };
+            if (_headgear != "") then { _unit addHeadgear _headgear; };
+        };
+        
+        // 3. EQUIPEMENT INSURGÉ (AKMN + Sac bandoulière)
+        _unit addBackpack "B_Messenger_Coyote_F";
+        
+        _unit addWeapon "rhs_weap_akmn";
+        _unit addPrimaryWeaponItem "rhs_30Rnd_762x39mm"; 
+        _unit addPrimaryWeaponItem "rhs_acc_2dpZenit"; 
+        
+        for "_j" from 1 to 2 do {
+            _unit addItemToBackpack "rhs_30Rnd_762x39mm";
+        };
+        
+        _unit linkItem "ItemMap";
+        _unit linkItem "ItemCompass";
+        _unit linkItem "ItemRadio";
+        
+        // 4. IDENTITY (Manuelle pour éviter que fn_ajust_OTHER_identity n'écrase l'uniforme)
+        // On marque l'unité comme "Traitée" pour le script d'identité global
+        _unit setVariable ["MISSION_IdentitySet", true, true];
+        
+        // Visage et Voix (car on a bloqué le script global)
+        _unit setFace (selectRandom [
+            "PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03",
+            "GreekHead_A3_01","GreekHead_A3_02","GreekHead_A3_03"
+        ]);
+        _unit setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
     };
     
-    // 3. EQUIPEMENT INSURGÉ (AKMN + Sac bandoulière)
-    _unit addBackpack "B_Messenger_Coyote_F";
-    
-    _unit addWeapon "rhs_weap_akmn";
-    _unit addPrimaryWeaponItem "rhs_30Rnd_762x39mm"; 
-    _unit addPrimaryWeaponItem "rhs_acc_2dpZenit"; 
-    
-    for "_j" from 1 to 2 do {
-        _unit addItemToBackpack "rhs_30Rnd_762x39mm";
-    };
-    
-    _unit linkItem "ItemMap";
-    _unit linkItem "ItemCompass";
-    _unit linkItem "ItemRadio";
-    
-    // 4. IDENTITY (Manuelle pour éviter que fn_ajust_OTHER_identity n'écrase l'uniforme)
-    // On marque l'unité comme "Traitée" pour le script d'identité global
-    _unit setVariable ["MISSION_IdentitySet", true, true];
-    
-    // Visage et Voix (car on a bloqué le script global)
-    _unit setFace (selectRandom [
-        "PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03",
-        "GreekHead_A3_01","GreekHead_A3_02","GreekHead_A3_03"
-    ]);
-    _unit setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
-    
-    
-    // Patrouille simple
-    [_unit, _posObjective] spawn {
-        params ["_u", "_center"];
-        _u setBehaviour "SAFE";
-        _u setSpeedMode "LIMITED";
-        while {alive _u} do {
-            _u doMove (_center getPos [random 50, random 360]);
+    // Patrouille de GROUPE
+    [_group, _posObjective] spawn {
+        params ["_grp", "_center"];
+        _grp setBehaviour "SAFE";
+        _grp setSpeedMode "LIMITED";
+        
+        while {{alive _x} count (units _grp) > 0} do {
+            // Le leader décide du mouvement, les autres suivent
+            (leader _grp) doMove (_center getPos [random 50, random 360]);
             sleep (30 + random 60);
         };
     };
