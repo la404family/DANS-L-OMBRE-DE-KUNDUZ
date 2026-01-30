@@ -46,13 +46,6 @@ if (isServer) then {
     
     // Modif Identité BLUFOR
     [] spawn Mission_fnc_ajust_BLUFOR_identity;
-    
-    // Modif Identité OPFOR / IND / CIV (Désactivé - remplacé par fn_apply_civilian_profile)
-    // [] spawn Mission_fnc_ajust_OTHER_identity;
-    
-    // Modif Identité et voix FEMME (Burqa/Dress) (Désactivé - remplacé par fn_apply_civilian_profile)
-    // [] spawn Mission_fnc_ajust_WOMAN_identity;
-
 
     // Force badge France AMF
     [] spawn Mission_fnc_ajuste_badge;

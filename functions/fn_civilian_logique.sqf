@@ -51,10 +51,43 @@ private _fnc_spawnAgent = {
         
         // Noms féminins afghans
         private _names = [
-            "Aadila Nouri", "Aaliyah Massoud", "Amani Rahimi", "Anisa Wahab",
-            "Bahar Pars", "Fatima Bhutto", "Ghazal Sadat", "Jamila Afghani",
-            "Kubra Khademi", "Latifa Nabizada", "Malalai Joya", "Sima Samar"
-        ];
+    "Aadila Nouri", "Aaliyah Massoud", "Amani Rahimi", "Anisa Wahab",
+    "Bahar Pars", "Fatima Bhutto", "Ghazal Sadat", "Jamila Afghani",
+    "Kubra Khademi", "Latifa Nabizada", "Malalai Joya", "Sima Samar",
+    "Abir Al-Sahlani", "Afra Jalil", "Aisha Wardak", "Aleena Khan", "Alia Zadeh",
+    "Almas Durrani", "Amal Alamuddin", "Amira Casar", "Anahita Ratebzad", "Anbar Nadiya",
+    "Aqsa Parvez", "Ara Qadir", "Areeba Habib", "Arezoo Tanha", "Arwa Damon",
+    "Asal Badiee", "Asma Jahangir", "Asra Nomani", "Atefeh Razavi", "Azadeh Moaveni",
+    "Aziza Siddiqui", "Azra Akrami", "Badra Ali", "Bahira Sherif", "Balqis Ahmed",
+    "Banu Ghazanfar", "Baran Kosari", "Baria Alamuddin", "Basma Hassan", "Batool Fakoor",
+    "Bayan Mahmoud", "Beheshta Arghand", "Behnaz Jafari", "Benafsha Yaqoobi", "Bushra Maneka",
+    "Dalia Mogahed", "Dana Ghazi", "Dania Khatib", "Darya Safai", "Deena Aljuhani",
+    "Delaram Karkhir", "Delbar Nazari", "Dorsa Derakhshani", "Dua Khalil", "Durkhanai Ayubi",
+    "Elaha Soroor", "Elham Shahin", "Elnaz Shakerdoost", "Esra Bilgic", "Faiza Darkhani",
+    "Fakhria Khalil", "Farah Pahlavi", "Farangis Yeganegi", "Farhana Qasimi", "Fariba Hachtroudi",
+    "Farkhunda Zahra", "Farzaneh Kaboli", "Fatemeh Motamed", "Fawzia Koofi", "Fereshteh Kazemi",
+    "Fida Qasemi", "Forough Farrokhzad", "Fozia Koofi", "Freshta Karim", "Geeti Pasha",
+    "Gelareh Abbasi", "Ghadir Mounib", "Golshifteh Farahani", "Habiba Sarabi", "Hadia Tajik",
+    "Hafsa Zayyan", "Haifa Wehbe", "Hala Gorani", "Hamida Barmaki", "Hangama Zohra",
+    "Hania Amir", "Hasina Safi", "Hawa Alam", "Hayat Mirshad", "Hediyeh Tehrani",
+    "Hina Rabbani", "Hind Rostom", "Homa Darabi", "Homira Qaderi", "Huda Kattan",
+    "Iman Abdulmajid", "Kamila Sidiqi", "Kawsar Sharifi", "Khadija Bashir", "Laila Freivalds",
+    "Laila Haidari", "Layla Murad", "Leena Alam", "Leila Hatami", "Lima Azimi",
+    "Lina Ben Mhenni", "Mahbouba Seraj", "Mahira Khan", "Manal al-Sharif", "Mariam Durrani",
+    "Mariam Ghani", "Marjane Satrapi", "Marwa Elselehdar", "Maryam Monsef", "Massouda Jalal",
+    "Meena Keshwar", "Mehrnaz Dabir", "Mina Mangal", "Mitra Hajjar", "Mona Zaki",
+    "Mozhdah Jamalzadah", "Muna Wassef", "Muniba Mazari", "Nadia Anjuman", "Naghma Shaperai",
+    "Nahid Persson", "Nargis Fakhri", "Nargis Nehan", "Nasrin Sotoudeh", "Nawal El Saadawi",
+    "Nelofer Pazira", "Niki Karimi", "Niloufar Ardalan", "Niloufar Bayat", "Noor Jahan",
+    "Palwasha Hassan", "Parvin Etesami", "Parwana Amiri", "Qamar Gul", "Rabea Balkhi",
+    "Rahima Jami", "Rania Al-Abdullah", "Reem Abdullah", "Rola Ghani", "Roxana Saberi",
+    "Roya Mahboob", "Saba Qamar", "Sahraa Karimi", "Sajal Aly", "Salma Zadeh",
+    "Samira Makhmalbaf", "Sanam Baloch", "Sarah Shahi", "Seeta Qasemi", "Shabana Azmi",
+    "Shaharzad Akbar", "Shirin Ebadi", "Shukria Barakzai", "Soheila Siddiq", "Soraya Tarzi",
+    "Tahmina Alvi", "Tahmineh Milani", "Taraneh Alidoosti", "Vida Samadzai", "Wazhma Frogh",
+    "Yalda Hakim", "Yasmin Levy", "Zainab Salbi", "Zara Kayani", "Zarghona Walid",
+    "Zarifa Ghafari", "Zohra Karimi"
+];
         private _randomName = selectRandom _names;
         private _nameParts = _randomName splitString " ";
         _agent setName [_randomName, _nameParts select 0, _nameParts select 1];
