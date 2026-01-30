@@ -63,15 +63,31 @@ private _civType = "C_man_polo_1_F";
 private _civLoadout = [];
 
 // Utilisation du Template Civil si disponible
-if (!isNil "MISSION_var_civilians" && {count MISSION_var_civilians > 0}) then {
-    private _data = selectRandom MISSION_var_civilians;
-    _civType = _data select 1;
-    _civLoadout = _data select 5;
+private _civType = "C_man_polo_1_F";
+private _templateData = [];
+
+// MISSION_var_CivilianTemplates contient [Uniforme, Lunettes, Casque]
+if (!isNil "MISSION_var_CivilianTemplates" && {count MISSION_var_CivilianTemplates > 0}) then {
+    _templateData = selectRandom MISSION_var_CivilianTemplates;
 };
 
 private _hostage = _civGroup createUnit [_civType, _posObjective, [], 0, "NONE"];
 _hostage setPos [getPos _hostage select 0, getPos _hostage select 1, 0.7]; // Spawn à 0.7m du sol
-if !(_civLoadout isEqualTo []) then { _hostage setUnitLoadout _civLoadout; };
+
+// Appliquer le template visuel
+if (count _templateData > 0) then {
+    _templateData params ["_uniform", "_facewear", "_headgear"];
+    
+    // Nettoyer d'abord
+    removeUniform _hostage;
+    removeGoggles _hostage;
+    removeHeadgear _hostage;
+    
+    // Appliquer
+    if (_uniform != "") then { _hostage forceAddUniform _uniform; };
+    if (_facewear != "") then { _hostage addGoggles _facewear; };
+    if (_headgear != "") then { _hostage addHeadgear _headgear; };
+};
 
 // Configuration Otage
 _hostage setCaptive true;
@@ -87,11 +103,15 @@ private _uniformH = toLower (uniform _hostage);
 if ((_uniformH find "burqa" > -1) || (_uniformH find "dress" > -1) || (_uniformH find "woman" > -1)) then {
     // FEMME
     private _faceIndex = floor (random 17) + 1; 
-    _hostage setFace format ["max_female%1", _faceIndex];
+    private _faceName = format ["max_female%1", _faceIndex];
+    [_hostage, _faceName] remoteExec ["setFace", 0, _hostage];
     
     private _speakers = ["Male01PER", "Male02PER", "Male03PER"];
-    _hostage setSpeaker (selectRandom _speakers);
-    _hostage setPitch (selectRandom [1.2, 1.4]);
+    private _selectedSpeaker = selectRandom _speakers;
+    [_hostage, _selectedSpeaker] remoteExec ["setSpeaker", 0, _hostage];
+    
+    private _pitch = selectRandom [1.2, 1.4];
+    [_hostage, _pitch] remoteExec ["setPitch", 0, _hostage];
     
     private _names = [
         "Aadila Nouri", "Aaliyah Massoud", "Amani Rahimi", "Anahita Ratebzad", "Anisa Wahab",
@@ -121,16 +141,35 @@ if ((_uniformH find "burqa" > -1) || (_uniformH find "dress" > -1) || (_uniformH
     private _firstName = _nameParts select 0;
     private _lastName = "";
     if (count _nameParts > 1) then { _lastName = _nameParts select 1; };
-    _hostage setName [_randomName, _firstName, _lastName];
+    [_hostage, [_randomName, _firstName, _lastName]] remoteExec ["setName", 0, _hostage];
     
     _hostage setVariable ["Mission_var_isWoman", true, true];
     
 } else {
     // HOMME (Arabe générique)
-    _hostage setFace (selectRandom ["PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03","GreekHead_A3_01"]);
-    _hostage setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
-    // Le nom sera géré par fn_ajust_OTHER_identity s'il n'est pas set, mais on peut laisser par défaut ou mettre un Arabe ici si besoin.
-    // Pour l'instant on laisse le script global gérer l'homme, ou on force "Unknown"
+    private _face = selectRandom ["PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03","GreekHead_A3_01"];
+    [_hostage, _face] remoteExec ["setFace", 0, _hostage];
+
+    private _speaker = selectRandom ["Male01PER", "Male02PER", "Male03PER"];
+    [_hostage, _speaker] remoteExec ["setSpeaker", 0, _hostage];
+    
+    // LISTE DES NOMS ARABES (Hommes)
+    private _names_arab_full = [
+        ["Afaq Khan", "Afaq", "Khan"], ["Ahd Rahimi", "Ahd", "Rahimi"], ["Ahlam Zadran", "Ahlam", "Zadran"],
+        ["Akhtar Durrani", "Akhtar", "Durrani"], ["Almas Wardak", "Almas", "Wardak"], ["Amal Shinwari", "Amal", "Shinwari"],
+        ["Amani Popal", "Amani", "Popal"], ["Anis Kakar", "Anis", "Kakar"], ["Anwar Niazi", "Anwar", "Niazi"],
+        ["Aram Ahmadi", "Aram", "Ahmadi"], ["Areej Mohammadi", "Areej", "Mohammadi"], ["Arya Rostami", "Arya", "Rostami"],
+        ["Ashna Karimi", "Ashna", "Karimi"], ["Asil Faizi", "Asil", "Faizi"], ["Atish Noori", "Atish", "Noori"],
+        ["Ava Hashemi", "Ava", "Hashemi"], ["Awad Saleh", "Awad", "Saleh"], ["Ayin Zare", "Ayin", "Zare"],
+        ["Azad Mousavi", "Azad", "Mousavi"], ["Azar Hosseini", "Azar", "Hosseini"], ["Badr Rezaei", "Badr", "Rezaei"],
+        ["Bahar Jafari", "Bahar", "Jafari"], ["Baran Sadeghi", "Baran", "Sadeghi"], ["Barin Heidari", "Barin", "Heidari"],
+        ["Bayan Moradi", "Bayan", "Moradi"], ["Dana Ghasemi", "Dana", "Ghasemi"], ["Darya Ebrahimi", "Darya", "Ebrahimi"],
+        ["Del Amiri", "Del", "Amiri"], ["Delaram Taheri", "Delaram", "Taheri"], ["Delshad Shams", "Delshad", "Shams"]
+    ];
+    
+    private _selectedNameData = selectRandom _names_arab_full;
+    _selectedNameData params ["_fullName", "_firstName", "_lastName"];
+    [_hostage, [_fullName, _firstName, _lastName]] remoteExec ["setName", 0, _hostage];
 };
 
 // Marquer comme traité pour éviter que les boucles ne changent tout

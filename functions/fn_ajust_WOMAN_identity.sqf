@@ -2,8 +2,8 @@
     Author: Kevin
     Description:
     Ajuste l'identité (visage et voix) des civils femmes (Burqa, Dress, woman)
-    dans un rayon de 550m autour des joueurs.
-    S'exécute toutes les 45 secondes.
+    dans un rayon de 850m autour des joueurs.
+    S'exécute toutes les 10 secondes.
     VOIX : Farsi (Male01PER, Male02PER, Male03PER) avec Pitch 1.2 ou 1.4
     VISAGE : max_female1 à max_female17
     NOM : Un des 100 noms féminins
@@ -24,7 +24,7 @@ while {true} do {
         private _unitsToProcess = [];
         {
             private _p = _x;
-            private _nearUnits = _p nearEntities ["Man", 550];
+            private _nearUnits = _p nearEntities ["Man", 850];
             {
                 if (!(_x in _unitsToProcess)) then {
                     _unitsToProcess pushBack _x;
@@ -121,5 +121,5 @@ while {true} do {
         } forEach _unitsToProcess;
     };
     
-    sleep 10; // Vérification plus fréquente (10s au lieu de 45s) pour attraper les spawns
+    sleep 10; // Vérification plus fréquente  pour attraper les spawns
 };

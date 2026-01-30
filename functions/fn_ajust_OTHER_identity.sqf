@@ -189,6 +189,21 @@ private _fnc_processUnit = {
 
 // Boucle principale
 while {true} do {
+    private _unitsToProcess = [];
+    
+    // Récupérer les unités autour des joueurs (850m) pour optimiser
+    if (count allPlayers > 0) then {
+        {
+            private _p = _x;
+            private _near = _p nearEntities ["Man", 850];
+            {
+                if (!(_x in _unitsToProcess)) then {
+                    _unitsToProcess pushBack _x;
+                };
+            } forEach _near;
+        } forEach allPlayers;
+    };
+
     {
         private _unit = _x;
         private _uniform = toLower (uniform _unit);
@@ -212,7 +227,7 @@ while {true} do {
             };
         };
         
-    } forEach allUnits;
+    } forEach _unitsToProcess;
     
     sleep 10;
 };
