@@ -97,11 +97,12 @@ if (_isFemale) then {
     // VISAGE FÉMININ
     private _faceIndex = floor (random 17) + 1;
     private _faceName = format ["max_female%1", _faceIndex];
-    _unit setFace _faceName;
+    [_unit, _faceName] remoteExec ["setFace", 0, _unit];
     diag_log format ["[IDENTITY] FACE set to: %1", _faceName];
     
-    // VOIX
-    _unit setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
+    // VOIX (remoteExec pour synchronisation MP)
+    private _speaker = selectRandom ["Male01PER", "Male02PER", "Male03PER"];
+    [_unit, _speaker] remoteExec ["setSpeaker", 0, _unit];
     _unit setPitch (1.2 + random 0.2);
     
     // NOM FÉMININ AFGHAN
@@ -120,8 +121,8 @@ if (_isFemale) then {
     private _nameData = selectRandom _femaleNames;
     _nameData params ["_fullName", "_firstName", "_lastName"];
     
-    // FORCER LE NOM
-    _unit setName [_fullName, _firstName, _lastName];
+    // FORCER LE NOM (remoteExec pour synchronisation MP)
+    [_unit, [_fullName, _firstName, _lastName]] remoteExec ["setName", 0, _unit];
     diag_log format ["[IDENTITY] NAME set to: %1", _fullName];
     
 } else {
@@ -132,11 +133,12 @@ if (_isFemale) then {
     private _maleFace = selectRandom [
         "PersianHead_A3_01", "PersianHead_A3_02", "PersianHead_A3_03"
     ];
-    _unit setFace _maleFace;
+    [_unit, _maleFace] remoteExec ["setFace", 0, _unit];
     diag_log format ["[IDENTITY] FACE set to: %1", _maleFace];
     
-    // VOIX
-    _unit setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
+    // VOIX (remoteExec pour synchronisation MP)
+    private _speaker = selectRandom ["Male01PER", "Male02PER", "Male03PER"];
+    [_unit, _speaker] remoteExec ["setSpeaker", 0, _unit];
     _unit setPitch 1.0;
     
     // BARBE
@@ -164,8 +166,8 @@ if (_isFemale) then {
     private _nameData = selectRandom _maleNames;
     _nameData params ["_fullName", "_firstName", "_lastName"];
     
-    // FORCER LE NOM
-    _unit setName [_fullName, _firstName, _lastName];
+    // FORCER LE NOM (remoteExec pour synchronisation MP)
+    [_unit, [_fullName, _firstName, _lastName]] remoteExec ["setName", 0, _unit];
     diag_log format ["[IDENTITY] NAME set to: %1", _fullName];
 };
 
