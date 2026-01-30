@@ -27,7 +27,7 @@ if (isServer) then {
     call Mission_fnc_civilian_template;
 
     // Appel à l'introduction cinématique
-    // [] spawn Mission_fnc_task_x_intro; 
+    [] spawn Mission_fnc_task_x_intro; 
 
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;

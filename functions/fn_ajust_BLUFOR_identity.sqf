@@ -2,140 +2,231 @@
     Auteur: Kevin
     Nom: fn_ajust_BLUFOR_identity.sqf
     Description: Assigne une identité, un visage et une voix française à tous les BLUFOR.
-    Vérifie toutes les 60 secondes pour les nouvelles unités.
+    Vérifie toutes les 10 secondes pour les nouvelles unités.
     Gère les ethnies (Africain, Arabe, Blanc) en fonction du nom.
+    
+    IMPORTANT: Cette fonction doit tourner sur TOUTES les machines (pas seulement serveur)
+    pour que les identités soient correctement appliquées localement.
 */
 
 // Listes des noms classés par ethnie pour l'attribution des visages
+// Format: [nom_complet, prénom, nom_famille]
 private _names_african = [
-    "Moussa Diallo", "Mamadou Traoré", "Ibrahim Keita", "Sekou Diop", 
-    "Ousmane Sy", "Bakary Sow", "Ismaël Koné"
+    ["Moussa Diallo", "Moussa", "Diallo"], 
+    ["Mamadou Traoré", "Mamadou", "Traoré"], 
+    ["Ibrahim Keita", "Ibrahim", "Keita"], 
+    ["Sekou Diop", "Sekou", "Diop"], 
+    ["Ousmane Sy", "Ousmane", "Sy"], 
+    ["Bakary Sow", "Bakary", "Sow"], 
+    ["Ismaël Koné", "Ismaël", "Koné"]
 ];
 
 private _names_arab = [
-    "Mehdi Benali", "Sofiane Haddad", "Karim Mansouri", "Mohamed Trabelsi", 
-    "Walid Belkacem", "Hicham Bouzid", "Adel Gharbi", "Nassim Saïdi", 
-    "Rachid Ziani", "Adam Khayat", "Rayane Meriah"
+    ["Mehdi Benali", "Mehdi", "Benali"], 
+    ["Sofiane Haddad", "Sofiane", "Haddad"], 
+    ["Karim Mansouri", "Karim", "Mansouri"], 
+    ["Mohamed Trabelsi", "Mohamed", "Trabelsi"], 
+    ["Walid Belkacem", "Walid", "Belkacem"], 
+    ["Hicham Bouzid", "Hicham", "Bouzid"], 
+    ["Adel Gharbi", "Adel", "Gharbi"], 
+    ["Nassim Saïdi", "Nassim", "Saïdi"], 
+    ["Rachid Ziani", "Rachid", "Ziani"], 
+    ["Adam Khayat", "Adam", "Khayat"], 
+    ["Rayane Meriah", "Rayane", "Meriah"]
 ];
 
-// Noms asiatiques (Pour info, traités avec visages asiatiques ou blancs selon dispo)
+// Noms asiatiques
 private _names_asian = [
-    "Minh Tuan Nguyen", "David Pham", "Julien Tran", "Yong Ly", "Miho Nguyen", "Eric Do"
+    ["Minh Tuan Nguyen", "Minh Tuan", "Nguyen"], 
+    ["David Pham", "David", "Pham"], 
+    ["Julien Tran", "Julien", "Tran"], 
+    ["Yong Ly", "Yong", "Ly"], 
+    ["Miho Nguyen", "Miho", "Nguyen"], 
+    ["Eric Do", "Eric", "Do"]
 ];
 
 // Noms du pacifique/autres
 private _names_pacific = [
-    "Teiva Tehuiotoa", "Manaarii Puarai", "Teva Rohi", "Manua Tuihani", "Keanu Loa", "Tamatoa Arii", "Ariitea Tehei"
+    ["Teiva Tehuiotoa", "Teiva", "Tehuiotoa"], 
+    ["Manaarii Puarai", "Manaarii", "Puarai"], 
+    ["Teva Rohi", "Teva", "Rohi"], 
+    ["Manua Tuihani", "Manua", "Tuihani"], 
+    ["Keanu Loa", "Keanu", "Loa"], 
+    ["Tamatoa Arii", "Tamatoa", "Arii"], 
+    ["Ariitea Tehei", "Ariitea", "Tehei"]
 ];
 
 // Tous les autres noms (type européen/blanc par défaut)
 private _names_standard = [
-    "Julien Martin", "Thomas Bernard", "Nicolas Petit", "Alexandre Dubois", "Maxime Moreau", 
-    "Guillaume Laurent", "Lucas Girard", "Romain Roux", "Clément Fournier", "Mathieu Bonnet", 
-    "Erwan Le Gall", "Enzo Rossi", "Loïc Kerbrat", "Kevin Martinez", "David Rodriguez", 
-    "Sébastien Leroux", "Christophe Chevalier", "Benjamin François", "Florian Robin", 
-    "Tiago Da Silva", "Adrien Masson", "Bastien Sanchez", "Quentin Boyer", "Valentin André", 
-    "Jean-Baptiste Santini", "Rémi Philippe", "Jordan Picart", "Yoann Gautier", "Steve Morel", 
-    "Dylan Caron", "Arnaud Perrin", "Thibault Marchand", "Dimitri Kowalski", "Xavier Dupuis", 
-    "Cyril Guérin", "Laurent Baron", "Jérôme Huet", "Fabien Roy", "Vincent Colin", 
-    "Olivier Vidal", "Pascal Aubert", "Éric Rey", "Franck Charpentier", "Pierre Tessier", 
-    "Simon Picard", "Louis Chauvin", "Gabin Laporte", "Paul Renard", "Victor Langlois", 
-    "Arthur Prévost", "Léo Martinet", "Raphaël Joly", "Gabriel Brun", "Yassine Faure", 
-    "Cédric Payet", "Grégory Hoarau", "Stanislav Novak", "Alexis Ivanoff", "Samuel Cohen", 
-    "Jonathan Lévy", "Anthony Garcia", "Damien Dos Santos", "Frédéric Muller", "Hans Weber", 
-    "Bixente Etcheverry", "Ange Paoli", "Étienne Lemaire", "Bruno Vincent", "Hugues Lefebvre", 
-    "Mikaël Gauthier", "Luis Fernandez", "Sylvain Blanchard", "Axel Mercier", "Killian Briand", 
-    "Dorian Mounier", "Tristan Deschamps", "Alexis Fontaine", "Sacha Popovic", "Mattéo Ferrari", 
-    "Arthur Lefevre", "Jules Mercier", "Martin Cote", "Paul Dumas", "Simon Fontaine", 
-    "Louis Rousseau", "Gabin Chevalier", "Victor Giraud", "Lucas Morin", "Antoine Brunet", 
-    "Baptiste Gaillard", "Gaspard Barbier", "Clément Arnaud", "Mathis Dupuy", "Maël Carpentier", 
-    "Hugo Boucher", "Raphaël Denis", "Sacha Aubry", "Noah Picard", "Tom Colin", 
-    "Léo Vasseur", "Théo Caron", "Nathan Hubert", "Augustin Roche", "Noé Deschamp", 
-    "Ethan Rivet", "Evan Meyer", "Nolan Jacquet", "Enzo Renard", "Aaron Charrier", 
-    "Axel Perrot", "Robin Guyot", "Valentin Barre", "Nino Pons", "Eliott Munoz", 
-    "Maxence Breton", "Liam Fabre", "Timothée Dufour", "Marius Lecomte", "Lenny Bourgeois", 
-    "Yanis Vidal", "Isaac Benoit", "Adam Lemoine", "Adrien Blanc", "Samuel Garnier", 
-    "Benjamin Faure", "Maxime Reynaud", "Remi Prevost", "Vincent Lacroix", "Pierre Marchal"
+    ["Julien Martin", "Julien", "Martin"], ["Thomas Bernard", "Thomas", "Bernard"], 
+    ["Nicolas Petit", "Nicolas", "Petit"], ["Alexandre Dubois", "Alexandre", "Dubois"], 
+    ["Maxime Moreau", "Maxime", "Moreau"], ["Guillaume Laurent", "Guillaume", "Laurent"], 
+    ["Lucas Girard", "Lucas", "Girard"], ["Romain Roux", "Romain", "Roux"], 
+    ["Clément Fournier", "Clément", "Fournier"], ["Mathieu Bonnet", "Mathieu", "Bonnet"], 
+    ["Erwan Le Gall", "Erwan", "Le Gall"], ["Enzo Rossi", "Enzo", "Rossi"], 
+    ["Loïc Kerbrat", "Loïc", "Kerbrat"], ["Kevin Martinez", "Kevin", "Martinez"], 
+    ["David Rodriguez", "David", "Rodriguez"], ["Sébastien Leroux", "Sébastien", "Leroux"], 
+    ["Christophe Chevalier", "Christophe", "Chevalier"], ["Benjamin François", "Benjamin", "François"], 
+    ["Florian Robin", "Florian", "Robin"], ["Tiago Da Silva", "Tiago", "Da Silva"], 
+    ["Adrien Masson", "Adrien", "Masson"], ["Bastien Sanchez", "Bastien", "Sanchez"], 
+    ["Quentin Boyer", "Quentin", "Boyer"], ["Valentin André", "Valentin", "André"], 
+    ["Jean-Baptiste Santini", "Jean-Baptiste", "Santini"], ["Rémi Philippe", "Rémi", "Philippe"], 
+    ["Jordan Picart", "Jordan", "Picart"], ["Yoann Gautier", "Yoann", "Gautier"], 
+    ["Steve Morel", "Steve", "Morel"], ["Dylan Caron", "Dylan", "Caron"], 
+    ["Arnaud Perrin", "Arnaud", "Perrin"], ["Thibault Marchand", "Thibault", "Marchand"], 
+    ["Dimitri Kowalski", "Dimitri", "Kowalski"], ["Xavier Dupuis", "Xavier", "Dupuis"], 
+    ["Cyril Guérin", "Cyril", "Guérin"], ["Laurent Baron", "Laurent", "Baron"], 
+    ["Jérôme Huet", "Jérôme", "Huet"], ["Fabien Roy", "Fabien", "Roy"], 
+    ["Vincent Colin", "Vincent", "Colin"], ["Olivier Vidal", "Olivier", "Vidal"], 
+    ["Pascal Aubert", "Pascal", "Aubert"], ["Éric Rey", "Éric", "Rey"], 
+    ["Franck Charpentier", "Franck", "Charpentier"], ["Pierre Tessier", "Pierre", "Tessier"], 
+    ["Simon Picard", "Simon", "Picard"], ["Louis Chauvin", "Louis", "Chauvin"], 
+    ["Gabin Laporte", "Gabin", "Laporte"], ["Paul Renard", "Paul", "Renard"], 
+    ["Victor Langlois", "Victor", "Langlois"], ["Arthur Prévost", "Arthur", "Prévost"], 
+    ["Léo Martinet", "Léo", "Martinet"], ["Raphaël Joly", "Raphaël", "Joly"], 
+    ["Gabriel Brun", "Gabriel", "Brun"], ["Yassine Faure", "Yassine", "Faure"], 
+    ["Cédric Payet", "Cédric", "Payet"], ["Grégory Hoarau", "Grégory", "Hoarau"], 
+    ["Stanislav Novak", "Stanislav", "Novak"], ["Alexis Ivanoff", "Alexis", "Ivanoff"], 
+    ["Samuel Cohen", "Samuel", "Cohen"], ["Jonathan Lévy", "Jonathan", "Lévy"], 
+    ["Anthony Garcia", "Anthony", "Garcia"], ["Damien Dos Santos", "Damien", "Dos Santos"], 
+    ["Frédéric Muller", "Frédéric", "Muller"], ["Hans Weber", "Hans", "Weber"], 
+    ["Bixente Etcheverry", "Bixente", "Etcheverry"], ["Ange Paoli", "Ange", "Paoli"], 
+    ["Étienne Lemaire", "Étienne", "Lemaire"], ["Bruno Vincent", "Bruno", "Vincent"], 
+    ["Hugues Lefebvre", "Hugues", "Lefebvre"], ["Mikaël Gauthier", "Mikaël", "Gauthier"], 
+    ["Luis Fernandez", "Luis", "Fernandez"], ["Sylvain Blanchard", "Sylvain", "Blanchard"], 
+    ["Axel Mercier", "Axel", "Mercier"], ["Killian Briand", "Killian", "Briand"], 
+    ["Dorian Mounier", "Dorian", "Mounier"], ["Tristan Deschamps", "Tristan", "Deschamps"], 
+    ["Alexis Fontaine", "Alexis", "Fontaine"], ["Sacha Popovic", "Sacha", "Popovic"], 
+    ["Mattéo Ferrari", "Mattéo", "Ferrari"], ["Arthur Lefevre", "Arthur", "Lefevre"], 
+    ["Jules Mercier", "Jules", "Mercier"], ["Martin Cote", "Martin", "Cote"], 
+    ["Paul Dumas", "Paul", "Dumas"], ["Simon Fontaine", "Simon", "Fontaine"], 
+    ["Louis Rousseau", "Louis", "Rousseau"], ["Gabin Chevalier", "Gabin", "Chevalier"], 
+    ["Victor Giraud", "Victor", "Giraud"], ["Lucas Morin", "Lucas", "Morin"], 
+    ["Antoine Brunet", "Antoine", "Brunet"], ["Baptiste Gaillard", "Baptiste", "Gaillard"], 
+    ["Gaspard Barbier", "Gaspard", "Barbier"], ["Clément Arnaud", "Clément", "Arnaud"], 
+    ["Mathis Dupuy", "Mathis", "Dupuy"], ["Maël Carpentier", "Maël", "Carpentier"], 
+    ["Hugo Boucher", "Hugo", "Boucher"], ["Raphaël Denis", "Raphaël", "Denis"], 
+    ["Sacha Aubry", "Sacha", "Aubry"], ["Noah Picard", "Noah", "Picard"], 
+    ["Tom Colin", "Tom", "Colin"], ["Léo Vasseur", "Léo", "Vasseur"], 
+    ["Théo Caron", "Théo", "Caron"], ["Nathan Hubert", "Nathan", "Hubert"], 
+    ["Augustin Roche", "Augustin", "Roche"], ["Noé Deschamp", "Noé", "Deschamp"], 
+    ["Ethan Rivet", "Ethan", "Rivet"], ["Evan Meyer", "Evan", "Meyer"], 
+    ["Nolan Jacquet", "Nolan", "Jacquet"], ["Enzo Renard", "Enzo", "Renard"], 
+    ["Aaron Charrier", "Aaron", "Charrier"], ["Axel Perrot", "Axel", "Perrot"], 
+    ["Robin Guyot", "Robin", "Guyot"], ["Valentin Barre", "Valentin", "Barre"], 
+    ["Nino Pons", "Nino", "Pons"], ["Eliott Munoz", "Eliott", "Munoz"], 
+    ["Maxence Breton", "Maxence", "Breton"], ["Liam Fabre", "Liam", "Fabre"], 
+    ["Timothée Dufour", "Timothée", "Dufour"], ["Marius Lecomte", "Marius", "Lecomte"], 
+    ["Lenny Bourgeois", "Lenny", "Bourgeois"], ["Yanis Vidal", "Yanis", "Vidal"], 
+    ["Isaac Benoit", "Isaac", "Benoit"], ["Adam Lemoine", "Adam", "Lemoine"], 
+    ["Adrien Blanc", "Adrien", "Blanc"], ["Samuel Garnier", "Samuel", "Garnier"], 
+    ["Benjamin Faure", "Benjamin", "Faure"], ["Maxime Reynaud", "Maxime", "Reynaud"], 
+    ["Remi Prevost", "Remi", "Prevost"], ["Vincent Lacroix", "Vincent", "Lacroix"], 
+    ["Pierre Marchal", "Pierre", "Marchal"]
 ];
 
-// Regroupement de tous les noms pour tirage aléatoire global si besoin, 
-// ou on pioche dans une liste globale et on déduit le visage.
-private _all_names = _names_african + _names_arab + _names_asian + _names_pacific + _names_standard;
+// Fonction locale pour appliquer l'identité à une unité
+// Cette fonction doit être exécutée localement sur la machine qui contrôle l'unité
+private _fnc_applyIdentity = {
+    params ["_unit", "_nameData", "_selectedFace", "_selectedSpeaker"];
+    
+    if (isNull _unit || !alive _unit) exitWith {};
+    
+    // Extraire les données du nom
+    _nameData params ["_fullName", "_firstName", "_lastName"];
+    
+    // Appliquer le visage (doit être fait avant setName)
+    _unit setFace _selectedFace;
+    
+    // Appliquer le nom - Format: [nom_complet, prénom, nom_famille]
+    // Le 3ème paramètre est le "nameSound" utilisé pour les voix radio
+    if !(_nameData isEqualTo []) then {
+        _unit setName [_fullName, _firstName, _lastName];
+    };
+    
+    // Appliquer la voix française
+    _unit setSpeaker _selectedSpeaker;
+    
+    // Forcer la mise à jour de l'identité
+    _unit setIdentity "";
+};
+
+// Fonction pour déterminer le type de visage et appliquer l'identité
+private _fnc_processUnit = {
+    params ["_unit", "_names_african", "_names_arab", "_names_asian", "_names_pacific", "_names_standard", "_fnc_applyIdentity"];
+    
+    // Créer la liste complète avec type d'ethnie
+    private _all_names_typed = [];
+    { _all_names_typed pushBack [_x, "Black"]; } forEach _names_african;
+    { _all_names_typed pushBack [_x, "Arab"]; } forEach _names_arab;
+    { _all_names_typed pushBack [_x, "Asian"]; } forEach _names_asian;
+    { _all_names_typed pushBack [_x, "Pacific"]; } forEach _names_pacific;
+    { _all_names_typed pushBack [_x, "White"]; } forEach _names_standard;
+    
+    // Sélectionner un nom aléatoire avec son type
+    private _selected = selectRandom _all_names_typed;
+    private _nameData = _selected select 0;
+    private _faceType = _selected select 1;
+    
+    // Sélectionner un visage spécifique selon l'ethnie
+    private _faces = [];
+    switch (_faceType) do {
+        case "Black": { 
+            _faces = ["AfricanHead_01","AfricanHead_02","AfricanHead_03"]; 
+        };
+        case "Arab": { 
+            _faces = ["PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03","GreekHead_A3_01","GreekHead_A3_02","GreekHead_A3_03","GreekHead_A3_04","GreekHead_A3_05","GreekHead_A3_06"]; 
+        };
+        case "Asian": {
+            _faces = ["AsianHead_A3_01","AsianHead_A3_02","AsianHead_A3_03"];
+        };
+        case "Pacific": {
+            _faces = ["TanoanHead_A3_01","TanoanHead_A3_02","TanoanHead_A3_03","TanoanHead_A3_04","TanoanHead_A3_05"];
+        };
+        default { // White
+            _faces = ["WhiteHead_01","WhiteHead_02","WhiteHead_03","WhiteHead_04","WhiteHead_05","WhiteHead_06","WhiteHead_07","WhiteHead_08","WhiteHead_09","WhiteHead_10","WhiteHead_11","WhiteHead_12","WhiteHead_13","WhiteHead_14","WhiteHead_15","WhiteHead_16","WhiteHead_17","WhiteHead_18","WhiteHead_19","WhiteHead_20","WhiteHead_21"];
+        };
+    };
+    
+    private _selectedFace = selectRandom _faces;
+    
+    // Sélectionner une voix française
+    private _speakers = ["Male01FRE", "Male02FRE", "Male03FRE"];
+    private _selectedSpeaker = selectRandom _speakers;
+    
+    // Appliquer l'identité sur toutes les machines
+    // On utilise remoteExecCall avec l'unité comme cible pour exécuter là où l'unité est locale
+    [[_unit, _nameData, _selectedFace, _selectedSpeaker], _fnc_applyIdentity] remoteExec ["call", 0, _unit];
+    
+    // Marquer l'unité comme traitée (synchronisé sur le réseau)
+    _unit setVariable ["MISSION_IdentitySet", true, true];
+    
+    // Stocker les infos d'identité pour référence
+    _unit setVariable ["MISSION_Identity", [_nameData select 0, _faceType, _selectedFace], true];
+    
+    // Debug (décommenter si besoin)
+    // diag_log format ["[IDENTITE] %1 -> %2 (%3) visage: %4", _unit, _nameData select 0, _faceType, _selectedFace];
+};
 
 // Boucle principale infinie
 while {true} do {
     
-    // On ne traite que les unités BLUFOR (WEST) qui sont locale ou gérées par le serveur si script server-side
-    // On itère sur allUnits pour trouver les BLUFOR
+    // On itère sur allUnits pour trouver les BLUFOR non traités
     {
         private _unit = _x;
         
-        // Vérifie si l'unité est BLUFOR, vivante, et n'a pas déjà été traitée
-        if (side _unit == west && alive _unit && !(_unit getVariable ["MISSION_IdentitySet", false])) then {
-            
-            // Choisir un nom aléatoire dans la liste globale qui n'a pas encore été attribué de préférence ?
-            // Pour simplifier ici on prend un random dans la liste globale.
-            private _name = selectRandom _all_names;
-            
-            // Déterminer le type de visage en fonction du nom choisi
-            private _faceType = "White"; // Default
-            
-            if (_name in _names_african) then { _faceType = "Black"; };
-            if (_name in _names_arab) then { _faceType = "Arab"; };
-            if (_name in _names_asian) then { _faceType = "Asian"; };
-            if (_name in _names_pacific) then { _faceType = "Pacific"; };
-
-            // Sélectionner un visage spécifique
-            // Arma 3 a des classes de visages : WhiteHead_01...21, AfricanHead_01...03, GreekHead_A3_01... (souvent utilisé pour arabe/méditerranéen), AsianHead_A3_01...
-            // Note: Il vaut mieux utiliser des listes de classes valides.
-            
-            private _faces = [];
-            switch (_faceType) do {
-                case "Black": { 
-                    _faces = ["AfricanHead_01","AfricanHead_02","AfricanHead_03","TanoanHead_A3_01","TanoanHead_A3_02","TanoanHead_A3_03","TanoanHead_A3_04","TanoanHead_A3_05","TanoanHead_A3_06","TanoanHead_A3_07","TanoanHead_A3_08"]; 
-                };
-                case "Arab": { 
-                    _faces = ["PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03","GreekHead_A3_01","GreekHead_A3_02","GreekHead_A3_03","GreekHead_A3_04","GreekHead_A3_05","GreekHead_A3_06","RunningManHead_01_F"]; 
-                };
-                case "Asian": {
-                    _faces = ["AsianHead_A3_01","AsianHead_A3_02","AsianHead_A3_03","AsianHead_A3_04","AsianHead_A3_05"];
-                    // Fallback si pas de mod: utiliser standard ou spécifique Tanoan parfois
-                };
-                case "Pacific": {
-                    _faces = ["TanoanHead_A3_01","TanoanHead_A3_02","TanoanHead_A3_03","TanoanHead_A3_04","TanoanHead_A3_05"];
-                };
-                default { // White
-                    _faces = ["WhiteHead_01","WhiteHead_02","WhiteHead_03","WhiteHead_04","WhiteHead_05","WhiteHead_06","WhiteHead_07","WhiteHead_08","WhiteHead_09","WhiteHead_10","WhiteHead_11","WhiteHead_12","WhiteHead_13","WhiteHead_14","WhiteHead_15","WhiteHead_16","WhiteHead_17","WhiteHead_18","WhiteHead_19","WhiteHead_20","WhiteHead_21"];
-                };
-            };
-            
-            private _selectedFace = selectRandom _faces;
-            
-            // Appliquer l'identité
-            [_unit, _selectedFace] remoteExec ["setFace", 0, true]; // Global
-            [_unit, _name] remoteExec ["setName", 0, true];     // Global
-            
-            // Appliquer la voix française
-            // Voix dispo Vanilla avec DLC ou Mods: Male01FRE, Male02FRE, Male03FRE (Contact DLC ou autre ?)
-            // Si pas de voix FRE dispo vanilla (souvent Male01ENG etc), on essaye quand même les classes standards si FR installé.
-            // On va utiliser Male01FRE, Male02FRE, Male03FRE qui sont standard si le jeu est en FR ou avec extension.
-            // Sinon fallback sur des voix anglaises si FR non dispo pour éviter le silence, mais user a demandé "Française uniquement".
-            
-            private _speakers = ["Male01FRE", "Male02FRE", "Male03FRE"];
-            private _selectedSpeaker = selectRandom _speakers;
-            
-            [_unit, _selectedSpeaker] remoteExec ["setSpeaker", 0, true]; 
-            
-            // Marquer l'unité comme traitée
-            _unit setVariable ["MISSION_IdentitySet", true, true];
-            
-            // Debug log
-            // diag_log format ["MISSION IDENTITE: %1 nommé %2 (%3) avec visage %4", _unit, _name, _faceType, _selectedFace];
-            // systemChat format ["Identité ajustée pour %1 (%2)", _name, _faceType];
+        // Vérifie si l'unité est BLUFOR, vivante et n'a pas déjà été traitée (Joueurs et IA)
+        if (
+            side _unit == west && 
+            alive _unit && 
+            !(_unit getVariable ["MISSION_IdentitySet", false])
+        ) then {
+            // Traiter l'unité
+            [_unit, _names_african, _names_arab, _names_asian, _names_pacific, _names_standard, _fnc_applyIdentity] call _fnc_processUnit;
         };
         
     } forEach allUnits;
     
-    // Attendre 60 secondes avant la prochaine vérification
-    uiSleep 10;
+    // Attendre 45 secondes avant la prochaine vérification
+    sleep 45;
 };

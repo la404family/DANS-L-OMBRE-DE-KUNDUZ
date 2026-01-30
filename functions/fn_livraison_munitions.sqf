@@ -97,6 +97,50 @@ private _originalMass = getMass _cargo;
 _cargo setMass 500; // Allègement pour transport
 _heli setSlingLoad _cargo;
 
+// --- REMPLISSAGE DYNAMIQUE DE LA CAISSE ---
+clearWeaponCargoGlobal _cargo;
+clearMagazineCargoGlobal _cargo;
+clearItemCargoGlobal _cargo;
+clearBackpackCargoGlobal _cargo;
+
+private _allWeapons = [];
+private _allMagazines = [];
+private _allItems = [];
+private _allBackpacks = [];
+
+// Analyser tous les BLUFOR
+{
+    if (side _x == west) then {
+        // Armes (Primaire, Secondaire, Poing)
+        if (primaryWeapon _x != "") then { _allWeapons pushBackUnique (primaryWeapon _x); };
+        if (secondaryWeapon _x != "") then { _allWeapons pushBackUnique (secondaryWeapon _x); };
+        if (handgunWeapon _x != "") then { _allWeapons pushBackUnique (handgunWeapon _x); };
+        
+        // Chargeurs
+        { _allMagazines pushBackUnique _x; } forEach (magazines _x);
+        
+        // Objets (Inventaire complet - Armes/Chargeurs déjà traités)
+        // On utilise items + assignedItems pour tout couvrir (Jumelles, GPS, NVG, Bandages...)
+        { _allItems pushBackUnique _x; } forEach (items _x);
+        { _allItems pushBackUnique _x; } forEach (assignedItems _x);
+        
+        // Sac à dos
+        if (backpack _x != "") then { _allBackpacks pushBackUnique (backpack _x); };
+        // Veste/Casque aussi ? (Le user a dit "équipement en mains et dans les sacs", on inclut armes/chargeurs/items/sacs)
+    };
+} forEach allUnits;
+
+// Remplir la caisse
+{ _cargo addWeaponCargoGlobal [_x, 2]; } forEach _allWeapons;
+{ _cargo addMagazineCargoGlobal [_x, 30]; } forEach _allMagazines;
+{ _cargo addItemCargoGlobal [_x, 10]; } forEach _allItems;
+{ _cargo addBackpackCargoGlobal [_x, 2]; } forEach _allBackpacks;
+
+// Ajout spécifique fumigènes pour signalisation (toujours utile)
+_cargo addMagazineCargoGlobal ["SmokeShell", 10];
+_cargo addMagazineCargoGlobal ["SmokeShellGreen", 10];
+// -------------------------------------------
+
 // Message radio global
 // (localize "STR_LIVRAISON_AMMO_INBOUND") remoteExec ["systemChat", 0];
 
