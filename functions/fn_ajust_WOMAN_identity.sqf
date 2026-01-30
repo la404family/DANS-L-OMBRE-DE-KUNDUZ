@@ -7,6 +7,8 @@
     VOIX : Farsi (Male01PER, Male02PER, Male03PER) avec Pitch 1.2 ou 1.4
     VISAGE : max_female1 à max_female17
     NOM : Un des 100 noms féminins
+    
+    PRIORITÉ ABSOLUE SUR fn_ajust_OTHER_identity.sqf
 */
 
 if (!isServer) exitWith {};
@@ -18,9 +20,8 @@ while {true} do {
     // Optimisation : Ne scanne que si des joueurs sont présents
     if (count _players > 0) then {
         
-        // Trouver toutes les entités civiles/ennemies dans un rayon de 550m autour de chaque joueur
+        // Trouver toutes les entités dans un rayon de 550m autour de chaque joueur
         private _unitsToProcess = [];
-        
         {
             private _p = _x;
             private _nearUnits = _p nearEntities ["Man", 550];
@@ -35,44 +36,44 @@ while {true} do {
         {
             private _unit = _x;
             
-            // Vérifier si l'identité a déjà été forcée
-            if (!(_unit getVariable ["Mission_var_identitySet", false])) then {
+            // Critères de détection: 1. Côté valide
+            if (side _unit in [civilian, east, independent] && alive _unit) then {
                 
                 private _uniform = toLower (uniform _unit);
-                private _name = toLower (name _unit); // Attention: name retourne le nom "ingame" pas le classname
-                private _unitNameVar = toLower (vehicleVarName _unit); // Nom de variable dans l'éditeur
-                private _strUnit = str _unit; // Représentation string pour debug ou check
+                private _name = toLower (name _unit); 
+                private _unitNameVar = toLower (vehicleVarName _unit);
                 
-                // Critères de détection:
-                // 1. Côté : Civil, OPFOR, Indépendant
-                if (side _unit in [civilian, east, independent]) then {
-                     
-                    // Critères de détection femme : 
-                    // 1. Uniforme contient "burqa" ou "dress"
-                    // 2. Nom de variable ou d'unité contient "woman"
-                    if (
-                        (_uniform find "burqa" > -1) || 
-                        (_uniform find "dress" > -1) || 
-                        (_uniform find "woman" > -1) || 
-                        (_unitNameVar find "woman" > -1) ||
-                        (["woman", _name] call BIS_fnc_inString) 
-                    ) then {
+                // --- DÉTECTION "EST UNE FEMME" ---
+                private _isVisuallyFemale = (
+                    (_uniform find "burqa" > -1) || 
+                    (_uniform find "dress" > -1) || 
+                    (_uniform find "woman" > -1)
+                );
+                
+                private _isNominallyFemale = (
+                    (_unitNameVar find "woman" > -1) ||
+                    (["woman", _name] call BIS_fnc_inString)
+                );
+                
+                // --- LOGIQUE DE PRIORITÉ ---
+                // Si c'est une femme (visuellement ou par nom), on FORCE l'identité
+                // Même si elle a déjà été traitée par l'autre script (Mission_var_identitySet déjà true)
+                
+                private _alreadySet = _unit getVariable ["Mission_var_identitySet", false];
+                private _isWomanIdentity = _unit getVariable ["Mission_var_isWoman", false];
+                
+                // Si c'est une femme, qu'elle n'ait pas encore été switchée en femme
+                // (On réapplique si _alreadySet est true MAIS que _isWomanIdentity est false = écrasé par erreur)
+                if ((_isVisuallyFemale || _isNominallyFemale) && (!_isWomanIdentity)) then {
                         
-                        // --- CHANGEMENT IDENTITE ---
-                    
                     // 1. Visage : max_female1 à max_female17
-                    // Générer un nombre aléatoire entre 1 et 17
                     private _faceIndex = floor (random 17) + 1; 
                     private _faceName = format ["max_female%1", _faceIndex];
-                    
-                    // Appliquer visage
                     [_unit, _faceName] remoteExec ["setFace", 0, _unit];
                     
                     // 2. Voix : Perse (Farsi) avec Pitch élevé
-                    // Arma 3 Vanilla Persian speakers: Male01PER, Male02PER, Male03PER
                     private _speakers = ["Male01PER", "Male02PER", "Male03PER"];
                     private _selectedSpeaker = selectRandom _speakers;
-                    
                     [_unit, _selectedSpeaker] remoteExec ["setSpeaker", 0, _unit];
                     
                     // 3. Pitch : 1.2 ou 1.4
@@ -107,25 +108,18 @@ while {true} do {
                     private _nameParts = _randomName splitString " ";
                     private _firstName = _nameParts select 0;
                     private _lastName = "";
-                    if (count _nameParts > 1) then {
-                         _lastName = _nameParts select 1;
-                    };
+                    if (count _nameParts > 1) then { _lastName = _nameParts select 1; };
                     
-                    // Appliquer le nom globalement
-                    // Syntax: unit setName [name, firstName, lastName]
                     [_unit, [_randomName, _firstName, _lastName]] remoteExec ["setName", 0, _unit];
 
-                    // Marquer comme traité
+                    // --- MARQUAGE ---
+                    // On note que c'est traité ET que c'est une femme
                     _unit setVariable ["Mission_var_identitySet", true, true];
-                    
-                    // Debug (Optionnel)
-                    // diag_log format ["WOMAN IDENTITY APPLIED: %1 | Face: %2 | Name: %3", _unit, _faceName, _randomName];
+                    _unit setVariable ["Mission_var_isWoman", true, true];
                 };
-             };
             };
         } forEach _unitsToProcess;
     };
     
-    // Attendre 45 secondes avant le prochain scan
-    sleep 45;
+    sleep 10; // Vérification plus fréquente (10s au lieu de 45s) pour attraper les spawns
 };

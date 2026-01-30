@@ -2,8 +2,8 @@
     Auteur: Kevin
     Nom: fn_ajust_OTHER_identity.sqf
     Description: Assigne une identité arabe (Visage + Voix Perse) aux OPFOR et Indépendants.
-    Vérifie toutes les 10 secondes pour les nouvelles unités.
-    S'applique UNIQUEMENT aux IA.
+    Vérifie toutes les 10 secondes.
+    S'applique UNIQUEMENT aux IA qui ne sont PAS des femmes.
 */
 
 // Liste des noms arabes
@@ -112,7 +112,6 @@ private _names_arab_full = [
 ];
 
 // Fonction locale pour appliquer l'identité à une unité
-// Fonction locale pour appliquer l'identité à une unité
 private _fnc_applyIdentity = {
     params ["_unit", "_nameData", "_selectedFace", "_selectedSpeaker", ["_clothingData", []]];
     
@@ -184,27 +183,36 @@ private _fnc_processUnit = {
     // Appliquer l'identité sur toutes les machines
     [[_unit, _selectedName, _selectedFace, _selectedSpeaker, _clothingData], _fnc_applyIdentity] remoteExec ["call", 0, _unit];
     
-    // Marquer l'unité comme traitée
-    _unit setVariable ["MISSION_IdentitySet", true, true];
+    // Marquer l'unité comme traitée avec la variable STANDARDISÉE
+    _unit setVariable ["Mission_var_identitySet", true, true];
 };
 
 // Boucle principale
 while {true} do {
     {
         private _unit = _x;
+        private _uniform = toLower (uniform _unit);
         
-        // Vérifie si l'unité est OPFOR (East), Indépendant (Resistance) ou CIVIL
-        // Vérifie si c'est une IA (!isPlayer) et pas encore traitée
+        // --- FILTRE "PAS UNE FEMME" ---
+        // On vérifie que ce n'est PAS une femme visuellement
         if (
-            (side _unit == east || side _unit == resistance || side _unit == civilian) && 
-            alive _unit && 
-            !isPlayer _unit &&
-            !(_unit getVariable ["MISSION_IdentitySet", false])
+            (_uniform find "burqa" == -1) && 
+            (_uniform find "dress" == -1) && 
+            (_uniform find "woman" == -1)
         ) then {
-            [_unit, _names_arab_full, _fnc_applyIdentity] call _fnc_processUnit;
+            
+            // Vérifie si l'unité est OPFOR, Indépendant ou CIVIL, IA, et pas traitée
+            if (
+                (side _unit == east || side _unit == resistance || side _unit == civilian) && 
+                alive _unit && 
+                !isPlayer _unit &&
+                !(_unit getVariable ["Mission_var_identitySet", false])
+            ) then {
+                [_unit, _names_arab_full, _fnc_applyIdentity] call _fnc_processUnit;
+            };
         };
         
     } forEach allUnits;
     
-    sleep 45;
+    sleep 10;
 };

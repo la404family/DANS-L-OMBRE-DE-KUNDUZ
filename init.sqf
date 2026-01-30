@@ -50,7 +50,7 @@ if (isServer) then {
     // Modif Identité OPFOR / IND / CIV
     [] spawn Mission_fnc_ajust_OTHER_identity;
     
-    // Modif Identité FEMME (Burqa/Dress)
+    // Modif Identité et voix FEMME (Burqa/Dress)
     [] spawn Mission_fnc_ajust_WOMAN_identity;
 
 
@@ -75,9 +75,10 @@ if (hasInterface) then {
     waitUntil {!isNull player};
     
     // Ajouter les options au menu Support (0-8)
-    [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
-    [player, "AmmoDrop"] call BIS_fnc_addCommMenuItem;
-    [player, "CASDrop"] call BIS_fnc_addCommMenuItem;
+    // Désactivé ici car géré dynamiquement par fn_ajust_team_leader.sqf
+    // [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
+    // [player, "AmmoDrop"] call BIS_fnc_addCommMenuItem;
+    // [player, "CASDrop"] call BIS_fnc_addCommMenuItem;
     
     // Message de bienvenue (Optionnel)
     // systemChat "Support logistique disponible (Menu 0-8)";

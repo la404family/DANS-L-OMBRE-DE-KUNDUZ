@@ -203,5 +203,10 @@
             <French>PAX EMBARQUÉS : %1 / %2</French>
             <English>PAX BOARDED: %1 / %2</English>
         </Key>
+        <Key ID="STR_SUPPORT_COOLDOWN">
+            <Original>Support unavailable. Time remaining: %1 min</Original>
+            <French>APPUI INDISPONIBLE. DISPONIBLE DANS : %1 MINUTES</French>
+            <English>SUPPORT UNAVAILABLE. AVAILABLE IN: %1 MINUTES</English>
+        </Key>
     </Package>
 </Project>

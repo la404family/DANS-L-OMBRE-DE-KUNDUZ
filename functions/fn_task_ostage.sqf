@@ -82,6 +82,60 @@ _hostage disableAI "MOVE";
 _hostage switchMove "Acts_ExecutionVictim_Loop";
 _hostage setVariable ["isCaptive", true, true];
 
+// --- IDENTITE FORCÉE (Avoid default greek names) ---
+private _uniformH = toLower (uniform _hostage);
+if ((_uniformH find "burqa" > -1) || (_uniformH find "dress" > -1) || (_uniformH find "woman" > -1)) then {
+    // FEMME
+    private _faceIndex = floor (random 17) + 1; 
+    _hostage setFace format ["max_female%1", _faceIndex];
+    
+    private _speakers = ["Male01PER", "Male02PER", "Male03PER"];
+    _hostage setSpeaker (selectRandom _speakers);
+    _hostage setPitch (selectRandom [1.2, 1.4]);
+    
+    private _names = [
+        "Aadila Nouri", "Aaliyah Massoud", "Amani Rahimi", "Anahita Ratebzad", "Anisa Wahab",
+        "Arezoo Tanha", "Aryana Sayeed", "Asma Jahangir", "Atefa Mamanoor", "Aziza Siddiqui",
+        "Bahar Pars", "Banu Ghazanfar", "Baran Kosari", "Behnaz Jafari", "Benafsha Yaqoobi",
+        "Bibi Aisha", "Bushra Maneka", "Darya Safai", "Deana Uppal", "Delaram Karkhir",
+        "Donya Dadrasan", "Elaha Soroor", "Elham Shahin", "Faiza Darkhani", "Farah Pahlavi",
+        "Fariba Hachtroudi", "Farkhunda Zahra", "Fatima Bhutto", "Fawzia Koofi", "Fereshteh Kazemi",
+        "Forough Farrokhzad", "Freshta Karim", "Ghazal Sadat", "Golshifteh Farahani", "Googoosh Atashin",
+        "Habiba Sarabi", "Haifa Wehbe", "Hamida Barmaki", "Hania Amir", "Hasina Safi",
+        "Hawa Alam", "Hayat Mirshad", "Hediyeh Tehrani", "Hina Rabbani", "Homira Qaderi",
+        "Huda Kattan", "Jamila Afghani", "Kamila Sidiqi", "Kubra Khademi", "Laila Freivalds",
+        "Latifa Nabizada", "Leena Alam", "Leila Hatami", "Lina Ben Mhenni", "Mahbouba Seraj",
+        "Mahira Khan", "Malalai Joya", "Manal al-Sharif", "Mariam Ghani", "Marjane Satrapi",
+        "Maryam Monsef", "Massouda Jalal", "Meena Keshwar", "Mehrenegar Rostami", "Mina Mangal",
+        "Mitra Hajjar", "Mozhdah Jamalzadah", "Muniba Mazari", "Nadia Anjuman", "Nahid Persson",
+        "Nargis Fakhri", "Nasrin Sotoudeh", "Nelofer Pazira", "Niki Karimi", "Niloufar Ardalan",
+        "Noor Jehan", "Parvin Etesami", "Qamar Gul", "Rabea Balkhi", "Rahima Jami",
+        "Rola Ghani", "Roya Mahboob", "Saba Qamar", "Sahraa Karimi", "Sajal Aly",
+        "Samira Makhmalbaf", "Sanam Baloch", "Sarah Shahi", "Seeta Qasemi", "Shabana Azmi",
+        "Shaharzad Akbar", "Shirin Ebadi", "Shukria Barakzai", "Sima Samar", "Soheila Siddiq",
+        "Soraya Tarzi", "Tahmineh Milani", "Taraneh Alidoosti", "Yasmin Levy", "Zarifa Ghafari"
+    ];
+    
+    private _randomName = selectRandom _names;
+    private _nameParts = _randomName splitString " ";
+    private _firstName = _nameParts select 0;
+    private _lastName = "";
+    if (count _nameParts > 1) then { _lastName = _nameParts select 1; };
+    _hostage setName [_randomName, _firstName, _lastName];
+    
+    _hostage setVariable ["Mission_var_isWoman", true, true];
+    
+} else {
+    // HOMME (Arabe générique)
+    _hostage setFace (selectRandom ["PersianHead_A3_01","PersianHead_A3_02","PersianHead_A3_03","GreekHead_A3_01"]);
+    _hostage setSpeaker (selectRandom ["Male01PER", "Male02PER", "Male03PER"]);
+    // Le nom sera géré par fn_ajust_OTHER_identity s'il n'est pas set, mais on peut laisser par défaut ou mettre un Arabe ici si besoin.
+    // Pour l'instant on laisse le script global gérer l'homme, ou on force "Unknown"
+};
+
+// Marquer comme traité pour éviter que les boucles ne changent tout
+_hostage setVariable ["Mission_var_identitySet", true, true];
+
 // Action Holster
 [
     _hostage,
