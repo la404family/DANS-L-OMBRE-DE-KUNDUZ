@@ -61,7 +61,6 @@ CIVIL_CHANGE_fnc_convertToInsurgent = {
     _insurgent addWeapon "rhs_weap_akmn";
     _insurgent addPrimaryWeaponItem "rhs_30Rnd_762x39mm"; 
     _insurgent addPrimaryWeaponItem "rhs_acc_2dpZenit"; 
-    _insurgent enableGunLights "forceOn";
     
     for "_i" from 1 to 2 do {
         _insurgent addItemToBackpack "rhs_30Rnd_762x39mm";

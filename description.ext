@@ -73,6 +73,10 @@ class CfgFunctions
             class ajuste_badge {};
             // La fonction sera appelée: Mission_fnc_civilian_template
             class civilian_template {};
+            // La fonction sera appelée: Mission_fnc_task_ostage
+            class task_ostage {};
+            // La fonction sera appelée: Mission_fnc_ajust_OTHER_identity
+            class ajust_OTHER_identity {};
 		};
 	};
 };

@@ -112,10 +112,25 @@ private _names_arab_full = [
 ];
 
 // Fonction locale pour appliquer l'identité à une unité
+// Fonction locale pour appliquer l'identité à une unité
 private _fnc_applyIdentity = {
-    params ["_unit", "_nameData", "_selectedFace", "_selectedSpeaker"];
+    params ["_unit", "_nameData", "_selectedFace", "_selectedSpeaker", ["_clothingData", []]];
     
     if (isNull _unit || !alive _unit) exitWith {};
+    
+    // Appliquer l'habillage civil si disponible
+    if !(_clothingData isEqualTo []) then {
+        _clothingData params ["_uniform", "_facewear", "_headgear"];
+        
+        // On change l'uniforme (forceAddUniform conserve les items si possible)
+        if (_uniform != "") then { _unit forceAddUniform _uniform; };
+        
+        removeGoggles _unit;
+        if (_facewear != "") then { _unit addGoggles _facewear; };
+        
+        removeHeadgear _unit;
+        if (_headgear != "") then { _unit addHeadgear _headgear; };
+    };
     
     // Extraire les données du nom
     _nameData params ["_fullName", "_firstName", "_lastName"];
@@ -132,8 +147,12 @@ private _fnc_applyIdentity = {
     // Forcer la mise à jour de l'identité
     _unit setIdentity "";
     
-    // Retirer les lunettes/accessoires pour mieux voir le visage (optionnel, mais souvent mieux pour les insurgés)
-    // removeGoggles _unit; 
+    // Supprimer les Vision Nocturne (NVG)
+    private _nvg = hmd _unit;
+    if (_nvg != "") then {
+        _unit unlinkItem _nvg;
+        _unit removeItems _nvg;
+    };
 };
 
 // Fonction pour traiter l'unité
@@ -155,8 +174,15 @@ private _fnc_processUnit = {
     private _speakers = ["Male01PER", "Male02PER", "Male03PER"];
     private _selectedSpeaker = selectRandom _speakers;
     
+    // Sélectionner une tenue civile (si disponible)
+    private _clothingData = [];
+    private _templates = missionNamespace getVariable ["MISSION_var_CivilianTemplates", []];
+    if (count _templates > 0) then {
+        _clothingData = selectRandom _templates;
+    };
+    
     // Appliquer l'identité sur toutes les machines
-    [[_unit, _selectedName, _selectedFace, _selectedSpeaker], _fnc_applyIdentity] remoteExec ["call", 0, _unit];
+    [[_unit, _selectedName, _selectedFace, _selectedSpeaker, _clothingData], _fnc_applyIdentity] remoteExec ["call", 0, _unit];
     
     // Marquer l'unité comme traitée
     _unit setVariable ["MISSION_IdentitySet", true, true];
@@ -167,10 +193,10 @@ while {true} do {
     {
         private _unit = _x;
         
-        // Vérifie si l'unité est OPFOR (East) ou Indépendant (Resistance/Guerilla)
+        // Vérifie si l'unité est OPFOR (East), Indépendant (Resistance) ou CIVIL
         // Vérifie si c'est une IA (!isPlayer) et pas encore traitée
         if (
-            (side _unit == east || side _unit == resistance) && 
+            (side _unit == east || side _unit == resistance || side _unit == civilian) && 
             alive _unit && 
             !isPlayer _unit &&
             !(_unit getVariable ["MISSION_IdentitySet", false])

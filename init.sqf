@@ -27,7 +27,7 @@ if (isServer) then {
     call Mission_fnc_civilian_template;
 
     // Appel à l'introduction cinématique
-    [] spawn Mission_fnc_task_x_intro; 
+    //[] spawn Mission_fnc_task_x_intro; 
 
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;
@@ -46,6 +46,9 @@ if (isServer) then {
     
     // Modif Identité BLUFOR
     [] spawn Mission_fnc_ajust_BLUFOR_identity;
+    
+    // Modif Identité OPFOR / IND / CIV
+    [] spawn Mission_fnc_ajust_OTHER_identity;
 
     // Force badge France AMF
     [] spawn Mission_fnc_ajuste_badge;
@@ -57,6 +60,9 @@ if (isServer) then {
     // ------------------------------
     // Appel au changement de civil en insurgé
     // [] spawn Mission_fnc_task_insurg;
+
+    // Appel au sauvetage d'otage
+    [] spawn Mission_fnc_task_ostage;
 };
 
 // --- CLIENT (JOUEUR) UNIQUEMENT ---
