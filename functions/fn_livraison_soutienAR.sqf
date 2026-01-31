@@ -24,7 +24,6 @@ private _cooldownTime = 1200; // 20 minutes
 
 if (time < _lastUse + _cooldownTime) exitWith {
     private _remaining = ceil ((_lastUse + _cooldownTime - time) / 60);
-    hint format [localize "STR_SUPPORT_COOLDOWN", _remaining];
 };
 
 // Mise à jour du temps d'utilisation
@@ -40,8 +39,10 @@ private _loiterDuration = 120; // 2 minutes
 
 // Calcul du point de départ (direction aléatoire depuis la cible)
 private _dir = random 360;
-private _spawnPos = _targetPos getPos [_spawnDist, _dir];
-_spawnPos set [2, _flyHeight];
+// Calcul Manuel (Plus robuste que getPos)
+private _spawnPos = _targetPos vectorAdd [(_spawnDist * (sin _dir)), (_spawnDist * (cos _dir)), _flyHeight];
+// Assurer que c'est un Array de 3 nombres pour createVehicle
+if (count _spawnPos < 3) then { _spawnPos set [2, _flyHeight]; };
 
 // 1. SPAWN HÉLICOPTÈRE - directement en vol
 private _heli = objNull;
@@ -105,7 +106,15 @@ _group setSpeedMode "FULL";
 // PAS DE CARGO POUR LE CAS
 
 // Message radio global
-// ["CAS Inbound"] remoteExec ["systemChat", 0];
+// Audio de confirmation (Radio In -> Voice -> Radio Out)
+[] spawn {
+    "Radio_In" remoteExec ["playSound", 0];
+    sleep 0.2;
+    private _snd = selectRandom ["soutien01", "soutien02", "soutien03", "soutien04"];
+    _snd remoteExec ["playSound", 0];
+    sleep 2.5; // Temps moyen pour la phrase
+    "Radio_Out" remoteExec ["playSound", 0];
+};
 
 // 3. BOUCLE DE GESTION
 [_heli, _targetPos, _group, _crew, _spawnPos, _loiterHeight, _loiterRadius, _loiterDuration] spawn {

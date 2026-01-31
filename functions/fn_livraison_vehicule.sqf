@@ -24,7 +24,6 @@ private _cooldownTime = 1200; // 20 minutes
 
 if (time < _lastUse + _cooldownTime) exitWith {
     private _remaining = ceil ((_lastUse + _cooldownTime - time) / 60);
-    hint format [localize "STR_SUPPORT_COOLDOWN", _remaining];
 };
 
 // Mise à jour du temps d'utilisation
@@ -39,8 +38,10 @@ private _hoverHeight = 10; // Hauteur de hover pour largage (assez haut pour sta
 
 // Calcul du point de départ (direction aléatoire depuis la cible)
 private _dir = random 360;
-private _spawnPos = _targetPos getPos [_spawnDist, _dir];
-_spawnPos set [2, _flyHeight];
+// Calcul Manuel (Plus robuste que getPos)
+private _spawnPos = _targetPos vectorAdd [(_spawnDist * (sin _dir)), (_spawnDist * (cos _dir)), _flyHeight];
+// Assurer que c'est un Array de 3 nombres pour createVehicle
+if (count _spawnPos < 3) then { _spawnPos set [2, _flyHeight]; };
 
 // 1. SPAWN HÉLICOPTÈRE - directement en vol
 private _heli = objNull;
@@ -110,6 +111,16 @@ _cargo allowDamage false;
 private _originalMass = getMass _cargo;
 _cargo setMass 800; // Allègement pour transport
 _heli setSlingLoad _cargo;
+
+// Audio de confirmation (Radio In -> Voice -> Radio Out)
+[] spawn {
+    "Radio_In" remoteExec ["playSound", 0];
+    sleep 0.2;
+    private _snd = selectRandom ["livraison01", "livraison02", "livraison03", "livraison04", "livraison05", "livraison06", "livraison07", "livraison08", "livraison09"];
+    _snd remoteExec ["playSound", 0];
+    sleep 2.5; // Temps moyen pour la phrase
+    "Radio_Out" remoteExec ["playSound", 0];
+};
 
 // Message radio global
 // (localize "STR_LIVRAISON_INBOUND") remoteExec ["systemChat", 0];

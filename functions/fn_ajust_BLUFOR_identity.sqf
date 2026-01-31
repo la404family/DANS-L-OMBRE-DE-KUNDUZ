@@ -3,22 +3,25 @@
     Description: Système d'identité dynamique pour les unités BLUFOR.
     
     [ANALYSE & LOGIQUE]
-    Ce script assure la cohérence des identités (Nom, Visage, Voix) en multijoueur.
+    Ce script assure la cohérence des identités BLUFOR en multijoueur.
     
-    1. PROBLÉMATIQUE MULTIJOUEUR :
-       - Les commandes `setName`, `setSpeaker` et `setIdentity` ont un effet LOCAL.
-       - Si le serveur change le nom d'une unité, les joueurs ne le voient pas forcément mis à jour.
-       - Il faut donc exécuter ces commandes sur TOUTES les machines (Clients + Serveur + JIP).
-    
-    2. STRATÉGIE (Calcul Centralisé -> Application Globale) :
-       - Le script (si exécuté sur le serveur) détecte les nouvelles unités.
-       - Il choisit ALÉATOIREMENT mais UNE SEULE FOIS l'identité (Nom + Visage).
-       - Il envoie ensuite ces données précises à TOUT LE MONDE via `remoteExec`.
-       - Cela garantit que tous les joueurs voient le MEME visage et le MEME nom pour une unité donnée.
+    1. SYNCHRONISATION MULTIJOUEUR (remoteExec) :
+       - Les commandes `setName`, `setFace`, `setSpeaker` et `setPitch` sont LOCALES.
+       - Le serveur choisit l'identité pour tout le monde et l'envoie via `remoteExec`.
+       - JIP : Les joueurs connectés en cours de partie reçoivent aussi l'info (Target: 0, JIP: _unit).
        
-    3. GESTION DES ETHNIES :
-       - Le script associe des visages spécifiques (White, African, Asian, etc.) en fonction de l'origine du nom.
-       - Cela évite d'avoir un "Moussa Diop" avec un visage de type caucasien.
+    2. NOMS UNIQUES :
+       - Le script utilise une variable globale `MISSION_UsedNames` pour stocker les noms attribués.
+       - Si un nom est déjà pris, il est retiré de la liste de tirage.
+       - Si tous les noms sont épuisés, la liste est réinitialisée pour éviter les erreurs.
+       
+    3. COHÉRENCE ETHNIQUE & VOCALE :
+       - Le Visage est choisi en fonction de l'origine du nom (Ex: Nom Africain -> Visage Africain).
+       - La Voix est strictement liée à l'ethnie :
+         * White -> Male01FRE
+         * Black -> Male02FRE
+         * Autres -> Male03FRE
+       - Chaque unité reçoit une variation de Pitch (Tonalité) unique (0.90 - 1.10) pour diversifier les voix.
 */
 
 // --- 1. BASES DE DONNÉES DES NOMS ---
