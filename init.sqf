@@ -3,7 +3,7 @@
 // Nom de la mission : Operation PAMIR - Dans l'ombre de Kunduz
 // player_0 à player_4 sont les unités joueur ou jouables
 // waypoint_invisible_000 à waypoint_invisible_340 sont des road_invisible CUP_A1_Road_road_invisible pour déterminer le lieu des missions.
-// civil_template_00  à civil_template_28 sont des civils dans l'éditeur qui servent de templates pour les civils
+// civil_template_00  à civil_template_33 sont des civils dans l'éditeur qui servent de templates pour les civils
 // ezan_00 à ezan_09 sont des haut parleur de type : Loudspeaker
 // waypoint_livraison_000 à waypoint_livraison_127 sont des waypoints pour déterminer des points où l'hélicoptère peut atterir en sécurité
 
@@ -20,24 +20,25 @@ if (isServer) then {
         ["model_player", "", "", "", "", getUnitLoadout _p] 
     ];
 
-    // Appel à la prière des ezan
-    [] spawn Mission_fnc_ezan;
+
+    // Force badge France AMF
+    [] spawn Mission_fnc_ajuste_badge;
 
     // Mémorisation des gabarits civils (Templates civil_template_XX)
     call Mission_fnc_civilian_template;
 
     // Appel à l'introduction cinématique
     [] spawn Mission_fnc_task_intro; 
-
+    
+    // Appel à la prière des ezan
+    [] spawn Mission_fnc_ezan;
+    
     // Appel à la fonction de spawn des véhicules
     [] spawn Mission_fnc_spawn_vehicles;
     
     // Appel à la gestion des compétences IA
     [] spawn Mission_fnc_ajust_AI_skills;
-    
-    // Appel à la logique civile
-    [] spawn Mission_fnc_civilian_logique;
-    
+
     // Gestion automatique du Team Leader (IA -> Joueur)
     [] spawn Mission_fnc_ajust_team_leader;
     
@@ -47,8 +48,7 @@ if (isServer) then {
     // Modif Identité BLUFOR
     [] spawn Mission_fnc_ajust_BLUFOR_identity;
 
-    // Force badge France AMF
-    [] spawn Mission_fnc_ajuste_badge;
+    
 
     // Appel à la livraison de véhicule (TEST SERVEUR UNIQUEMENT - A COMMENTER EN PROD)
     // [getPos _p] spawn Mission_fnc_livraison_vehicule;
@@ -56,10 +56,10 @@ if (isServer) then {
     // --- TACHES DE LA MISSION ---
     // ------------------------------
     // Appel au changement de civil en insurgé
-    // [] spawn Mission_fnc_task_insurg;
+    [] spawn Mission_fnc_task_insurg;
 
     // Appel au sauvetage d'otage
-    [] spawn Mission_fnc_task_ostage;
+    //[] spawn Mission_fnc_task_ostage;
 };
 
 // --- CLIENT (JOUEUR) UNIQUEMENT ---

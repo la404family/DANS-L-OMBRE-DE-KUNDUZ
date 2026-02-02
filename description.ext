@@ -52,9 +52,6 @@ class CfgFunctions
             class spawn_vehicles {};
             // La fonction sera appelée: Mission_fnc_ajust_AI_skills
             class ajust_AI_skills {};
-            // La fonction sera appelée: Mission_fnc_civilian_logique
-            // La fonction sera appelée: Mission_fnc_civilian_logique
-            class civilian_logique {};
             // La fonction sera appelée: Mission_fnc_livraison_vehicule
             class livraison_vehicule {};
             // La fonction sera appelée: Mission_fnc_livraison_munitions
@@ -77,10 +74,9 @@ class CfgFunctions
             class task_ostage {};
             // La fonction sera appelée: Mission_fnc_ajust_OTHER_identity
             class ajust_OTHER_identity {};
-            // La fonction sera appelée: Mission_fnc_apply_civilian_profile
-            class apply_civilian_profile {};
             // La fonction sera appelée: Mission_fnc_ajust_WOMAN_identity
             class ajust_WOMAN_identity {};
+
 		};
 	};
 };

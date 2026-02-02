@@ -25,6 +25,11 @@ for "_i" from 0 to 33 do {
     private _unit = missionNamespace getVariable [_varName, objNull];
     
     if (!isNull _unit) then {
+        // Nettoyage inventaire (Garder tenues/chapeaux, supprimer contenu/armes)
+        removeAllWeapons _unit;
+        removeAllItems _unit;
+        removeAllAssignedItems _unit;
+
         // Extraction des données
         private _type = typeOf _unit;
         private _loadout = getUnitLoadout _unit;
