@@ -32,7 +32,6 @@ private _fnc_gerer_officier = {
         params ["_unit"];
         if !(_unit getVariable ["Mission_Panic", false]) then {
             _unit setVariable ["Mission_Panic", true];
-            _unit doMove (getPos _unit); 
         };
     }];
 
@@ -70,6 +69,7 @@ private _fnc_gerer_officier = {
         for "_k" from 1 to 180 do {
             sleep 1;
             if (!alive _unit) exitWith {};
+            if (_unit getVariable ["Mission_Panic", false]) exitWith {}; 
             if (!isNull _watchTarget) then { _unit doWatch _watchTarget; };
             if (animationState _unit != "HubSittingChairC_idle1") then { _unit switchMove "HubSittingChairC_idle1"; };
         };
@@ -120,5 +120,5 @@ sleep 5;
 
 [
     officier_1, chaise_officier_1, missionNamespace getVariable ["ordinateur_1", objNull], 
-    officier_0, _waypoints, 180 // Modification : Rotation de 180 degrés pour officier_1
+    officier_0, _waypoints, 180  
 ] spawn _fnc_gerer_officier;

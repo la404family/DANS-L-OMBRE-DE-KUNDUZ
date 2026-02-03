@@ -34,5 +34,8 @@ if (isServer) then {
 if (hasInterface) then {
     waitUntil {!isNull player};
     [] spawn Mission_fnc_spawn_vehicles_cam;
+    ["INIT"] spawn Mission_fnc_spawn_arsenal;
+    ["INIT"] spawn Mission_fnc_spawn_weather_and_time;
+    ["INIT"] spawn Mission_fnc_spawn_brothers_in_arms;
 };
 ["INIT"] spawn Mission_fnc_livraison_gestion;

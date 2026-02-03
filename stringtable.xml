@@ -38,6 +38,11 @@
             <French>Accéder au Parc Véhicules</French>
             <English>Access Vehicle Park</English>
         </Key>
+        <Key ID="STR_ACTION_ARSENAL">
+            <Original>Arsenal</Original>
+            <French>Accéder à l&apos;Armurerie</French>
+            <English>Access Arsenal</English>
+        </Key>
         <Key ID="STR_ERR_NO_VEHICLE_SELECTED">
             <Original>No vehicle selected</Original>
             <French>Aucun vecteur sélectionné.</French>
@@ -60,13 +65,13 @@
         </Key>
         <Key ID="STR_HEADER_AMF">
             <Original>--- AMF VEHICLES ---</Original>
-            <French>--- VECTEURS AMF ---</French>
-            <English>--- AMF VEHICLES ---</English>
+            <French>--- UNITÉS AMF ---</French>
+            <English>--- AMF UNITS ---</English>
         </Key>
         <Key ID="STR_HEADER_OTHER">
             <Original>--- OTHER VEHICLES ---</Original>
-            <French>--- AUTRES VECTEURS ---</French>
-            <English>--- OTHER VEHICLES ---</English>
+            <French>--- AUTRES UNITÉS ---</French>
+            <English>--- OTHER UNITS ---</English>
         </Key>
         <Key ID="STR_ERR_INVALID_SELECTION">
             <Original>Invalid selection</Original>
@@ -147,6 +152,120 @@
             <Original>Pax ready: %1 / %2</Original>
             <French>PAX EMBARQUÉS : %1 / %2</French>
             <English>PAX BOARDED: %1 / %2</English>
+        </Key>
+    </Package>&lt;/Package&gt;
+    <Package name="WeatherSystem">
+        <Key ID="STR_ACTION_WEATHER">
+            <Original>Weather Control</Original>
+            <French>Météo et Heure</French>
+            <English>Weather and Time</English>
+        </Key>
+        <Key ID="STR_WEATHER_TITLE">
+            <Original>WEATHER CONTROL</Original>
+            <French>MÉTÉO ET HEURE</French>
+            <English>WEATHER AND TIME</English>
+        </Key>
+        <Key ID="STR_LABEL_TIME">
+            <Original>Time</Original>
+            <French>Heure</French>
+            <English>Time</English>
+        </Key>
+        <Key ID="STR_LABEL_CLOUDS">
+            <Original>Cloud Cover</Original>
+            <French>Couverture Nuageuse</French>
+            <English>Cloud Cover</English>
+        </Key>
+        <Key ID="STR_LABEL_FOG">
+            <Original>Fog</Original>
+            <French>Brouillard</French>
+            <English>Fog</English>
+        </Key>
+        <Key ID="STR_BTN_APPLY">
+            <Original>APPLY</Original>
+            <French>APPLIQUER</French>
+            <English>APPLY</English>
+        </Key>
+    </Package>&lt;/Package&gt;
+    <Package name="RecruitmentSystem">
+        <Key ID="STR_ADD_BROTHER">
+            <Original>Recruit brothers in arms</Original>
+            <French>Recruter des frères d&apos;armes</French>
+            <English>Recruit brothers in arms</English>
+        </Key>
+        <Key ID="STR_ZONE_RESERVED">
+            <Original>RECRUIT AREA. CLEAR OUT!</Original>
+            <French>ZONE RÉSERVÉE AUX RECRUES. DÉGAGEZ !</French>
+            <English>RECRUIT AREA. CLEAR OUT!</English>
+        </Key>
+        <Key ID="STR_BROTHERS_LIKE_ME">
+            <Original>A soldier like me!</Original>
+            <French>Un soldat comme moi !</French>
+            <English>A soldier like me!</English>
+        </Key>
+        <Key ID="STR_MAX_UNITS_REACHED">
+            <Original>Squad full!</Original>
+            <French>Section au complet !</French>
+            <English>Squad full!</English>
+        </Key>
+        <Key ID="STR_NO_UNITS_SELECTED">
+            <Original>No unit selected.</Original>
+            <French>Aucune unité sélectionnée.</French>
+            <English>No unit selected.</English>
+        </Key>
+        <Key ID="STR_SPAWNING_UNITS">
+            <Original>Inbound %1 reinforcements...</Original>
+            <French>Arrivée de %1 renforts...</French>
+            <English>Inbound %1 reinforcements...</English>
+        </Key>
+        <Key ID="STR_UNIT_JOINED">
+            <Original>%1 joined your squad.</Original>
+            <French>%1 a rejoint votre section.</French>
+            <English>%1 joined your squad.</English>
+        </Key>
+        <Key ID="STR_ALL_UNITS_SPAWNED">
+            <Original>%1 reinforcements arrived.</Original>
+            <French>%1 renforts arrivés.</French>
+            <English>%1 reinforcements arrived.</English>
+        </Key>
+        <Key ID="STR_AI_RESET_COUNT">
+            <Original>%1 units dismissed.</Original>
+            <French>%1 unités renvoyées.</French>
+            <English>%1 units dismissed.</English>
+        </Key>
+        <Key ID="STR_AI_RESET_NONE">
+            <Original>No AI to dismiss.</Original>
+            <French>Aucune IA à renvoyer.</French>
+            <English>No AI to dismiss.</English>
+        </Key>
+        <Key ID="STR_RECRUIT_TITLE">
+            <Original>RECRUITMENT CENTER</Original>
+            <French>CENTRE DE RECRUTEMENT</French>
+            <English>RECRUITMENT CENTER</English>
+        </Key>
+        <Key ID="STR_SELECTED_UNITS">
+            <Original>Selected units</Original>
+            <French>Unités sélectionnées</French>
+            <English>Selected units</English>
+        </Key>
+        <Key ID="STR_AVAILABLE_UNITS">
+            <Original>Available units</Original>
+            <French>Unités disponibles</French>
+            <English>Available units</English>
+        </Key>
+        <Key ID="STR_BTN_ADD">
+            <Original>ADD</Original>
+            <French>AJOUTER</French>
+            <English>ADD</English>
+        </Key>
+        <Key ID="STR_BTN_VALIDATE">
+            <Original>CONFIRM</Original>
+            <French>CONFIRMER</French>
+            <English>CONFIRM</English>
+        </Key>
+        <Key ID="STR_BTN_RESET">
+            <Original>DISMISS ALL</Original>
+            <French>RENVOYER TOUS</French>
+            <English>DISMISS ALL</English>
         </Key>
     </Package>
 </Project>

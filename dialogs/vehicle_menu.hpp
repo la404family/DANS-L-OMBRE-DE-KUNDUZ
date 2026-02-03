@@ -68,3 +68,107 @@ class Refour_Vehicle_Dialog
         };
     };
 };
+
+class Refour_Weather_Time_Dialog
+{
+    idd = 9999;
+    movingEnable = false;
+    enableSimulation = true;
+    class controlsBackground
+    {
+        class MainBackground: RscText
+        {
+            idc = -1;
+            x = 0.25 * safezoneW + safezoneX;
+            y = 0.25 * safezoneH + safezoneY;
+            w = 0.50 * safezoneW;
+            h = 0.50 * safezoneH;
+            colorBackground[] = {0,0,0,0.7};
+        };
+        class Title: RscText
+        {
+            idc = -1;
+            text = "$STR_WEATHER_TITLE";
+            x = 0.25 * safezoneW + safezoneX;
+            y = 0.25 * safezoneH + safezoneY;
+            w = 0.50 * safezoneW;
+            h = 0.04 * safezoneH;
+            colorBackground[] = {0,0.5,0.8,1};
+            style = ST_CENTER;
+        };
+        class LabelTime: RscText
+        {
+            idc = -1;
+            text = "$STR_LABEL_TIME";
+            x = 0.27 * safezoneW + safezoneX;
+            y = 0.32 * safezoneH + safezoneY;
+            w = 0.15 * safezoneW;
+            h = 0.04 * safezoneH;
+        };
+        class LabelClouds: RscText
+        {
+            idc = -1;
+            text = "$STR_LABEL_CLOUDS";
+            x = 0.27 * safezoneW + safezoneX;
+            y = 0.42 * safezoneH + safezoneY;
+            w = 0.15 * safezoneW;
+            h = 0.04 * safezoneH;
+        };
+        class LabelFog: RscText
+        {
+            idc = -1;
+            text = "$STR_LABEL_FOG";
+            x = 0.27 * safezoneW + safezoneX;
+            y = 0.52 * safezoneH + safezoneY;
+            w = 0.15 * safezoneW;
+            h = 0.04 * safezoneH;
+        };
+    };
+    class controls
+    {
+        class ComboTime: RscCombo
+        {
+            idc = 2100;
+            x = 0.45 * safezoneW + safezoneX;
+            y = 0.32 * safezoneH + safezoneY;
+            w = 0.25 * safezoneW;
+            h = 0.04 * safezoneH;
+        };
+        class ComboClouds: RscCombo
+        {
+            idc = 2101;
+            x = 0.45 * safezoneW + safezoneX;
+            y = 0.42 * safezoneH + safezoneY;
+            w = 0.25 * safezoneW;
+            h = 0.04 * safezoneH;
+        };
+        class ComboFog: RscCombo
+        {
+            idc = 2102;
+            x = 0.45 * safezoneW + safezoneX;
+            y = 0.52 * safezoneH + safezoneY;
+            w = 0.25 * safezoneW;
+            h = 0.04 * safezoneH;
+        };
+        class ButtonApply: RscButton
+        {
+            idc = 2600;
+            text = "$STR_BTN_APPLY";
+            x = 0.30 * safezoneW + safezoneX;
+            y = 0.65 * safezoneH + safezoneY;
+            w = 0.15 * safezoneW;
+            h = 0.04 * safezoneH;
+            action = "['APPLY'] call MISSION_fnc_spawn_weather_and_time;";
+        };
+        class ButtonClose: RscButton
+        {
+            idc = -1;
+            text = "$STR_CLOSE";
+            x = 0.55 * safezoneW + safezoneX;
+            y = 0.65 * safezoneH + safezoneY;
+            w = 0.15 * safezoneW;
+            h = 0.04 * safezoneH;
+            action = "closeDialog 0;";
+        };
+    };
+};

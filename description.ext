@@ -48,6 +48,9 @@ class CfgFunctions
             class ajust_WOMAN_identity {};
             class livraison_gestion {};
             class officier_balade {};
+            class spawn_arsenal {};
+            class spawn_weather_and_time {};
+            class spawn_brothers_in_arms {};
 		};
 	};
 };
@@ -219,3 +222,4 @@ class CfgMusic
 };
 #include "dialogs\defines.hpp"
 #include "dialogs\vehicle_menu.hpp"
+#include "dialogs\recruit_menu.hpp"
