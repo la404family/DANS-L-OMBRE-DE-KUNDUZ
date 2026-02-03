@@ -143,61 +143,6 @@
             <French>Zone Soutien Aérien</French>
             <English>Air Support Zone</English>
         </Key>
-        <Key ID="STR_TASK_INSURG_TITLE">
-            <Original>Neutralize Insurgents</Original>
-            <French>NEUTRALISER CELLULE INSURGÉE</French>
-            <English>NEUTRALIZE INSURGENT CELL</English>
-        </Key>
-        <Key ID="STR_TASK_INSURG_DESC">
-            <Original>Intelligence reports armed insurgents disguised as civilians. Eliminate them.</Original>
-            <French>Une bande d&apos;insurgés a connaissance de nos positions, détecté par nos vecteurs aériens. La forte imbrication civile interdit tout appui feu lourd. Les informations tactiques sont relayées sur carte et mises à jour fréquemment. Interceptez et neutralisez la menace.</French>
-            <English>Insurgents are aware of our positions, detected by aerial vectors. Heavy civilian presence prevents heavy fire support. Tactical info is updated frequently on the map. Intercept and neutralize the threat.</English>
-        </Key>
-        <Key ID="STR_TASK_EVAC_TITLE">
-            <Original>Extraction</Original>
-            <French>ORDRE DE RELÈVE / EXFILTRATION</French>
-            <English>EXTRACTION ORDER</English>
-        </Key>
-        <Key ID="STR_TASK_EVAC_DESC">
-            <Original>Mission complete. Proceed to extraction point.</Original>
-            <French>Objectifs principaux validés. Une équipe de relève est en route pour sécuriser le secteur. Rejoignez la zone d&apos;atterrissage pour exfiltration immédiate par vecteur aérien.</French>
-            <English>Primary objectives completed. Relief team inbound. Proceed to LZ for immediate aerial extraction.</English>
-        </Key>
-        <Key ID="STR_TASK_OSTAGE_TITLE">
-            <Original>Hostage Rescue</Original>
-            <French>SÉCURISATION HVT</French>
-            <English>HVT SECURITY</English>
-        </Key>
-        <Key ID="STR_TASK_OSTAGE_DESC">
-            <Original>A civilian hostage is held in the marked area. Locate, free, and escort to extraction.</Original>
-            <French>Un ressortissant prioritaire est retenu en zone hostile. Localisez le HVT, procédez à sa libération et assurez son exfiltration par vecteur aérien.</French>
-            <English>A high value target is held in the marked area. Locate, secure, and escort to extraction vector.</English>
-        </Key>
-        <Key ID="STR_TASK_OSTAGE_MARKER">
-            <Original>Search Zone</Original>
-            <French>ZONE DE RECHERCHE</French>
-            <English>SEARCH ZONE</English>
-        </Key>
-        <Key ID="STR_ACTION_FREE_HOSTAGE">
-            <Original>Free Hostage</Original>
-            <French>SÉCURISER LE HVT</French>
-            <English>SECURE HVT</English>
-        </Key>
-        <Key ID="STR_HINT_EXTRACTION_INCOMING">
-            <Original>Extraction incoming</Original>
-            <French>PC à toutes les unités : Vecteur d&apos;extraction en approche sur LZ. Marquez la zone.</French>
-            <English>HQ to all units: Extraction vector inbound on LZ. Mark the zone.</English>
-        </Key>
-        <Key ID="STR_HINT_EXTRACTION_TAKEOFF">
-            <Original>Extraction taking off</Original>
-            <French>PC à toutes les unités : Colis récupéré. Extraction en cours. Fin de mission.</French>
-            <English>HQ to all units: Package secured. Extraction underway. End of mission.</English>
-        </Key>
-        <Key ID="STR_MARKER_EXTRACTION">
-            <Original>Extraction Zone</Original>
-            <French>LZ EXTRACTION</French>
-            <English>LZ EXTRACTION</English>
-        </Key>
         <Key ID="STR_EVAC_PLAYER_COUNT">
             <Original>Pax ready: %1 / %2</Original>
             <French>PAX EMBARQUÉS : %1 / %2</French>

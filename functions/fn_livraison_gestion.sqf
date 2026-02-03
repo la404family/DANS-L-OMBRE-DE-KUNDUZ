@@ -34,18 +34,12 @@ if (_mode == "INIT") exitWith {
                 };
                 if (_idVeh == -1 && {missionNamespace getVariable ["MISSION_Unlock_Vehicle", false]}) then {
                     _idVeh = [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
-                    systemChat localize "STR_LIVRAISON_VEHICLE_AVAILABLE";  
-                    if (isNil "STR_LIVRAISON_VEHICLE_AVAILABLE") then { systemChat "Radio : Livraison Véhicule DISPONIBLE."; };
                 };
                 if (_idAmmo == -1 && {missionNamespace getVariable ["MISSION_Unlock_Ammo", false]}) then {
                     _idAmmo = [player, "AmmoDrop"] call BIS_fnc_addCommMenuItem;
-                     systemChat localize "STR_LIVRAISON_AMMO_AVAILABLE";
-                     if (isNil "STR_LIVRAISON_AMMO_AVAILABLE") then { systemChat "Radio : Largage Munitions DISPONIBLE."; };
                 };
                 if (_idCAS == -1 && {missionNamespace getVariable ["MISSION_Unlock_CAS", false]}) then {
                     _idCAS = [player, "CASDrop"] call BIS_fnc_addCommMenuItem;
-                    systemChat localize "STR_LIVRAISON_CAS_AVAILABLE";
-                    if (isNil "STR_LIVRAISON_CAS_AVAILABLE") then { systemChat "Radio : Soutien Aérien (CAS) DISPONIBLE."; };
                 };
                 sleep 5;
             };

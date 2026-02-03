@@ -37,14 +37,12 @@ class CfgFunctions
             class livraison_vehicule {};
             class livraison_munitions {};
             class livraison_soutienAR {};
-            class task_insurg {};
             class ajust_team_leader {};
             class ajust_BLUFOR_identity {};
             class task_fin {};
             class ajuste_badge {};
             class civilian_template {};
             class civilian_presence_logic {};
-            class task_ostage {};
             class ajust_OTHER_identity {};
             class ajust_WOMAN_identity {};
             class livraison_gestion {};
@@ -209,7 +207,12 @@ class CfgMusic
     class intro_00
     {
         name = "Intro";
-        sound[] = {"music\intro.ogg", db+10, 1.0};
+        sound[] = {"music\intro.ogg", db+15, 1.0};
+    };
+    class outro_00
+    {
+        name = "Outro";
+        sound[] = {"music\outro.ogg", db+15, 1.0};
     };
 };
 #include "dialogs\defines.hpp"

@@ -1,6 +1,6 @@
 if (!isServer) exitWith {};
 diag_log "[FIN_MISSION] === Démarrage du système de fin de mission ===";
-private _delayBeforeMessage = 2100 + floor(random 600); 
+private _delayBeforeMessage = 2 + floor(random 6); 
 private _heliClass = "amf_nh90_tth_transport"; 
 private _flyTime = 120;  
 private _heliFinObj = missionNamespace getVariable ["heli_fin", objNull];
@@ -60,28 +60,92 @@ diag_log format ["[FIN_MISSION] Extraction dans %1 secondes", _delayBeforeMessag
     _heli setDir (_heliSpawnPos getDir _landingPos);
     _heli flyInHeight 100;
     _heli setFuel 1;
-    createVehicleCrew _heli;
-    private _group = group driver _heli;
-    private _crew = crew _heli;
+    // Récupération du loadout de la classe demandée
+    private _targetClass = "B_AMF_UBAS_DA_SUA_HK416";
+    private _targetConfig = configFile >> "CfgVehicles" >> _targetClass;
+    
+    // Si la classe n'existe pas (mod absent ?), on garde le défaut. Sinon on applique.
+    if (isClass _targetConfig) then {
+        {
+            _x setCaptive true;       
+            _x allowDamage false;
+            
+            // Protection contre le script civil
+            _x setVariable ["MISSION_TemplateApplied", true, true];
+
+            // Application du loadout complet de l'unité demandée
+            _x setUnitLoadout (getUnitLoadout _targetClass);
+            
+            // Optionnel : Si on veut quand même le casque pilote (car l'unité demandée est un soldat)
+            // removeHeadgear _x;
+            // _x addHeadgear "H_PilotHelmetHeli_B"; 
+
+        } forEach _crew;
+    } else {
+        diag_log format ["[FIN_MISSION] Erreur : Classe %1 introuvable pour l'équipement équipage.", _targetClass];
+    };
     _group setBehaviour "CARELESS";
     _group setCombatMode "RED";
-    {
-        _x setCaptive true;       
-        _x allowDamage false;     
-    } forEach _crew;
     _heli allowDamage false;      
+    // --- Système d'Atterrissage Expert Optimisé ---
+    
+    // Création d'un héliport invisible pour guider l'IA
+    private _helipad = createVehicle ["Land_HelipadEmpty_F", _landingPos, [], 0, "CAN_COLLIDE"];
+    _helipad setPos _landingPos; 
+
+    // Configuration IA pour ignorer toute distraction
+    _heli disableAI "AUTOTARGET"; 
+    _heli disableAI "TARGET";
+    _heli disableAI "SUPPRESSION";
+    _group setBehaviour "CARELESS";
+    _group setCombatMode "BLUE"; // Ne jamais tirer, focus total navigation
+
+    // 1. Approche Rapide
     _heli doMove _landingPos;
-    waitUntil { sleep 1; (_heli distance2D _landingPos) < 300 || !alive _heli };
-    _heli flyInHeight 0;
-    _heli land "GET IN";
-    waitUntil { sleep 1; (_heli distance2D _landingPos) < 50 };
-    _heli setFuel 0; 
-    private _landTimeout = 0;
-    waitUntil { 
-        sleep 1; 
-        _landTimeout = _landTimeout + 1;
-        ((getPos _heli select 2) < 2) || _landTimeout > 90 
+    _heli flyInHeight 100;
+    
+    waitUntil { sleep 1; (_heli distance2D _landingPos) < 250 || !alive _heli };
+    if (!alive _heli) exitWith {};
+
+    // 2. Commande d'atterrissage
+    _heli doMove _landingPos;
+    _heli flyInHeight 0; // "Autorisation" de descendre au sol
+    _heli land "GET IN"; 
+    
+    // 3. Boucle de vérification et descente assistée
+    private _timerAbort = time + 180; // 3 minutes max
+    
+    waitUntil {
+        sleep 0.5;
+        
+        // Si l'IA hésite (altitude > 1m + vitesse de descente insuffisante), on force légèrement
+        if ((getPos _heli select 2) > 1 && {(velocity _heli select 2) > -0.5}) then {
+            // On applique une force descendante douce (-2 m/s)
+            _heli setVelocity [velocity _heli select 0, velocity _heli select 1, -2];
+        };
+        
+        // Si vraiment trop haut après un moment, on repète l'ordre
+        if ((getPos _heli select 2) > 10 && {time % 5 == 0}) then {
+            _heli land "GET IN";
+            _heli flyInHeight 0;
+        };
+
+        // Condition de sortie : Touché le sol ou timeout ou mort
+        isTouchingGround _heli || time > _timerAbort || !alive _heli
     };
+
+    // 4. Stabilisation au sol
+    if (alive _heli) then {
+        _heli setVelocity [0,0,0]; 
+        _heli setFuel 0; // Coupure moteur pour éviter le redécollage accidentel
+    };
+
+    // Nettoyage
+    deleteVehicle _helipad;
+
+    // Attente arrêt complet rotors (optionnel mais plus propre)
+    sleep 3;
+    
     doStop _heli;
     _heli setVehicleLock "UNLOCKED"; 
     _heli animateSource ["Ramp", 1];
@@ -110,7 +174,7 @@ diag_log format ["[FIN_MISSION] Extraction dans %1 secondes", _delayBeforeMessag
         };
     } forEach allPlayers;
     _heli land "NONE";
-    ["intro_00"] remoteExec ["playMusic", 0];  
+    ["outro_00"] remoteExec ["playMusic", 0];  
     _heli animateSource ["door_rear_source", 0];
     _heli animateDoor ["door_rear_source", 0];
     _heli animateDoor ["ramp", 0];

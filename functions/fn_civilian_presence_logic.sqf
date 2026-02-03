@@ -328,6 +328,8 @@ MISSION_fnc_applyCivilianTemplate = {
     if (isNull _agent) exitWith {};
     if (!alive _agent) exitWith {};
     if (isPlayer _agent) exitWith {};
+    // Modification suite demande : Tout le monde a le template SAUF les BLUFOR
+    if (side _agent == west) exitWith {}; 
     if (_agent getVariable ["MISSION_TemplateApplied", false]) exitWith {};
     _agent setVariable ["MISSION_TemplateApplied", true, true];
     private _template = selectRandom MISSION_CivilianTemplates;
