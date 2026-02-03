@@ -3,7 +3,6 @@ class Refour_Vehicle_Dialog
     idd = 8888;
     movingEnable = false;
     enableSimulation = true;
-
     class controlsBackground
     {
         class MainBackground: RscText
@@ -27,7 +26,6 @@ class Refour_Vehicle_Dialog
             style = ST_CENTER;
         };
     };
-
     class controls
     {
         class UnitList: RscListBox
@@ -38,7 +36,6 @@ class Refour_Vehicle_Dialog
             w = 0.68 * safezoneW;
             h = 0.42 * safezoneH;
         };
-        
         class ButtonRecruit: RscButton
         {
             idc = 5502;
@@ -49,7 +46,6 @@ class Refour_Vehicle_Dialog
             h = 0.04 * safezoneH;
             action = "['SPAWN'] call MISSION_fnc_spawn_vehicles;";
         };
-
         class ButtonDelete: RscButton
         {
             idc = 5503;
@@ -60,7 +56,6 @@ class Refour_Vehicle_Dialog
             h = 0.04 * safezoneH;
             action = "['DELETE'] call MISSION_fnc_spawn_vehicles;";
         };
-
         class ButtonClose: RscButton
         {
             idc = -1;

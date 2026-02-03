@@ -1,16 +1,4 @@
-/*
-    fn_civilian_presence_logic.sqf
-    Description:
-    Système optimisé (Event-Driven) pour l'application des templates civils ET des identités (Noms).
-    Version Stable - Sans Debug - Données Uniformisées
-*/
-
 if (!isServer) exitWith {};
-
-// -------------------------------------------------------------------------------------
-// DATABASE NOMS (Format Uniformisé : [Complet, Prénom, Nom])
-// -------------------------------------------------------------------------------------
-
 MISSION_CivilianNames_Male = [
     ["Afaq Khan", "Afaq", "Khan"],
     ["Akhtar Durrani", "Akhtar", "Durrani"],
@@ -158,7 +146,6 @@ MISSION_CivilianNames_Male = [
     ["Zayn Malik", "Zayn", "Malik"],
     ["Zia Massoud", "Zia", "Massoud"]
 ];
-
 MISSION_CivilianNames_Female = [
     ["Aadila Nouri", "Aadila", "Nouri"],
     ["Aaliyah Massoud", "Aaliyah", "Massoud"],
@@ -335,81 +322,41 @@ MISSION_CivilianNames_Female = [
     ["Zarifa Ghafari", "Zarifa", "Ghafari"],
     ["Zohra Karimi", "Zohra", "Karimi"]
 ];
-
-// 1. Attendre les templates
 waitUntil { !isNil "MISSION_CivilianTemplates" && {count MISSION_CivilianTemplates > 0} };
-
-// -------------------------------------------------------------------------------------
-// FONCTION D'APPLICATION (Cœur du système)
-// -------------------------------------------------------------------------------------
 MISSION_fnc_applyCivilianTemplate = {
     params ["_agent"];
-    
-    // Vérifications de base stricts
     if (isNull _agent) exitWith {};
     if (!alive _agent) exitWith {};
     if (isPlayer _agent) exitWith {};
-    
-    // Eviter de traiter deux fois
     if (_agent getVariable ["MISSION_TemplateApplied", false]) exitWith {};
-    
-    // Marquer immédiatement comme traité
     _agent setVariable ["MISSION_TemplateApplied", true, true];
-
-    // Sélection template
     private _template = selectRandom MISSION_CivilianTemplates;
     _template params ["_type", "_loadout", "_face", "_isFemale", "_pitch"];
-    
-    // Application Physique
     [_agent, _face] remoteExec ["setFace", 0, true];
     _agent setUnitLoadout _loadout;
     [_agent, _pitch] remoteExec ["setPitch", 0, true];
-    
-    // Application Identité (Nom)
-    // Structure UNIFIÉE donc plus besoin de parsing complexe ou conditons
     private _namesDB = if (_isFemale) then {MISSION_CivilianNames_Female} else {MISSION_CivilianNames_Male};
-    private _selectedIdentity = selectRandom _namesDB; // Format: [Full, First, Last]
-    
-    // Application globale du nom
-    // On passe uniquement le "Full Name" (index 0) pour garantir la compatibilité
+    private _selectedIdentity = selectRandom _namesDB;  
     [_agent, (_selectedIdentity select 0)] remoteExec ["setName", 0, true];
 };
-
-// -------------------------------------------------------------------------------------
-// PHASE 1 : SCAN INITIAL
-// -------------------------------------------------------------------------------------
 private _existingAgents = agents select { 
     alive _x && 
     {_x isKindOf "CAManBase"} && 
     {!isPlayer _x} 
 };
-
 {
     [_x] call MISSION_fnc_applyCivilianTemplate;
 } forEach _existingAgents;
-
-
-// -------------------------------------------------------------------------------------
-// PHASE 2 : EVENT HANDLER
-// -------------------------------------------------------------------------------------
 addMissionEventHandler ["EntityCreated", {
     params ["_entity"];
-    
-    // Filtre ultra-rapide
     if (isNull _entity) exitWith {};
     if !(_entity isKindOf "CAManBase") exitWith {};
-    
-    // Thread safe
     [_entity] spawn {
         params ["_entity"];
         sleep 1;
-        
-        // Vérifications finales
         if (isNull _entity) exitWith {};
         if (!alive _entity) exitWith {};
         if (isPlayer _entity) exitWith {};
-        
-        // Go
         [_entity] call MISSION_fnc_applyCivilianTemplate;
     };
 }];
