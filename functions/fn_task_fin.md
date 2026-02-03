@@ -12,9 +12,9 @@
 |----------|--------|-------------|
 | `_delayBeforeMessage` | 2-7s (random) | Délai avant lancement extraction |
 | `_heliClass` | `amf_nh90_tth_transport` | Classe hélicoptère NH90 AMF |
-| `_flyTime` | 120s | Durée vol de sortie avant fin mission |
+| `_flyTime` | 100s | Durée vol de sortie avant fin mission |
 | `_descentRate` | -3.0 m/s | Vitesse descente forcée |
-| `_checkInterval` | 20s | Intervalle vérification joueurs embarqués |
+| `_checkInterval` | 10s | Intervalle vérification joueurs embarqués |
 
 ---
 

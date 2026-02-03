@@ -2,7 +2,7 @@ if (!isServer) exitWith {};
 diag_log "[FIN_MISSION] === Démarrage du système de fin de mission ===";
 private _delayBeforeMessage = 2 + floor(random 6); 
 private _heliClass = "amf_nh90_tth_transport"; 
-private _flyTime = 120;  
+private _flyTime = 100;  
 private _heliFinObj = missionNamespace getVariable ["heli_fin", objNull];
 private _landingPos = [0, 0, 0];
 if (!isNull _heliFinObj) then {
@@ -300,9 +300,9 @@ diag_log format ["[FIN_MISSION] Extraction dans %1 secondes", _delayBeforeMessag
     
     // =========================================================================
     // SYSTÈME DE COMPTAGE JOUEURS OPTIMISÉ
-    // Vérifie toutes les 20s : joueurs connectés, vivants, embarqués
+    // Vérifie toutes les 10s : joueurs connectés, vivants, embarqués
     // =========================================================================
-    private _checkInterval = 20;
+    private _checkInterval = 10;
     private _allPlayersInHeli = false;
     private _lastCheck = time - _checkInterval; // Force première vérification immédiate
     
