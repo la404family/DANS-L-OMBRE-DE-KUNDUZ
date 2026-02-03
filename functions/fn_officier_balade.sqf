@@ -50,7 +50,18 @@ private _fnc_gerer_officier = {
         _unit setVariable ["Mission_Panic", false]; 
         _unit setSpeedMode "LIMITED"; 
         _unit disableAI "MOVE"; 
-        _unit setPos (getPos _chair);
+        private _sitPos = getPosATL _chair;
+        if (_unit == officier_0) then {
+            private _forwardVec = vectorDir _chair vectorMultiply -0.2;
+            _sitPos = _sitPos vectorAdd _forwardVec;
+            _sitPos set [2, (_sitPos select 2)];
+        };
+        if (_unit == officier_1) then {
+            private _forwardVec = vectorDir _chair vectorMultiply -0.2;
+            _sitPos = _sitPos vectorAdd _forwardVec;
+            _sitPos set [2, (_sitPos select 2)]; 
+        };
+        _unit setPosATL _sitPos;
         _unit setDir (getDir _chair + _sitOffset);
         _unit switchMove "HubSittingChairC_idle1";
         
@@ -109,5 +120,5 @@ sleep 5;
 
 [
     officier_1, chaise_officier_1, missionNamespace getVariable ["ordinateur_1", objNull], 
-    officier_0, _waypoints, 0
+    officier_0, _waypoints, 180 // Modification : Rotation de 180 degrés pour officier_1
 ] spawn _fnc_gerer_officier;

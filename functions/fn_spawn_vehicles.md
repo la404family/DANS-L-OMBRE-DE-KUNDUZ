@@ -11,7 +11,7 @@ Le script fonctionne selon quatre modes passés en premier paramètre (`_mode`) 
 Ce mode configure l'accès au garage pour le joueur.
 *   **Vérification Client** : S'assure que le script s'exécute avec une interface client.
 *   **Ajout Action** : Ajoute une action molette ("Garage") au joueur.
-    *   Condition d'affichage : Le joueur doit être dans la zone définie par le déclencheur `vehicles_request`.
+    *   Condition d'affichage : Le joueur doit être dans la zone définie par le déclencheur `vehicles_request_2`.
     *   Effet : Appelle la fonction avec le mode `"OPEN_UI"`.
 
 ### 2. Mode "OPEN_UI" (Ouverture Interface)
@@ -33,10 +33,10 @@ Ce mode construit et affiche la liste des véhicules disponibles.
 Ce mode est déclenché par le bouton "Valider" de l'interface.
 *   **Vérification Sélection** : Assure qu'un véhicule valide est sélectionné (pas un en-tête ou vide).
 *   **Nettoyage Zone** :
-    *   Vérifie la présence du déclencheur `vehicles_request`.
+    *   Vérifie la présence du déclencheur `vehicles_request_2`.
     *   Supprime tous les véhicules (`Car`) déjà présents dans cette zone pour éviter les collisions.
 *   **Positionnement** :
-    *   Cherche l'objet logique `vehicles_spawner` pour déterminer la position et l'orientation précises.
+    *   Cherche l'objet logique `vehicles_spawner_1` pour déterminer la position et l'orientation précises.
     *   En cas d'absence (debug), utilise une position relative à 10m devant le joueur.
 *   **Création** :
     *   Ferme l'interface.
@@ -46,6 +46,6 @@ Ce mode est déclenché par le bouton "Valider" de l'interface.
 
 ### 4. Mode "DELETE" (Suppression)
 Ce mode permet de ranger/supprimer les véhicules.
-*   **Zone de Suppression** : Utilise le déclencheur `vehicles_request` pour identifier la zone.
+*   **Zone de Suppression** : Utilise le déclencheur `vehicles_request_2` pour identifier la zone.
 *   **Action** : Supprime tous les véhicules de type `"Car"` situés à l'intérieur de cette zone.
 *   **Feedback** : Affiche le nombre de véhicules supprimés ou un message d'erreur si le déclencheur est introuvable.

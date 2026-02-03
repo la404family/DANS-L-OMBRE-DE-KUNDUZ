@@ -17,7 +17,7 @@ switch (_mode) do {
             true, 
             true, 
             "",
-            "player inArea vehicles_request"  
+            "player inArea vehicles_request_2"  
         ];
     };
     case "OPEN_UI": {
@@ -113,8 +113,8 @@ switch (_mode) do {
         closeDialog 1;
         [_classname, _displayName] spawn {
             params ["_classname", "_displayName"];
-            if (!isNil "vehicles_request" && {!isNull vehicles_request}) then {
-                private _vehiclesInArea = entities [["Car"], [], false, false] select {_x inArea vehicles_request};
+            if (!isNil "vehicles_request_2" && {!isNull vehicles_request_2}) then {
+                private _vehiclesInArea = entities [["Car"], [], false, false] select {_x inArea vehicles_request_2};
                 if (count _vehiclesInArea > 0) then {
                     {
                         deleteVehicle _x;
@@ -124,9 +124,9 @@ switch (_mode) do {
             };
             private _spawnPos = [];
             private _spawnDir = 0;
-            if (!isNil "vehicles_spawner" && {!isNull vehicles_spawner}) then {
-                _spawnPos = getPosATL vehicles_spawner;
-                _spawnDir = getDir vehicles_spawner;
+            if (!isNil "vehicles_spawner_1" && {!isNull vehicles_spawner_1}) then {
+                _spawnPos = getPosATL vehicles_spawner_1;
+                _spawnDir = getDir vehicles_spawner_1;
                 _spawnPos = [_spawnPos select 0, _spawnPos select 1, (_spawnPos select 2) + 0.1];
             } else {
                 systemChat (localize "STR_DEBUG_NO_SPAWNER");
@@ -142,15 +142,15 @@ switch (_mode) do {
     };
     case "DELETE": {
         private _deletedCount = 0;
-        if (!isNil "vehicles_request" && {!isNull vehicles_request}) then {
-            private _vehiclesInArea = entities [["Car"], [], false, false] select {_x inArea vehicles_request};
+        if (!isNil "vehicles_request_2" && {!isNull vehicles_request_2}) then {
+            private _vehiclesInArea = entities [["Car"], [], false, false] select {_x inArea vehicles_request_2};
             {
                 deleteVehicle _x;
                 _deletedCount = _deletedCount + 1;
             } forEach _vehiclesInArea;
             hint format [localize "STR_VEHICLES_DELETED", _deletedCount];
         } else {
-            systemChat "DEBUG: vehicles_request trigger not found.";
+            systemChat "DEBUG: vehicles_request_2 trigger not found.";
         };
     };
 };

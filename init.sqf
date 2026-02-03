@@ -11,7 +11,7 @@
 // chaise_officier_0 est la chaise de officier_0
 // chaise_officier_1 est la chaise de officier_1
 // tableau_video est un tableau qui affiche la vidéo
-
+// camera_projecteur est un projecteur qui fait officie de caméra
 
 
 systemChat ">>> INIT MISSION START <<<";
@@ -33,5 +33,6 @@ if (isServer) then {
 };
 if (hasInterface) then {
     waitUntil {!isNull player};
+    [] spawn Mission_fnc_spawn_vehicles_cam;
 };
 ["INIT"] spawn Mission_fnc_livraison_gestion;

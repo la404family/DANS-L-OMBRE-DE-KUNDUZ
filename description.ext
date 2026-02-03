@@ -33,6 +33,7 @@ class CfgFunctions
 			class ezan {};
 			class task_intro {};
             class spawn_vehicles {};
+            class spawn_vehicles_cam {};
             class ajust_AI_skills {};
             class livraison_vehicule {};
             class livraison_munitions {};

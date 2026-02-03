@@ -8,10 +8,3 @@ Améliorer la disposition des lieux de mission
 Ajouter des éléments de présence civile
 Remplacer le Hint compteur de PAX par des audios.
 
-modifier la fonction fn_spawn_vehicles.sqf pour que le véhicule apparaisse a vehicles_spawner_1 et le menu s'affche à vehicles_request_2
-
-lorsque le joueur rentre dans le trigger : vehicles_request_2 et qu'il action le menu, le menu s'affiche et s'il choisi un véhicule, il s'affiche à vehicles_spawner_1
-
-il faut juste modifier deux variable
-
-Analyser le code et modifier les deux variables
