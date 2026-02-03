@@ -2,9 +2,7 @@ A partir du code et a partir du code uniquement ! A partir du code  creer un rea
 
 A faire :  
 
-Améliorer fn_task_fin
-Mettre la chaise de officier
-Améliorer la disposition des lieux de mission
-Ajouter des éléments de présence civile
-Remplacer le Hint compteur de PAX par des audios.
+
+Ajouter des éléments de présence civile,
+ajouter audio task_fin (vous pouvez rentrer une équipe... BLBELBELEB)
 

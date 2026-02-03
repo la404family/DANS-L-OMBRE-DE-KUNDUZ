@@ -51,12 +51,12 @@ private _fnc_gerer_officier = {
         _unit disableAI "MOVE"; 
         private _sitPos = getPosATL _chair;
         if (_unit == officier_0) then {
-            private _forwardVec = vectorDir _chair vectorMultiply -0.2;
+            private _forwardVec = vectorDir _chair vectorMultiply -0.3;
             _sitPos = _sitPos vectorAdd _forwardVec;
             _sitPos set [2, (_sitPos select 2)];
         };
         if (_unit == officier_1) then {
-            private _forwardVec = vectorDir _chair vectorMultiply -0.2;
+            private _forwardVec = vectorDir _chair vectorMultiply -0.3;
             _sitPos = _sitPos vectorAdd _forwardVec;
             _sitPos set [2, (_sitPos select 2)]; 
         };

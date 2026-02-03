@@ -10,7 +10,7 @@
 
 | Variable | Valeur | Description |
 |----------|--------|-------------|
-| `_delayBeforeMessage` | 2-7s (random) | Délai avant lancement extraction |
+| `_delayBeforeMessage` | 2100-700s (random) | Délai avant lancement extraction |
 | `_heliClass` | `amf_nh90_tth_transport` | Classe hélicoptère NH90 AMF |
 | `_flyTime` | 100s | Durée vol de sortie avant fin mission |
 | `_descentRate` | -3.0 m/s | Vitesse descente forcée |

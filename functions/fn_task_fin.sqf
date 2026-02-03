@@ -1,6 +1,6 @@
 if (!isServer) exitWith {};
 diag_log "[FIN_MISSION] === Démarrage du système de fin de mission ===";
-private _delayBeforeMessage = 2 + floor(random 6); 
+private _delayBeforeMessage = 2100 + floor(random 700); 
 private _heliClass = "amf_nh90_tth_transport"; 
 private _flyTime = 100;  
 private _heliFinObj = missionNamespace getVariable ["heli_fin", objNull];
