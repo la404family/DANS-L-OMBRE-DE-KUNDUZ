@@ -55,10 +55,22 @@ private _taskID = format ["task_hostage_%1", floor(random 99999)];
 
 // --- 3. SPAWN OTAGE (Avec nouveau système Civil) ---
 private _civGroup = createGroup [civilian, true];
-private _hostage = _civGroup createUnit ["C_man_polo_1_F", _posObjective, [], 0, "NONE"]; // Classe base
+private _hostage = _civGroup createUnit ["C_man_polo_1_F", [0,0,0], [], 0, "NONE"]; // Spawn safe
 
-// Application du Template & Nom (Méthode Unifiée)
+// FIX HAUTEUR (0.8m pour éviter le sol)
+_hostage setPosATL [(_posObjective select 0), (_posObjective select 1), 0.8]; 
+
+// Pause technique pour initialisation
+sleep 0.2;
+
+// Application Template & Nom
 [_hostage] call MISSION_fnc_applyCivilianTemplate;
+
+// SÉCURITÉ NOM (Si le template a échoué sur le nom)
+if (name _hostage == "Error: No unit" || name _hostage == "Panas Papadopoulo") then {
+     private _backupName = selectRandom MISSION_CivilianNames_Male;
+     [_hostage, (_backupName select 0)] remoteExec ["setName", 0, true];
+};[_hostage] call MISSION_fnc_applyCivilianTemplate;
 
 // Override Spécifique Otage (Captif)
 _hostage setCaptive true;

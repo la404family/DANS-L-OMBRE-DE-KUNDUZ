@@ -371,8 +371,8 @@ MISSION_fnc_applyCivilianTemplate = {
     private _selectedIdentity = selectRandom _namesDB; // Format: [Full, First, Last]
     
     // Application globale du nom
-    // Note: Utilisation de "true" pour le JIP afin que les joueurs qui rejoignent voient aussi le nom
-    [_agent, _selectedIdentity] remoteExec ["setName", 0, true];
+    // On passe uniquement le "Full Name" (index 0) pour garantir la compatibilité
+    [_agent, (_selectedIdentity select 0)] remoteExec ["setName", 0, true];
 };
 
 // -------------------------------------------------------------------------------------
