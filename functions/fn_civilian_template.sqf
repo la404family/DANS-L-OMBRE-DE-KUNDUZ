@@ -12,6 +12,7 @@
 
 if (!isServer) exitWith {};
 
+systemChat "[TEMPLATE] Script demarré...";
 diag_log "[TEMPLATE] === Démarrage mémorisation des templates civils ===";
 
 // Variable UNIFIÉE (partagée avec fn_civilian_logique et fn_apply_civilian_profile)
@@ -55,11 +56,18 @@ for "_i" from 0 to 33 do {
         if (_unit getVariable ["isWoman", false]) then {
             _isFemale = true;
         };
+
+        // --- CALCUL DU PITCH (VOIX) ---
+        // Demande utilisateur : si femme, pitch entre 1.2 et 1.4
+        private _pitch = 1.0;
+        if (_isFemale) then {
+            _pitch = 1.2 + (random 0.2); 
+        };
         
-        // Stockage au format unifié: [Type, Loadout, Face, isFemale]
-        MISSION_CivilianTemplates pushBack [_type, _loadout, _face, _isFemale];
+        // Stockage au format unifié: [Type, Loadout, Face, isFemale, Pitch]
+        MISSION_CivilianTemplates pushBack [_type, _loadout, _face, _isFemale, _pitch];
         
-        diag_log format ["[TEMPLATE] Saved: %1 | Type: %2 | Uniform: %3 | Female: %4", _varName, _type, _uniform, _isFemale];
+        diag_log format ["[TEMPLATE] Saved: %1 | Type: %2 | Female: %3 | Pitch: %4", _varName, _type, _isFemale, _pitch];
         
         // Nettoyage
         deleteVehicle _unit;
@@ -68,11 +76,13 @@ for "_i" from 0 to 33 do {
 
 // Fallback si aucun template trouvé
 if (count MISSION_CivilianTemplates == 0) then {
-    MISSION_CivilianTemplates = [["C_man_polo_1_F", [], "PersianHead_A3_01", false]];
+    MISSION_CivilianTemplates = [["C_man_polo_1_F", [], "PersianHead_A3_01", false, 1.0]];
     diag_log "[TEMPLATE] WARNING: No templates found, using fallback";
 };
 
 // Rendre la variable accessible partout (Clients + JIP)
 publicVariable "MISSION_CivilianTemplates";
 
-diag_log format ["[TEMPLATE] Terminé. %1 gabarits civils mémorisés.", count MISSION_CivilianTemplates];
+private _msg = format ["[TEMPLATE] Terminé. %1 gabarits civils mémorisés.", count MISSION_CivilianTemplates];
+diag_log _msg;
+systemChat _msg; // DEBUG VISUEL POUR L'UTILISATEUR

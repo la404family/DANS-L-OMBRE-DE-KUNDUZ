@@ -1,5 +1,8 @@
 if (!isServer) exitWith {};
 
+// --- SÉCURITÉ SYSTÈME CIVIL ---
+waitUntil { !isNil "MISSION_fnc_applyCivilianTemplate" };
+
 // --- CONFIGURATION ---
 CIVIL_CHANGE_MinDistance  = 500;    // Distance minimum du joueur pour être éligible
 CIVIL_CHANGE_RequiredCount = 2 + round(random 7);    // Nombre d'insurgés à créer (2 à 9)

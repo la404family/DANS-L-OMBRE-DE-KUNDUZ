@@ -1,4 +1,5 @@
 // EXPERT SQF arma3 -- code optimisé pour jeux multijoueurs et solo
+systemChat ">>> INIT MISSION START <<<";
 // MIssion arma 3 unités françaises et jargon militaire français
 // Nom de la mission : Operation PAMIR - Dans l'ombre de Kunduz
 // player_0 à player_4 sont les unités joueur ou jouables
@@ -14,11 +15,8 @@ if (isServer) then {
         ["task_x_helicoptere", "amf_nh90_tth_transport", "Huron Intro", 0, 0, []]
     ];
     
-    // Définir le modèle d'équipement basé sur le joueur actuel (ou player_0 si défini dans l'éditeur)
-    private _p = if (!isNil "player_0") then { player_0 } else { player };
-    MISSION_var_model_player = [
-        ["model_player", "", "", "", "", getUnitLoadout _p] 
-    ];
+    // Modèle d'équipement supprimé pour permettre les loadouts personnalisés de l'éditeur
+    // MISSION_var_model_player retiré
 
 
     // Force badge France AMF
@@ -26,9 +24,12 @@ if (isServer) then {
 
     // Mémorisation des gabarits civils (Templates civil_template_XX)
     call Mission_fnc_civilian_template;
+    
+    // Injection de la logique personnalisée dans les modules de présence
+    [] spawn Mission_fnc_civilian_presence_logic;
 
     // Appel à l'introduction cinématique
-    [] spawn Mission_fnc_task_intro; 
+    // [] spawn Mission_fnc_task_intro; 
     
     // Appel à la prière des ezan
     [] spawn Mission_fnc_ezan;
@@ -50,16 +51,17 @@ if (isServer) then {
 
     
 
-    // Appel à la livraison de véhicule (TEST SERVEUR UNIQUEMENT - A COMMENTER EN PROD)
-    // [getPos _p] spawn Mission_fnc_livraison_vehicule;
+    // Appel au gestionnaire de livraison (Server Side Init)
+    // Appel au gestionnaire de livraison (Server Side Init) -> DÉPLACÉ EN BAS
+    // ["INIT"] spawn Mission_fnc_livraison_gestion;
     // ------------------------------
     // --- TACHES DE LA MISSION ---
     // ------------------------------
     // Appel au changement de civil en insurgé
-    [] spawn Mission_fnc_task_insurg;
+    //[] spawn Mission_fnc_task_insurg;
 
     // Appel au sauvetage d'otage
-    //[] spawn Mission_fnc_task_ostage;
+    [] spawn Mission_fnc_task_ostage;
 };
 
 // --- CLIENT (JOUEUR) UNIQUEMENT ---
@@ -69,10 +71,14 @@ if (hasInterface) then {
     
     // Ajouter les options au menu Support (0-8)
     // Désactivé ici car géré dynamiquement par fn_ajust_team_leader.sqf
-    // [player, "VehicleDrop"] call BIS_fnc_addCommMenuItem;
-    // [player, "AmmoDrop"] call BIS_fnc_addCommMenuItem;
-    // [player, "CASDrop"] call BIS_fnc_addCommMenuItem;
+    // Options de support gérées par fn_livraison_gestion.sqf
+    // Initialisation Client Side
+    // Options de support gérées par fn_livraison_gestion.sqf
+    // Initialisation Client Side -> DÉPLACÉ EN BAS
+    // ["INIT"] spawn Mission_fnc_livraison_gestion;
     
     // Message de bienvenue (Optionnel)
     // systemChat "Support logistique disponible (Menu 0-8)";
 };
+// Appel UNIQUE au gestionnaire de livraison (Compatible Serveur/Client/Host)
+["INIT"] spawn Mission_fnc_livraison_gestion;

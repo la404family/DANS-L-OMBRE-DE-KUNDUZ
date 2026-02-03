@@ -524,9 +524,7 @@ if (isServer) then {
         waitUntil {!isNil "MISSION_var_helicopters" };   // Liste des hélicoptères disponibles
         diag_log "[INTRO] SERVER: MISSION_var_helicopters OK";
         
-        diag_log "[INTRO] SERVER: Attente MISSION_var_model_player...";
-        waitUntil {!isNil "MISSION_var_model_player" };   // Modèle du joueur (pour les équipements)
-        diag_log "[INTRO] SERVER: MISSION_var_model_player OK";
+        // MISSION_var_model_player retiré
 
         // ==============================================================================================
         // DÉMARRAGE IMMÉDIAT
@@ -589,13 +587,8 @@ if (isServer) then {
         private _crew = crew _heli;
         { _x allowDamage false; } forEach _crew;  // Équipage invulnérable
         
-        // Application de l'équipement du modèle joueur à l'équipage (pour cohérence visuelle)
-        private _modelPlayerData = [];
-        { if ((_x select 0) == "model_player") exitWith { _modelPlayerData = _x; }; } forEach MISSION_var_model_player;
-        
-        if (count _modelPlayerData > 0) then {
-            { _x setUnitLoadout (_modelPlayerData select 5); } forEach _crew;
-        };
+        // Application de l'équipement supprimée pour uniformité de l'équipage
+        // Si vous voulez un équipage standard, laissez-le par défaut ou définissez-le ici manuellement
         
         // Configuration du comportement du groupe hélico
         private _grpHeli = group driver _heli;
@@ -646,8 +639,8 @@ if (isServer) then {
         {
             private _unit = _x;
             
-            // Application de l'équipement si disponible
-            if (count _modelPlayerData > 0) then { _unit setUnitLoadout (_modelPlayerData select 5); };
+            // Application de l'équipement supprimée (Préservation du Loadout Editeur)
+            // if (count _modelPlayerData > 0) then { _unit setUnitLoadout (_modelPlayerData select 5); };
             
             // Placement dans l'hélicoptère (cargo en priorité)
             _unit moveInCargo _heli;
@@ -800,8 +793,25 @@ if (isServer) then {
         // ----------------------------------------------------------------------------------------------
         // DEPART DE L'HELICOPTERE
         // ----------------------------------------------------------------------------------------------
-        _heli land "NONE";  // Annuler l'ordre d'atterrissage
         
+        // SECURITE RENFORCEE : IGNORER LES JOUEURS
+        // Désactiver l'IA de combat/ciblage pour l'équipage
+        {
+            _x disableAI "TARGET";
+            _x disableAI "AUTOTARGET";
+            _x disableAI "SUPPRESSION";
+            _x disableAI "FSM"; // Désactiver l'intelligence de décision
+            _x setBehaviour "CARELESS"; // Comportement passif strict
+            _x allowDamage false;
+        } forEach _crew;
+
+        // Verrouillage total pour empêcher les joueurs de remonter
+        _heli lock true;
+        _heli setVehicleLock "LOCKED";
+        _heli setEffectiveCommander (driver _heli); // Forcer le pilote aux commandes
+
+        _heli land "NONE";  // Annuler l'ordre d'atterrissage
+         
         // Définir une position de sortie à 3km dans la direction d'origine
         private _exitPos = _destPos getPos [3000, _startDir];
         _heli doMove _exitPos;

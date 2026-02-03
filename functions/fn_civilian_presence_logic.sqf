@@ -1,0 +1,415 @@
+/*
+    fn_civilian_presence_logic.sqf
+    Description:
+    Système optimisé (Event-Driven) pour l'application des templates civils ET des identités (Noms).
+    Version Stable - Sans Debug - Données Uniformisées
+*/
+
+if (!isServer) exitWith {};
+
+// -------------------------------------------------------------------------------------
+// DATABASE NOMS (Format Uniformisé : [Complet, Prénom, Nom])
+// -------------------------------------------------------------------------------------
+
+MISSION_CivilianNames_Male = [
+    ["Afaq Khan", "Afaq", "Khan"],
+    ["Akhtar Durrani", "Akhtar", "Durrani"],
+    ["Anis Kakar", "Anis", "Kakar"],
+    ["Azad Mousavi", "Azad", "Mousavi"],
+    ["Faisal Karimi", "Faisal", "Karimi"],
+    ["Habib Noori", "Habib", "Noori"],
+    ["Jalil Hashemi", "Jalil", "Hashemi"],
+    ["Karim Jafari", "Karim", "Jafari"],
+    ["Omar Faizi", "Omar", "Faizi"],
+    ["Rashid Taheri", "Rashid", "Taheri"],
+    ["Abbas Alizadeh", "Abbas", "Alizadeh"],
+    ["Abdullah Wardak", "Abdullah", "Wardak"],
+    ["Adel Termos", "Adel", "Termos"],
+    ["Adnan Malik", "Adnan", "Malik"],
+    ["Ahmad Shah", "Ahmad", "Shah"],
+    ["Ali Rezaei", "Ali", "Rezaei"],
+    ["Amin Maalouf", "Amin", "Maalouf"],
+    ["Amir Hosseini", "Amir", "Hosseini"],
+    ["Amjad Sabri", "Amjad", "Sabri"],
+    ["Arash Kamali", "Arash", "Kamali"],
+    ["Arsalan Kazemi", "Arsalan", "Kazemi"],
+    ["Asadullah Khalid", "Asadullah", "Khalid"],
+    ["Ashraf Baradar", "Ashraf", "Baradar"],
+    ["Atiq Rahimi", "Atiq", "Rahimi"],
+    ["Ayman Odeh", "Ayman", "Odeh"],
+    ["Aziz Ansari", "Aziz", "Ansari"],
+    ["Babur Dostum", "Babur", "Dostum"],
+    ["Bahram Radan", "Bahram", "Radan"],
+    ["Baktash Siawash", "Baktash", "Siawash"],
+    ["Bashir Ahmad", "Bashir", "Ahmad"],
+    ["Bassam Tibi", "Bassam", "Tibi"],
+    ["Behrouz Vosooghi", "Behrouz", "Vosooghi"],
+    ["Bilal Mansour", "Bilal", "Mansour"],
+    ["Boulos Khoury", "Boulos", "Khoury"],
+    ["Cyrus Zarei", "Cyrus", "Zarei"],
+    ["Danish Karokhel", "Danish", "Karokhel"],
+    ["Dariush Eghbali", "Dariush", "Eghbali"],
+    ["Dawood Sarkhosh", "Dawood", "Sarkhosh"],
+    ["Ehsan Aman", "Ehsan", "Aman"],
+    ["Elias Yasin", "Elias", "Yasin"],
+    ["Emal Zakarya", "Emal", "Zakarya"],
+    ["Esmail Khoi", "Esmail", "Khoi"],
+    ["Fahim Dashty", "Fahim", "Dashty"],
+    ["Farhad Darya", "Farhad", "Darya"],
+    ["Farid Zaland", "Farid", "Zaland"],
+    ["Farzad Farzin", "Farzad", "Farzin"],
+    ["Fawad Ramiz", "Fawad", "Ramiz"],
+    ["Faysal Qureshi", "Faysal", "Qureshi"],
+    ["Fouad Ajami", "Fouad", "Ajami"],
+    ["Ghafoor Bakhsh", "Ghafoor", "Bakhsh"],
+    ["Ghassan Kanafani", "Ghassan", "Kanafani"],
+    ["Ghulam Haider", "Ghulam", "Haider"],
+    ["Gulbuddin Hekmatyar", "Gulbuddin", "Hekmatyar"],
+    ["Hafez Assad", "Hafez", "Assad"],
+    ["Hamid Karzai", "Hamid", "Karzai"],
+    ["Hamza Yusuf", "Hamza", "Yusuf"],
+    ["Haroon Yusufi", "Haroon", "Yusufi"],
+    ["Hassan Rouhani", "Hassan", "Rouhani"],
+    ["Hekmat Khalil", "Hekmat", "Khalil"],
+    ["Hesam Din", "Hesam", "Din"],
+    ["Homayoun Shajarian", "Homayoun", "Shajarian"],
+    ["Hossein Alizadeh", "Hossein", "Alizadeh"],
+    ["Ibrahim Maalouf", "Ibrahim", "Maalouf"],
+    ["Idris Sadiqi", "Idris", "Sadiqi"],
+    ["Ilyas Kashmiri", "Ilyas", "Kashmiri"],
+    ["Imran Khan", "Imran", "Khan"],
+    ["Ismael Jalal", "Ismael", "Jalal"],
+    ["Jabbar Patel", "Jabbar", "Patel"],
+    ["Jafar Panahi", "Jafar", "Panahi"],
+    ["Jalal Talabani", "Jalal", "Talabani"],
+    ["Jamal Khashoggi", "Jamal", "Khashoggi"],
+    ["Jamil Sadeqi", "Jamil", "Sadeqi"],
+    ["Javed Akhtar", "Javed", "Akhtar"],
+    ["Jawad Sharif", "Jawad", "Sharif"],
+    ["Kabir Bedi", "Kabir", "Bedi"],
+    ["Kamal Salibi", "Kamal", "Salibi"],
+    ["Kamran Hooman", "Kamran", "Hooman"],
+    ["Kasra Nouri", "Kasra", "Nouri"],
+    ["Kaveh Ahangar", "Kaveh", "Ahangar"],
+    ["Khalid Hosseini", "Khalid", "Hosseini"],
+    ["Khalil Zad", "Khalil", "Zad"],
+    ["Khosrow Shakibai", "Khosrow", "Shakibai"],
+    ["Kianoush Ayari", "Kianoush", "Ayari"],
+    ["Latif Pedram", "Latif", "Pedram"],
+    ["Mahdi Darius", "Mahdi", "Darius"],
+    ["Mahmood Khan", "Mahmood", "Khan"],
+    ["Majid Majidi", "Majid", "Majidi"],
+    ["Malek Jahan", "Malek", "Jahan"],
+    ["Mansour Bahrami", "Mansour", "Bahrami"],
+    ["Marwan Barghouti", "Marwan", "Barghouti"],
+    ["Masoud Shojaei", "Masoud", "Shojaei"],
+    ["Mehdi Mahdavikia", "Mehdi", "Mahdavikia"],
+    ["Mirwais Nejat", "Mirwais", "Nejat"],
+    ["Mohammad Reza", "Mohammad", "Reza"],
+    ["Mohsen Makhmalbaf", "Mohsen", "Makhmalbaf"],
+    ["Morteza Pashaei", "Morteza", "Pashaei"],
+    ["Munir Bashir", "Munir", "Bashir"],
+    ["Mustafa Sandal", "Mustafa", "Sandal"],
+    ["Nabil Shoail", "Nabil", "Shoail"],
+    ["Nader Shah", "Nader", "Shah"],
+    ["Naguib Mahfouz", "Naguib", "Mahfouz"],
+    ["Najibullah Ahmadzai", "Najibullah", "Ahmadzai"],
+    ["Naseeruddin Shah", "Naseeruddin", "Shah"],
+    ["Nasser Al-Attiyah", "Nasser", "Al-Attiyah"],
+    ["Navid Negahban", "Navid", "Negahban"],
+    ["Nizar Qabbani", "Nizar", "Qabbani"],
+    ["Omid Djalili", "Omid", "Djalili"],
+    ["Osman Mir", "Osman", "Mir"],
+    ["Parviz Parastui", "Parviz", "Parastui"],
+    ["Payam Dehkordi", "Payam", "Dehkordi"],
+    ["Qais Ulfat", "Qais", "Ulfat"],
+    ["Qasim Soleimani", "Qasim", "Soleimani"],
+    ["Rafik Hariri", "Rafik", "Hariri"],
+    ["Rahim Shah", "Rahim", "Shah"],
+    ["Rahman Baba", "Rahman", "Baba"],
+    ["Rami Malek", "Rami", "Malek"],
+    ["Ramzi Yousef", "Ramzi", "Yousef"],
+    ["Reza Attaran", "Reza", "Attaran"],
+    ["Rostam Farrokhzad", "Rostam", "Farrokhzad"],
+    ["Saami Yusuf", "Saami", "Yusuf"],
+    ["Saeed Rad", "Saeed", "Rad"],
+    ["Salahuddin Rabbani", "Salahuddin", "Rabbani"],
+    ["Salim Shaheen", "Salim", "Shaheen"],
+    ["Salman Khan", "Salman", "Khan"],
+    ["Saman Jalili", "Saman", "Jalili"],
+    ["Sardar Azmoun", "Sardar", "Azmoun"],
+    ["Shahrukh Khan", "Shahrukh", "Khan"],
+    ["Shahzad Ismaily", "Shahzad", "Ismaily"],
+    ["Shams Langroudi", "Shams", "Langroudi"],
+    ["Sohrab Sepehri", "Sohrab", "Sepehri"],
+    ["Sulaiman Layeq", "Sulaiman", "Layeq"],
+    ["Tahir Qadri", "Tahir", "Qadri"],
+    ["Tarek Fatah", "Tarek", "Fatah"],
+    ["Tariq Ramadan", "Tariq", "Ramadan"],
+    ["Ubaidullah Jan", "Ubaidullah", "Jan"],
+    ["Vahid Amiri", "Vahid", "Amiri"],
+    ["Walid Al-Shehri", "Walid", "Al-Shehri"],
+    ["Waseem Badami", "Waseem", "Badami"],
+    ["Yasin Malik", "Yasin", "Malik"],
+    ["Yasser Arafat", "Yasser", "Arafat"],
+    ["Yousef Chahine", "Yousef", "Chahine"],
+    ["Zalmay Khalilzad", "Zalmay", "Khalilzad"],
+    ["Zarif Zarif", "Zarif", "Zarif"],
+    ["Zayn Malik", "Zayn", "Malik"],
+    ["Zia Massoud", "Zia", "Massoud"]
+];
+
+MISSION_CivilianNames_Female = [
+    ["Aadila Nouri", "Aadila", "Nouri"],
+    ["Aaliyah Massoud", "Aaliyah", "Massoud"],
+    ["Amani Rahimi", "Amani", "Rahimi"],
+    ["Anisa Wahab", "Anisa", "Wahab"],
+    ["Bahar Pars", "Bahar", "Pars"],
+    ["Fatima Bhutto", "Fatima", "Bhutto"],
+    ["Ghazal Sadat", "Ghazal", "Sadat"],
+    ["Jamila Afghani", "Jamila", "Afghani"],
+    ["Kubra Khademi", "Kubra", "Khademi"],
+    ["Latifa Nabizada", "Latifa", "Nabizada"],
+    ["Malalai Joya", "Malalai", "Joya"],
+    ["Sima Samar", "Sima", "Samar"],
+    ["Abir Al-Sahlani", "Abir", "Al-Sahlani"],
+    ["Afra Jalil", "Afra", "Jalil"],
+    ["Aisha Wardak", "Aisha", "Wardak"],
+    ["Aleena Khan", "Aleena", "Khan"],
+    ["Alia Zadeh", "Alia", "Zadeh"],
+    ["Almas Durrani", "Almas", "Durrani"],
+    ["Amal Alamuddin", "Amal", "Alamuddin"],
+    ["Amira Casar", "Amira", "Casar"],
+    ["Anahita Ratebzad", "Anahita", "Ratebzad"],
+    ["Anbar Nadiya", "Anbar", "Nadiya"],
+    ["Aqsa Parvez", "Aqsa", "Parvez"],
+    ["Ara Qadir", "Ara", "Qadir"],
+    ["Areeba Habib", "Areeba", "Habib"],
+    ["Arezoo Tanha", "Arezoo", "Tanha"],
+    ["Arwa Damon", "Arwa", "Damon"],
+    ["Asal Badiee", "Asal", "Badiee"],
+    ["Asma Jahangir", "Asma", "Jahangir"],
+    ["Asra Nomani", "Asra", "Nomani"],
+    ["Atefeh Razavi", "Atefeh", "Razavi"],
+    ["Azadeh Moaveni", "Azadeh", "Moaveni"],
+    ["Aziza Siddiqui", "Aziza", "Siddiqui"],
+    ["Azra Akrami", "Azra", "Akrami"],
+    ["Badra Ali", "Badra", "Ali"],
+    ["Bahira Sherif", "Bahira", "Sherif"],
+    ["Balqis Ahmed", "Balqis", "Ahmed"],
+    ["Banu Ghazanfar", "Banu", "Ghazanfar"],
+    ["Baran Kosari", "Baran", "Kosari"],
+    ["Baria Alamuddin", "Baria", "Alamuddin"],
+    ["Basma Hassan", "Basma", "Hassan"],
+    ["Batool Fakoor", "Batool", "Fakoor"],
+    ["Bayan Mahmoud", "Bayan", "Mahmoud"],
+    ["Beheshta Arghand", "Beheshta", "Arghand"],
+    ["Behnaz Jafari", "Behnaz", "Jafari"],
+    ["Benafsha Yaqoobi", "Benafsha", "Yaqoobi"],
+    ["Bushra Maneka", "Bushra", "Maneka"],
+    ["Dalia Mogahed", "Dalia", "Mogahed"],
+    ["Dana Ghazi", "Dana", "Ghazi"],
+    ["Dania Khatib", "Dania", "Khatib"],
+    ["Darya Safai", "Darya", "Safai"],
+    ["Deena Aljuhani", "Deena", "Aljuhani"],
+    ["Delaram Karkhir", "Delaram", "Karkhir"],
+    ["Delbar Nazari", "Delbar", "Nazari"],
+    ["Dorsa Derakhshani", "Dorsa", "Derakhshani"],
+    ["Dua Khalil", "Dua", "Khalil"],
+    ["Durkhanai Ayubi", "Durkhanai", "Ayubi"],
+    ["Elaha Soroor", "Elaha", "Soroor"],
+    ["Elham Shahin", "Elham", "Shahin"],
+    ["Elnaz Shakerdoost", "Elnaz", "Shakerdoost"],
+    ["Esra Bilgic", "Esra", "Bilgic"],
+    ["Faiza Darkhani", "Faiza", "Darkhani"],
+    ["Fakhria Khalil", "Fakhria", "Khalil"],
+    ["Farah Pahlavi", "Farah", "Pahlavi"],
+    ["Farangis Yeganegi", "Farangis", "Yeganegi"],
+    ["Farhana Qasimi", "Farhana", "Qasimi"],
+    ["Fariba Hachtroudi", "Fariba", "Hachtroudi"],
+    ["Farkhunda Zahra", "Farkhunda", "Zahra"],
+    ["Farzaneh Kaboli", "Farzaneh", "Kaboli"],
+    ["Fatemeh Motamed", "Fatemeh", "Motamed"],
+    ["Fawzia Koofi", "Fawzia", "Koofi"],
+    ["Fereshteh Kazemi", "Fereshteh", "Kazemi"],
+    ["Fida Qasemi", "Fida", "Qasemi"],
+    ["Forough Farrokhzad", "Forough", "Farrokhzad"],
+    ["Fozia Koofi", "Fozia", "Koofi"],
+    ["Freshta Karim", "Freshta", "Karim"],
+    ["Geeti Pasha", "Geeti", "Pasha"],
+    ["Gelareh Abbasi", "Gelareh", "Abbasi"],
+    ["Ghadir Mounib", "Ghadir", "Mounib"],
+    ["Golshifteh Farahani", "Golshifteh", "Farahani"],
+    ["Habiba Sarabi", "Habiba", "Sarabi"],
+    ["Hadia Tajik", "Hadia", "Tajik"],
+    ["Hafsa Zayyan", "Hafsa", "Zayyan"],
+    ["Haifa Wehbe", "Haifa", "Wehbe"],
+    ["Hala Gorani", "Hala", "Gorani"],
+    ["Hamida Barmaki", "Hamida", "Barmaki"],
+    ["Hangama Zohra", "Hangama", "Zohra"],
+    ["Hania Amir", "Hania", "Amir"],
+    ["Hasina Safi", "Hasina", "Safi"],
+    ["Hawa Alam", "Hawa", "Alam"],
+    ["Hayat Mirshad", "Hayat", "Mirshad"],
+    ["Hediyeh Tehrani", "Hediyeh", "Tehrani"],
+    ["Hina Rabbani", "Hina", "Rabbani"],
+    ["Hind Rostom", "Hind", "Rostom"],
+    ["Homa Darabi", "Homa", "Darabi"],
+    ["Homira Qaderi", "Homira", "Qaderi"],
+    ["Huda Kattan", "Huda", "Kattan"],
+    ["Iman Abdulmajid", "Iman", "Abdulmajid"],
+    ["Kamila Sidiqi", "Kamila", "Sidiqi"],
+    ["Kawsar Sharifi", "Kawsar", "Sharifi"],
+    ["Khadija Bashir", "Khadija", "Bashir"],
+    ["Laila Freivalds", "Laila", "Freivalds"],
+    ["Laila Haidari", "Laila", "Haidari"],
+    ["Layla Murad", "Layla", "Murad"],
+    ["Leena Alam", "Leena", "Alam"],
+    ["Leila Hatami", "Leila", "Hatami"],
+    ["Lima Azimi", "Lima", "Azimi"],
+    ["Lina Ben Mhenni", "Lina", "Ben Mhenni"],
+    ["Mahbouba Seraj", "Mahbouba", "Seraj"],
+    ["Mahira Khan", "Mahira", "Khan"],
+    ["Manal al-Sharif", "Manal", "al-Sharif"],
+    ["Mariam Durrani", "Mariam", "Durrani"],
+    ["Mariam Ghani", "Mariam", "Ghani"],
+    ["Marjane Satrapi", "Marjane", "Satrapi"],
+    ["Marwa Elselehdar", "Marwa", "Elselehdar"],
+    ["Maryam Monsef", "Maryam", "Monsef"],
+    ["Massouda Jalal", "Massouda", "Jalal"],
+    ["Meena Keshwar", "Meena", "Keshwar"],
+    ["Mehrnaz Dabir", "Mehrnaz", "Dabir"],
+    ["Mina Mangal", "Mina", "Mangal"],
+    ["Mitra Hajjar", "Mitra", "Hajjar"],
+    ["Mona Zaki", "Mona", "Zaki"],
+    ["Mozhdah Jamalzadah", "Mozhdah", "Jamalzadah"],
+    ["Muna Wassef", "Muna", "Wassef"],
+    ["Muniba Mazari", "Muniba", "Mazari"],
+    ["Nadia Anjuman", "Nadia", "Anjuman"],
+    ["Naghma Shaperai", "Naghma", "Shaperai"],
+    ["Nahid Persson", "Nahid", "Persson"],
+    ["Nargis Fakhri", "Nargis", "Fakhri"],
+    ["Nargis Nehan", "Nargis", "Nehan"],
+    ["Nasrin Sotoudeh", "Nasrin", "Sotoudeh"],
+    ["Nawal El Saadawi", "Nawal", "El Saadawi"],
+    ["Nelofer Pazira", "Nelofer", "Pazira"],
+    ["Niki Karimi", "Niki", "Karimi"],
+    ["Niloufar Ardalan", "Niloufar", "Ardalan"],
+    ["Niloufar Bayat", "Niloufar", "Bayat"],
+    ["Noor Jahan", "Noor", "Jahan"],
+    ["Palwasha Hassan", "Palwasha", "Hassan"],
+    ["Parvin Etesami", "Parvin", "Etesami"],
+    ["Parwana Amiri", "Parwana", "Amiri"],
+    ["Qamar Gul", "Qamar", "Gul"],
+    ["Rabea Balkhi", "Rabea", "Balkhi"],
+    ["Rahima Jami", "Rahima", "Jami"],
+    ["Rania Al-Abdullah", "Rania", "Al-Abdullah"],
+    ["Reem Abdullah", "Reem", "Abdullah"],
+    ["Rola Ghani", "Rola", "Ghani"],
+    ["Roxana Saberi", "Roxana", "Saberi"],
+    ["Roya Mahboob", "Roya", "Mahboob"],
+    ["Saba Qamar", "Saba", "Qamar"],
+    ["Sahraa Karimi", "Sahraa", "Karimi"],
+    ["Sajal Aly", "Sajal", "Aly"],
+    ["Salma Zadeh", "Salma", "Zadeh"],
+    ["Samira Makhmalbaf", "Samira", "Makhmalbaf"],
+    ["Sanam Baloch", "Sanam", "Baloch"],
+    ["Sarah Shahi", "Sarah", "Shahi"],
+    ["Seeta Qasemi", "Seeta", "Qasemi"],
+    ["Shabana Azmi", "Shabana", "Azmi"],
+    ["Shaharzad Akbar", "Shaharzad", "Akbar"],
+    ["Shirin Ebadi", "Shirin", "Ebadi"],
+    ["Shukria Barakzai", "Shukria", "Barakzai"],
+    ["Soheila Siddiq", "Soheila", "Siddiq"],
+    ["Soraya Tarzi", "Soraya", "Tarzi"],
+    ["Tahmina Alvi", "Tahmina", "Alvi"],
+    ["Tahmineh Milani", "Tahmineh", "Milani"],
+    ["Taraneh Alidoosti", "Taraneh", "Alidoosti"],
+    ["Vida Samadzai", "Vida", "Samadzai"],
+    ["Wazhma Frogh", "Wazhma", "Frogh"],
+    ["Yalda Hakim", "Yalda", "Hakim"],
+    ["Yasmin Levy", "Yasmin", "Levy"],
+    ["Zainab Salbi", "Zainab", "Salbi"],
+    ["Zara Kayani", "Zara", "Kayani"],
+    ["Zarghona Walid", "Zarghona", "Walid"],
+    ["Zarifa Ghafari", "Zarifa", "Ghafari"],
+    ["Zohra Karimi", "Zohra", "Karimi"]
+];
+
+// 1. Attendre les templates
+waitUntil { !isNil "MISSION_CivilianTemplates" && {count MISSION_CivilianTemplates > 0} };
+
+// -------------------------------------------------------------------------------------
+// FONCTION D'APPLICATION (Cœur du système)
+// -------------------------------------------------------------------------------------
+MISSION_fnc_applyCivilianTemplate = {
+    params ["_agent"];
+    
+    // Vérifications de base stricts
+    if (isNull _agent) exitWith {};
+    if (!alive _agent) exitWith {};
+    if (isPlayer _agent) exitWith {};
+    
+    // Eviter de traiter deux fois
+    if (_agent getVariable ["MISSION_TemplateApplied", false]) exitWith {};
+    
+    // Marquer immédiatement comme traité
+    _agent setVariable ["MISSION_TemplateApplied", true, true];
+
+    // Sélection template
+    private _template = selectRandom MISSION_CivilianTemplates;
+    _template params ["_type", "_loadout", "_face", "_isFemale", "_pitch"];
+    
+    // Application Physique
+    [_agent, _face] remoteExec ["setFace", 0, true];
+    _agent setUnitLoadout _loadout;
+    [_agent, _pitch] remoteExec ["setPitch", 0, true];
+    
+    // Application Identité (Nom)
+    // Structure UNIFIÉE donc plus besoin de parsing complexe ou conditons
+    private _namesDB = if (_isFemale) then {MISSION_CivilianNames_Female} else {MISSION_CivilianNames_Male};
+    private _selectedIdentity = selectRandom _namesDB; // Format: [Full, First, Last]
+    
+    // Application globale du nom
+    // Note: Utilisation de "true" pour le JIP afin que les joueurs qui rejoignent voient aussi le nom
+    [_agent, _selectedIdentity] remoteExec ["setName", 0, true];
+};
+
+// -------------------------------------------------------------------------------------
+// PHASE 1 : SCAN INITIAL
+// -------------------------------------------------------------------------------------
+private _existingAgents = agents select { 
+    alive _x && 
+    {_x isKindOf "CAManBase"} && 
+    {!isPlayer _x} 
+};
+
+{
+    [_x] call MISSION_fnc_applyCivilianTemplate;
+} forEach _existingAgents;
+
+
+// -------------------------------------------------------------------------------------
+// PHASE 2 : EVENT HANDLER
+// -------------------------------------------------------------------------------------
+addMissionEventHandler ["EntityCreated", {
+    params ["_entity"];
+    
+    // Filtre ultra-rapide
+    if (isNull _entity) exitWith {};
+    if !(_entity isKindOf "CAManBase") exitWith {};
+    
+    // Thread safe
+    [_entity] spawn {
+        params ["_entity"];
+        sleep 1;
+        
+        // Vérifications finales
+        if (isNull _entity) exitWith {};
+        if (!alive _entity) exitWith {};
+        if (isPlayer _entity) exitWith {};
+        
+        // Go
+        [_entity] call MISSION_fnc_applyCivilianTemplate;
+    };
+}];

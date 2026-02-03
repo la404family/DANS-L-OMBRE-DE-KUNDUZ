@@ -70,12 +70,15 @@ class CfgFunctions
             class ajuste_badge {};
             // La fonction sera appelée: Mission_fnc_civilian_template
             class civilian_template {};
+            class civilian_presence_logic {};
             // La fonction sera appelée: Mission_fnc_task_ostage
             class task_ostage {};
             // La fonction sera appelée: Mission_fnc_ajust_OTHER_identity
             class ajust_OTHER_identity {};
             // La fonction sera appelée: Mission_fnc_ajust_WOMAN_identity
             class ajust_WOMAN_identity {};
+            // La fonction sera appelée: Mission_fnc_livraison_gestion
+            class livraison_gestion {};
 
 		};
 	};
@@ -88,7 +91,7 @@ class CfgCommunicationMenu
     {
         text = "$STR_ACTION_DELIVERY"; // Utilisation stringtable
         submenu = ""; 
-        expression = "[_pos] spawn Mission_fnc_livraison_vehicule"; 
+        expression = "['REQUEST', ['VEHICLE', _pos]] spawn Mission_fnc_livraison_gestion"; 
         icon = "\a3\ui_f\data\gui\cfg\communicationMenu\supplydrop_ca.paa"; 
         cursor = "\a3\ui_f\data\igui\cfg\cursors\iconCursorSupport_ca.paa"; 
         enable = "1"; 
@@ -98,7 +101,7 @@ class CfgCommunicationMenu
     {
         text = "$STR_ACTION_AMMO_DELIVERY"; // "Demander Ravitaillement Munitions"
         submenu = ""; 
-        expression = "[_pos] spawn Mission_fnc_livraison_munitions"; 
+        expression = "['REQUEST', ['AMMO', _pos]] spawn Mission_fnc_livraison_gestion"; 
         icon = "\a3\ui_f\data\gui\cfg\communicationMenu\supplydrop_ca.paa"; 
         cursor = "\a3\ui_f\data\igui\cfg\cursors\iconCursorSupport_ca.paa"; 
         enable = "1"; 
@@ -108,7 +111,7 @@ class CfgCommunicationMenu
     {
         text = "$STR_ACTION_CAS"; 
         submenu = ""; 
-        expression = "[_pos] spawn Mission_fnc_livraison_soutienAR"; 
+        expression = "['REQUEST', ['CAS', _pos]] spawn Mission_fnc_livraison_gestion"; 
         icon = "\a3\ui_f\data\gui\cfg\communicationMenu\cas_ca.paa"; 
         cursor = "\a3\ui_f\data\igui\cfg\cursors\iconCursorSupport_ca.paa"; 
         enable = "1"; 
@@ -127,6 +130,7 @@ class CfgRemoteExec
         
         // Autoriser l'exécution globale pour ces fonctions spécifiques :
         class Mission_fnc_ezan { allowedTargets = 0; }; // 0 = Peut être exécuté partout (Serveur et Clients).
+        class Mission_fnc_livraison_gestion { allowedTargets = 2; }; // Autoriser l'exécution sur le serveur depuis les clients
 	};
     class Commands
     {
@@ -219,6 +223,26 @@ class CfgSounds
     class soutien04 {
         name = "soutien04";
         sound[] = {"audio\soutien04.ogg", db+5, 1.15};
+        titles[] = {};
+    };
+    class negatif01 {
+        name = "negatif01";
+        sound[] = {"audio\negatif01.ogg", db+5, 1.15};
+        titles[] = {};
+    };
+    class negatif02 {
+        name = "negatif02";
+        sound[] = {"audio\negatif02.ogg", db+5, 1.15};
+        titles[] = {};
+    };
+    class negatif03 {
+        name = "negatif03";
+        sound[] = {"audio\negatif03.ogg", db+5, 1.15};
+        titles[] = {};
+    };
+    class negatif04 {
+        name = "negatif04";
+        sound[] = {"audio\negatif04.ogg", db+5, 1.15};
         titles[] = {};
     };
 };

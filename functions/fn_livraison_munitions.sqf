@@ -14,17 +14,7 @@ params [["_targetPos", [0,0,0], [[]]]];
 // Assurer que la position a 3 éléments
 if (count _targetPos < 3) then { _targetPos set [2, 0]; };
 
-// --- COOLDOWN (20 Minutes) ---
-// Variable globale : MISSION_LastUse_Ammo
-private _lastUse = missionNamespace getVariable ["MISSION_LastUse_Ammo", -9999];
-private _cooldownTime = 1200; // 20 minutes
-
-if (time < _lastUse + _cooldownTime) exitWith {
-     private _remaining = ceil ((_lastUse + _cooldownTime - time) / 60);
-};
-
-// Mise à jour du temps d'utilisation
-missionNamespace setVariable ["MISSION_LastUse_Ammo", time, true];
+// Cooldown géré par fn_livraison_gestion.sqf
 
 // --- CONFIGURATION ---
 private _spawnDist = 2000;
