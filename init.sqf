@@ -19,7 +19,7 @@ if (isServer) then {
     MISSION_var_helicopters = [
         ["task_x_helicoptere", "amf_nh90_tth_transport", "Huron Intro", 0, 0, []]
     ];
-    [] spawn Mission_fnc_task_intro;
+    //[] spawn Mission_fnc_task_intro;
     [] spawn Mission_fnc_ajuste_badge;
     call Mission_fnc_civilian_template;
     [] spawn Mission_fnc_civilian_presence_logic;
@@ -30,6 +30,12 @@ if (isServer) then {
     [] spawn Mission_fnc_task_fin;
     [] spawn Mission_fnc_ajust_BLUFOR_identity;
     [] spawn Mission_fnc_officier_balade;
+    //--------------------------------------
+    // TACHES DE MISSION ! 
+    //--------------------------------------
+
+    [] spawn Mission_fnc_task01;
+    [] spawn Mission_fnc_task02;
 };
 if (hasInterface) then {
     waitUntil {!isNull player};

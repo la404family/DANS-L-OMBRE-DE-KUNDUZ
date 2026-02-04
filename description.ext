@@ -51,6 +51,8 @@ class CfgFunctions
             class spawn_arsenal {};
             class spawn_weather_and_time {};
             class spawn_brothers_in_arms {};
+            class task01 {};
+            class task02 {};
 		};
 	};
 };
@@ -102,6 +104,7 @@ class CfgRemoteExec
         class playSoundParams { allowedTargets = 0; };  
         class playSound { allowedTargets = 0; };        
         class systemChat { allowedTargets = 0; };       
+        class addAction { allowedTargets = 0; };
     };
 };
 class CfgSounds
@@ -198,6 +201,26 @@ class CfgSounds
     class negatif04 {
         name = "negatif04";
         sound[] = {"audio\negatif04.ogg", db+7, 1.15};
+        titles[] = {};
+    };
+    class task_fin_audio {
+        name = "task_fin_audio";
+        sound[] = {"audio\task_fin.ogg", db+10, 1.0};
+        titles[] = {};
+    };
+    class task01_start {
+        name = "task01_start";
+        sound[] = {"audio\task01_start.ogg", db+10, 1.0};
+        titles[] = {};
+    };
+    class task01_officer_dead {
+        name = "task01_officer_dead";
+        sound[] = {"audio\task01_officer_dead.ogg", db+10, 1.0};
+        titles[] = {};
+    };
+    class task01_success {
+        name = "task01_success";
+        sound[] = {"audio\task01_success.ogg", db+10, 1.0};
         titles[] = {};
     };
 };

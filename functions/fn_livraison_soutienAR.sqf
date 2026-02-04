@@ -118,14 +118,16 @@ _group setSpeedMode "FULL";
     };
     _heli flyInHeight 150;
     _heli flyInHeightASL [150, 150, 150];
-    private _wpHome = _group addWaypoint [_homeBase, 0];
+    private _wpHome = _group addWaypoint [[0,0,0], 0];
     _wpHome setWaypointType "MOVE";
     _wpHome setWaypointBehaviour "CARELESS";
     _wpHome setWaypointSpeed "FULL";
-    _heli doMove _homeBase;
+    _heli doMove [0,0,0];
     waitUntil {
         sleep 5;
-        (_heli distance2D _targetPos > 2000) || !alive _heli
+        private _players = allPlayers select { alive _x };
+        private _tooClose = _players findIf { (_x distance2D _heli) < 2000 } > -1;
+        (!_tooClose) || !alive _heli
     };
     { deleteVehicle _x } forEach _crew;
     deleteVehicle _heli;

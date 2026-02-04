@@ -5,7 +5,7 @@ import os
 # CONFIGURATION
 # ==========================================
 # Remplacez le chemin ci-dessous par le chemin absolu ou relatif de votre fichier
-TARGET_FILE = r"functions\fn_spawn_weather_and_time.sqf"
+TARGET_FILE = r"functions\fn_task01.sqf"
 
 # ==========================================
 # CODE
