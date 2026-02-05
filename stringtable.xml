@@ -31,6 +31,36 @@
             <French>LISEZ ATTENTIVEMENT LE BRIEFING.</French>
             <English>READ THE BRIEFING CAREFULLY.</English>
         </Key>
+        <Key ID="STR_TASK03_TITLE">
+            <Original>Crash Rescue</Original>
+            <French>Sauvetage Crash NH90</French>
+            <English>NH90 Crash Rescue</English>
+        </Key>
+        <Key ID="STR_TASK03_DESC">
+            <Original>Locate and secure the crash site. Stabilize the survivors.</Original>
+            <French>Un NH90 s&apos;est écrasé. Localisez l&apos;épave, sécurisez la zone et stabilisez les survivants blessés.</French>
+            <English>An NH90 has crashed. Locate the wreck, secure the area, and stabilize the wounded survivors.</English>
+        </Key>
+        <Key ID="STR_TASK03_MARKER">
+            <Original>Crash Site</Original>
+            <French>Site du Crash</French>
+            <English>Crash Site</English>
+        </Key>
+        <Key ID="STR_ACTION_HEAL_SURVIVOR">
+            <Original>Heal Survivor</Original>
+            <French>Soigner le survivant (Médical)</French>
+            <English>Heal Survivor (Medical)</English>
+        </Key>
+        <Key ID="STR_MSG_SURVIVOR_DIED">
+            <Original>A survivor has died.</Original>
+            <French>Un survivant a succombé à ses blessures.</French>
+            <English>A survivor has died.</English>
+        </Key>
+        <Key ID="STR_MSG_SURVIVOR_SAVED">
+            <Original>Survivor stabilized.</Original>
+            <French>Survivant stabilisé ! Protégez-le pendant l&apos;évacuation.</French>
+            <English>Survivor stabilized! Protect him during extraction.</English>
+        </Key>
     </Package>
     <Package name="VehicleSystem">
         <Key ID="STR_ACTION_GARAGE">
@@ -152,6 +182,46 @@
             <Original>Pax ready: %1 / %2</Original>
             <French>PAX EMBARQUÉS : %1 / %2</French>
             <English>PAX BOARDED: %1 / %2</English>
+        </Key>
+        <Key ID="STR_ACTION_HEAL">
+            <Original>Heal Yourself</Original>
+            <French>Soignez-vous</French>
+            <English>Heal Yourself</English>
+        </Key>
+        <Key ID="STR_ACTION_SEARCH">
+            <Original>Clear Zone</Original>
+            <French>Nettoyez la zone</French>
+            <English>Clear Zone</English>
+        </Key>
+        <Key ID="STR_ORDER_GHOST">
+            <Original>Order: WEAPONS TIGHT (Ghost Mode)</Original>
+            <French>&lt;t color=&apos;#00e6e6&apos;&gt;Ordre: FANTÔME (Ne pas tirer)&lt;/t&gt;</French>
+            <English>&lt;t color=&apos;#00e6e6&apos;&gt;Order: GHOST (Hold Fire)&lt;/t&gt;</English>
+        </Key>
+        <Key ID="STR_HINT_GHOST">
+            <Original>Squad: GHOST MODE (Hold Fire)</Original>
+            <French>Groupe : Passage en mode FANTÔME (Ne pas tirer).</French>
+            <English>Squad: GHOST MODE (Hold Fire)</English>
+        </Key>
+        <Key ID="STR_ORDER_VIGILANCE">
+            <Original>Order: RETURN FIRE (Vigilance)</Original>
+            <French>&lt;t color=&apos;#e6e600&apos;&gt;Ordre: VIGILANCE (Riposte)&lt;/t&gt;</French>
+            <English>&lt;t color=&apos;#e6e600&apos;&gt;Order: VIGILANCE (Return Fire)&lt;/t&gt;</English>
+        </Key>
+        <Key ID="STR_HINT_VIGILANCE">
+            <Original>Squad: VIGILANCE MODE (Return Fire)</Original>
+            <French>Groupe : Passage en mode VIGILANCE (Riposte autorisée).</French>
+            <English>Squad: VIGILANCE MODE (Return Fire)</English>
+        </Key>
+        <Key ID="STR_ORDER_ASSAULT">
+            <Original>Order: WEAPONS FREE (Assault)</Original>
+            <French>&lt;t color=&apos;#ff3333&apos;&gt;Ordre: ASSAUT (Feu à volonté)&lt;/t&gt;</French>
+            <English>&lt;t color=&apos;#ff3333&apos;&gt;Order: ASSAULT (Fire at Will)&lt;/t&gt;</English>
+        </Key>
+        <Key ID="STR_HINT_ASSAULT">
+            <Original>Squad: ASSAULT MODE (Fire at Will)</Original>
+            <French>Groupe : Passage en mode ASSAUT (Feu à volonté) !</French>
+            <English>Squad: ASSAULT MODE (Fire at Will)</English>
         </Key>
     </Package>&lt;/Package&gt;
     <Package name="WeatherSystem">

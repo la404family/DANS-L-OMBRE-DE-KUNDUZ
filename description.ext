@@ -53,6 +53,10 @@ class CfgFunctions
             class spawn_brothers_in_arms {};
             class task01 {};
             class task02 {};
+            class task03 {};
+            class addAction_heal {};
+            class addAction_search {};
+            class addAction_engagement {};
 		};
 	};
 };

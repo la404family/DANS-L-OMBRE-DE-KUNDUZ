@@ -19,7 +19,7 @@ if (isServer) then {
     MISSION_var_helicopters = [
         ["task_x_helicoptere", "amf_nh90_tth_transport", "Huron Intro", 0, 0, []]
     ];
-    //[] spawn Mission_fnc_task_intro;
+    [] spawn Mission_fnc_task_intro;
     [] spawn Mission_fnc_ajuste_badge;
     call Mission_fnc_civilian_template;
     [] spawn Mission_fnc_civilian_presence_logic;
@@ -34,8 +34,9 @@ if (isServer) then {
     // TACHES DE MISSION ! 
     //--------------------------------------
 
-    [] spawn Mission_fnc_task01;
-    [] spawn Mission_fnc_task02;
+    //[] spawn Mission_fnc_task01;
+    //[] spawn Mission_fnc_task02;
+    [] spawn Mission_fnc_task03;
 };
 if (hasInterface) then {
     waitUntil {!isNull player};
@@ -43,5 +44,8 @@ if (hasInterface) then {
     ["INIT"] spawn Mission_fnc_spawn_arsenal;
     ["INIT"] spawn Mission_fnc_spawn_weather_and_time;
     ["INIT"] spawn Mission_fnc_spawn_brothers_in_arms;
+    [] spawn Mission_fnc_addAction_heal;
+    [] spawn Mission_fnc_addAction_search;
+    [] spawn Mission_fnc_addAction_engagement;
 };
 ["INIT"] spawn Mission_fnc_livraison_gestion;
