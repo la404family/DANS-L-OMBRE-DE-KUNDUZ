@@ -19,7 +19,7 @@ Pour chacun des 3 lieux sélectionnés, un groupe OPFOR est créé :
         *   Arme : `uk3cb_ak47` + lampe `rhs_acc_2dpZenit`.
         *   Munitions : 3 chargeurs `rhs_30Rnd_762x39mm_bakelite` dans le sac + 1 chargeur engagé.
 *   **Gardes** :
-    *   Nombre aléatoire entre 2 et 8 gardes par officier.
+    *   Nombre aléatoire entre 2 et 10 gardes par officier.
     *   Classe : `O_Soldier_F`.
     *   Même logique d'apparence et d'équipement que l'officier (Template civil + AK47/Sac messenger).
 *   **Comportement** : Les groupes patrouillent dans un rayon de 25m autour de leur point de spawn (`BIS_fnc_taskPatrol`).

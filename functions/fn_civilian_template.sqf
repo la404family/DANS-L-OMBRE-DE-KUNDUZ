@@ -14,21 +14,52 @@ for "_i" from 0 to 33 do {
         private _loadout = getUnitLoadout _unit;
         private _face = face _unit;
         private _uniform = uniform _unit;
-        private _isFemale = false;
+        
+        // 1. Initialisation temps réel et variables
         private _uLow = toLower _uniform;
         private _faceLow = toLower _face;
-        if ((_uLow find "burqa" > -1) || (_uLow find "dress" > -1) || (_uLow find "woman" > -1) || (_uLow find "female" > -1)) then {
+        private _isFemale = false;
+        
+        // 2. Méthode CONFIG (Moteur du jeu)
+        if (getNumber (configFile >> "CfgVehicles" >> _type >> "woman") == 1) then {
             _isFemale = true;
         };
-        if ((_faceLow find "female" > -1) || (_faceLow find "woman" > -1)) then {
-            _isFemale = true;
+
+        // 3. Méthode CONFIG UNIFORME
+        if (!_isFemale && _uniform != "") then {
+            private _uniformClass = getText (configFile >> "CfgWeapons" >> _uniform >> "ItemInfo" >> "uniformClass");
+            if (_uniformClass != "") then {
+                if (getNumber (configFile >> "CfgVehicles" >> _uniformClass >> "woman") == 1) then {
+                    _isFemale = true;
+                };
+            };
         };
+
+        // 4. Méthode MOTS-CLÉS ÉTENDUE (Classname + DisplayName + Visage + Type)
+        if (!_isFemale) then {
+            private _keywords = ["woman", "female", "girl", "lady", "dress", "burqa", "abaya", "hijab", "chador", "skirt", "young"];
+            
+            // On récupère aussi le NOM D'AFFICHAGE de l'uniforme (ex: "Takistani Dress")
+            private _uniformDisplayName = "";
+            if (_uniform != "") then {
+                _uniformDisplayName = toLower (getText (configFile >> "CfgWeapons" >> _uniform >> "displayName"));
+            };
+            
+            {
+                if ((_uLow find _x) > -1) exitWith { _isFemale = true; };
+                if ((_faceLow find _x) > -1) exitWith { _isFemale = true; };
+                if ((toLower(_type) find _x) > -1) exitWith { _isFemale = true; };
+                if ((_uniformDisplayName find _x) > -1) exitWith { _isFemale = true; };
+            } forEach _keywords;
+        };
+
+        // 3. Fallback variable script (sécurité)
         if (_unit getVariable ["isWoman", false]) then {
             _isFemale = true;
         };
-        private _pitch = 1.0;
+        private _pitch = 0.8 + (random 0.2); // Par défaut Homme (Grave: 0.8 - 1.0)
         if (_isFemale) then {
-            _pitch = 1.2 + (random 0.2); 
+            _pitch = 1.2 + (random 0.2); // Femme (Aigu: 1.2 - 1.4)
         };
         MISSION_CivilianTemplates pushBack [_type, _loadout, _face, _isFemale, _pitch];
         diag_log format ["[TEMPLATE] Saved: %1 | Type: %2 | Female: %3 | Pitch: %4", _varName, _type, _isFemale, _pitch];

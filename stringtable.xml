@@ -61,6 +61,46 @@
             <French>Survivant stabilisé ! Protégez-le pendant l&apos;évacuation.</French>
             <English>Survivor stabilized! Protect him during extraction.</English>
         </Key>
+        <Key ID="STR_TASK04_TITLE">
+            <Original>Informal Meeting</Original>
+            <French>Réunion Informelle</French>
+            <English>Informal Meeting</English>
+        </Key>
+        <Key ID="STR_TASK04_DESC">
+            <Original>Meet the local contact and get information.</Original>
+            <French>Rencontrez le contact local et obtenez des informations.</French>
+            <English>Meet the local contact and get information.</English>
+        </Key>
+        <Key ID="STR_TASK04_MARKER">
+            <Original>Contact</Original>
+            <French>Contact</French>
+            <English>Contact</English>
+        </Key>
+        <Key ID="STR_ACTION_TALK">
+            <Original>Talk to contact</Original>
+            <French>Parler au contact</French>
+            <English>Talk to contact</English>
+        </Key>
+        <Key ID="STR_TASK04_WIN">
+            <Original>Contact successful.</Original>
+            <French>Contact réussi. Renseignement obtenu.</French>
+            <English>Contact successful. Intel secured.</English>
+        </Key>
+        <Key ID="STR_TASK04_FAIL">
+            <Original>Mission Failed.</Original>
+            <French>Echec de la mission.</French>
+            <English>Mission Failed.</English>
+        </Key>
+        <Key ID="STR_TASK04_TREASON">
+            <Original>It&apos;s a trap!</Original>
+            <French>C&apos;est un piège ! Embuscade !</French>
+            <English>It&apos;s a trap! Ambush!</English>
+        </Key>
+        <Key ID="STR_TASK04_MUTINY">
+            <Original>Mutiny! Protect the target!</Original>
+            <French>Ils se retournent contre lui ! Protégez-le !</French>
+            <English>Mutiny! Protect the target!</English>
+        </Key>
     </Package>
     <Package name="VehicleSystem">
         <Key ID="STR_ACTION_GARAGE">

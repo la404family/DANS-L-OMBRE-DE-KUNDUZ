@@ -340,6 +340,10 @@ MISSION_fnc_applyCivilianTemplate = {
     private _namesDB = if (_isFemale) then {MISSION_CivilianNames_Female} else {MISSION_CivilianNames_Male};
     private _selectedIdentity = selectRandom _namesDB;  
     [_agent, (_selectedIdentity select 0)] remoteExec ["setName", 0, true];
+    
+    // Force la langue Perse / Farsi pour TOUS (le pitch fera la différence H/F)
+    private _speaker = selectRandom ["Male01PER", "Male02PER", "Male03PER"];
+    [_agent, _speaker] remoteExec ["setSpeaker", 0, true];
 };
 private _existingAgents = agents select { 
     alive _x && 

@@ -57,6 +57,7 @@ class CfgFunctions
             class addAction_heal {};
             class addAction_search {};
             class addAction_engagement {};
+            class task04 {};
 		};
 	};
 };

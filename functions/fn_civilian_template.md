@@ -22,7 +22,7 @@ Pour chaque unité trouvée (`_unit`) :
     *   `_uniform` : Uniforme porté (`uniform`).
 3.  **Détection du Genre (`_isFemale`)** :
     Analyse plusieurs critères pour déterminer si l'unité est féminine :
-    *   Si le nom de l'uniforme contient "burqa", "dress", "woman" ou "female".
+    *   Si le nom de l'uniforme contient "burqa", "dress", "woman" ou "female"ou "WOMAN" ou "DRESS" ou "WOMAN"
     *   Si le nom du visage contient "female" ou "woman".
     *   Si la variable de script `isWoman` sur l'unité est vraie.
 4.  **Ajustement de la Voix (`_pitch`)** :
