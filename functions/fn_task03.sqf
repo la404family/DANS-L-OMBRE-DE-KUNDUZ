@@ -281,24 +281,26 @@ for "_i" from 1 to 5 do {
  
 private _allEnemyGroups = [];
 
-for "_g" from 1 to 2 do {
+// === AUDIO SPAWN ENNEMIS (dès que les ennemis apparaissent) ===
+private _audioList = ["task03_01", "task03_02", "task03_03"];
+private _selectedAudio = selectRandom _audioList;
+[_selectedAudio] remoteExec ["playSound", 0];
+diag_log format ["[TASK03] Audio joué: %1", _selectedAudio];
+
+// 3 à 4 groupes d'ennemis
+private _numGroups = 3 + floor(random 2);  // 3 ou 4 groupes
+
+for "_g" from 1 to _numGroups do {
     private _grpEnemies = createGroup [east, true];
     _allEnemyGroups pushBack _grpEnemies;
     
-     
+    // Position autour de l'épave
     private _enemyPos = _heli getPos [35 + (random 15), random 360];
 
-     
-    private _leader = _grpEnemies createUnit ["O_Soldier_F", _enemyPos, [], 0, "NONE"];
-    [_leader] call Mission_fnc_applyCivilianTemplate;
-    _leader addBackpack "B_Messenger_Coyote_F";
-    _leader addWeapon "uk3cb_ak47";
-    _leader addPrimaryWeaponItem "rhs_acc_2dpZenit";
-    _leader addPrimaryWeaponItem "rhs_30Rnd_762x39mm_bakelite";
-    for "_i" from 1 to 3 do { _leader addItemToBackpack "rhs_30Rnd_762x39mm_bakelite"; };
-
-     
-    for "_i" from 1 to (3 + (random 3)) do {
+    // 2 à 4 unités par groupe
+    private _numUnits = 2 + floor(random 3);  // 2, 3 ou 4 unités
+    
+    for "_i" from 1 to _numUnits do {
         private _unit = _grpEnemies createUnit ["O_Soldier_F", _enemyPos, [], 0, "NONE"];
         [_unit] call Mission_fnc_applyCivilianTemplate;
         
@@ -307,9 +309,13 @@ for "_g" from 1 to 2 do {
         _unit addPrimaryWeaponItem "rhs_acc_2dpZenit";
         _unit addPrimaryWeaponItem "rhs_30Rnd_762x39mm_bakelite";
         for "_j" from 1 to 3 do { _unit addItemToBackpack "rhs_30Rnd_762x39mm_bakelite"; };
+        
+        // === VOIX ACTIVE (ENNEMIS PARLENT) ===
+        private _speakers = ["Male01PER", "Male02PER", "Male03PER"];
+        [_unit, selectRandom _speakers] remoteExec ["setSpeaker", 0, true];
     };
 
-     
+    // Comportement de patrouille agressive
     [_grpEnemies, _heli] spawn {
         params ["_grp", "_heli"];
         

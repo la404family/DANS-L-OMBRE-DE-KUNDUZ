@@ -208,24 +208,54 @@ class CfgSounds
         sound[] = {"audio\negatif04.ogg", db+7, 1.15};
         titles[] = {};
     };
-    class task_fin_audio {
-        name = "task_fin_audio";
-        sound[] = {"audio\task_fin.ogg", db+10, 1.0};
+    class task01_01 {
+        name = "task01_01";
+        sound[] = {"audio\task01_01.ogg", db+10, 1.15};
         titles[] = {};
     };
-    class task01_start {
-        name = "task01_start";
-        sound[] = {"audio\task01_start.ogg", db+10, 1.0};
+    class task01_02 {
+        name = "task01_02";
+        sound[] = {"audio\task01_02.ogg", db+10, 1.15};
         titles[] = {};
     };
-    class task01_officer_dead {
-        name = "task01_officer_dead";
-        sound[] = {"audio\task01_officer_dead.ogg", db+10, 1.0};
+    class task01_03 {
+        name = "task01_03";
+        sound[] = {"audio\task01_03.ogg", db+10, 1.15};
         titles[] = {};
     };
     class task01_success {
         name = "task01_success";
         sound[] = {"audio\task01_success.ogg", db+10, 1.0};
+        titles[] = {};
+    };
+    class task04_01 {
+        name = "task04_01";
+        sound[] = {"audio\task04_01.ogg", db+10, 1.15};
+        titles[] = {};
+    };
+    class task04_02 {
+        name = "task04_02";
+        sound[] = {"audio\task04_02.ogg", db+10, 1.15};
+        titles[] = {};
+    };
+    class task04_03 {
+        name = "task04_03";
+        sound[] = {"audio\task04_03.ogg", db+10, 1.15};
+        titles[] = {};
+    };
+    class task03_01 {
+        name = "task03_01";
+        sound[] = {"audio\task03_01.ogg", db+10, 1.15};
+        titles[] = {};
+    };
+    class task03_02 {
+        name = "task03_02";
+        sound[] = {"audio\task03_02.ogg", db+10, 1.15};
+        titles[] = {};
+    };
+    class task03_03 {
+        name = "task03_03";
+        sound[] = {"audio\task03_03.ogg", db+10, 1.15};
         titles[] = {};
     };
 };

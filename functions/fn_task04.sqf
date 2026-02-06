@@ -211,6 +211,14 @@ MISSION_fnc_task04_addLocalAction = {
 
     [true, "Task04", ["$STR_TASK04_DESC", "$STR_TASK04_TITLE", "$STR_TASK04_MARKER"], _locationObj, "ASSIGNED", 1, true, "meet", true] call BIS_fnc_taskCreate;
 
+    // === AUDIO DÉBUT DE MISSION (5s après création tâche) ===
+    [] spawn {
+        sleep 5;
+        private _audioList = ["task04_01", "task04_02", "task04_03"];
+        private _selectedAudio = selectRandom _audioList;
+        [_selectedAudio] remoteExec ["playSound", 0];
+        diag_log format ["[TASK04] Audio joué: %1", _selectedAudio];
+    };
      
     missionNamespace setVariable ["MISSION_Task04_ScenarioTriggered", false, true];
     

@@ -86,8 +86,14 @@ _target_officer setVariable ["MISSION_Task01_Target", true, true];
     true
 ] call BIS_fnc_taskCreate;
 
-// Audio Début
-["task01_start"] remoteExec ["playSound", 0];
+// === AUDIO DÉBUT DE MISSION (15s après création tâche) ===
+[] spawn {
+    sleep 15;
+    private _audioList = ["task01_01", "task01_02", "task01_03"];
+    private _selectedAudio = selectRandom _audioList;
+    [_selectedAudio] remoteExec ["playSound", 0];
+    diag_log format ["[TASK01] Audio joué: %1", _selectedAudio];
+};
 
 [_officers] spawn {
     params ["_officers"];
