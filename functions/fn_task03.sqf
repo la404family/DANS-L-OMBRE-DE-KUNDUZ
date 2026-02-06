@@ -291,22 +291,22 @@ for "_g" from 1 to 2 do {
      
     private _leader = _grpEnemies createUnit ["O_Soldier_F", _enemyPos, [], 0, "NONE"];
     [_leader] call Mission_fnc_applyCivilianTemplate;
-    _leader addBackpack "B_FieldPack_khk"; 
-    _leader addWeapon "arifle_TRG20_F"; 
-    _leader addPrimaryWeaponItem "acc_flashlight"; 
-    _leader addPrimaryWeaponItem "30Rnd_556x45_Stanag"; 
-    for "_i" from 1 to 3 do { _leader addItemToBackpack "30Rnd_556x45_Stanag"; };
+    _leader addBackpack "B_Messenger_Coyote_F";
+    _leader addWeapon "uk3cb_ak47";
+    _leader addPrimaryWeaponItem "rhs_acc_2dpZenit";
+    _leader addPrimaryWeaponItem "rhs_30Rnd_762x39mm_bakelite";
+    for "_i" from 1 to 3 do { _leader addItemToBackpack "rhs_30Rnd_762x39mm_bakelite"; };
 
      
     for "_i" from 1 to (3 + (random 3)) do {
         private _unit = _grpEnemies createUnit ["O_Soldier_F", _enemyPos, [], 0, "NONE"];
         [_unit] call Mission_fnc_applyCivilianTemplate;
         
-        _unit addBackpack "B_FieldPack_khk";
-        _unit addWeapon "arifle_TRG20_F"; 
-        _unit addPrimaryWeaponItem "acc_flashlight";
-        _unit addPrimaryWeaponItem "30Rnd_556x45_Stanag";
-        for "_j" from 1 to 3 do { _unit addItemToBackpack "30Rnd_556x45_Stanag"; };
+        _unit addBackpack "B_Messenger_Coyote_F";
+        _unit addWeapon "uk3cb_ak47";
+        _unit addPrimaryWeaponItem "rhs_acc_2dpZenit";
+        _unit addPrimaryWeaponItem "rhs_30Rnd_762x39mm_bakelite";
+        for "_j" from 1 to 3 do { _unit addItemToBackpack "rhs_30Rnd_762x39mm_bakelite"; };
     };
 
      
