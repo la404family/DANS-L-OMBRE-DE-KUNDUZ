@@ -50,3 +50,15 @@ Ce document liste les emplacements où des messages radio peuvent être ajoutés
 | **Scénario 2 - Trahison** | ~245 | Combat déclenché | ❌ À ajouter |
 | **Scénario 3 - Mutinerie** | Variable | Chef rejoint BLUFOR | ❌ À ajouter |
 
+
+---
+
+## 6. `fn_task05.sqf` - Guerre Civile (Observation Drone)
+
+| Moment | Condition / Ligne approx. | Description | Suggestion Audio / Texte Radio |
+|--------|---------------------------|-------------|--------------------------------|
+| **Début de mission** | `taskCreate` (~Ligne 34) | Le drone est déployé, le QG informe de la situation. | **QG :** "Drone en position. Conflit imminent entre factions locales. Observez et confirmez l'engagement. Ne tirez pas sauf si nécessaire." |
+| **Combat Déclenché** | `MISSION_Task05_CombatStarted = true` (~Ligne 327) | Le combat éclate entre OPFOR et INDEP. | **QG :** "Contact confirmé ! Ils s'entretuent. Maintenez la surveillance. Laissez-les s'affaiblir." |
+| **Victoire (OPFOR éliminés)** | `_opforAlive == 0` (~Ligne 374) | Tous les ennemis sont morts, les alliés INDEP survivent. | **QG :** "Cibles OPFOR neutralisées. Bon travail. Les survivants INDEP se replient. Terminé." |
+| **Échec (INDEP éliminés)** | `_indepAlive == 0` (~Ligne 365) | Tous les alliés sont morts. | **QG :** "Merde, tous les contacts alliés sont perdus. Mission compromise. Repliez-vous immédiatement !" |
+

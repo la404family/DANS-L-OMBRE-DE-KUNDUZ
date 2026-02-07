@@ -165,7 +165,7 @@ private _fnc_spawnINDEP = {
             if (!alive _unit) exitWith {};
             
             removeBackpack _unit; 
-            _unit addBackpack "UK3CB_LFR_B_B_MESSENGER_MED";
+            _unit addBackpack "UK3CB_MEC_C_B_MESSENGER_MED";
             _unit addWeapon "uk3cb_ak47";
             _unit addPrimaryWeaponItem "rhs_acc_2dpZenit";
             _unit addPrimaryWeaponItem "rhs_30Rnd_762x39mm_bakelite";
@@ -185,7 +185,7 @@ private _groupsOPFOR = [];
 private _groupsINDEP = [];
 
  
-for "_i" from 1 to (4 + floor(random 3)) do {
+for "_i" from 1 to (8 + floor(random 5)) do {
     _groupsOPFOR pushBack ([_zone1_pos, 2 + floor(random 3)] call _fnc_spawnOPFOR);
 };
 
@@ -269,12 +269,47 @@ independent setFriend [east, 1];
     
     private _markers = [];
     private _lastResupply = time;
-    
+    private _lastDebug = time;
+    private _lastCQC = time;
+
+    // Calcul des distances dynamiques
+    private _distA = 850 + (random 350); // Entre 850 et 1200m
+    private _distB = _distA - 200;
+    private _distC = _distB - 200;
+
     while { !MISSION_Task05_Complete } do {
-        sleep 5; 
+        sleep 1; 
         
-         
-        if (random 100 < 10) then { 
+        // --- LOGIQUE CQC (Close Quarters Combat) ---
+        // Si INDEP sont à < 50m de la zone de combat, ils attaquent l'OPFOR le plus proche
+        if (MISSION_Task05_CombatStarted && (time - _lastCQC > 10)) then {
+            {
+                private _grp = _x;
+                {
+                    private _unit = _x;
+                    if (alive _unit && (_unit distance2D _zone1_pos) < 50) then {
+                        // Trouver l'OPFOR le plus proche
+                        private _allOpfor = [];
+                        { 
+                            { 
+                                if (alive _x) then { _allOpfor pushBack _x }; 
+                            } forEach units _x; 
+                        } forEach _groupsOPFOR;
+                        
+                        if (count _allOpfor > 0) then {
+                            private _nearestEnemy = [_allOpfor, _unit] call BIS_fnc_nearestPosition;
+                            _unit doMove (getPos _nearestEnemy);
+                            _unit doTarget _nearestEnemy;
+                            _unit doFire _nearestEnemy;
+                        };
+                    };
+                } forEach units _grp;
+            } forEach _groupsINDEP;
+            _lastCQC = time;
+        }; 
+        
+        // --- DEBUG MARKERS (1-3 sec) ---
+        if (time - _lastDebug > (1 + random 2)) then { 
              { deleteMarker _x } forEach _markers;
              _markers = [];
              {
@@ -289,6 +324,7 @@ independent setFriend [east, 1];
                     };
                 } forEach units _grp;
              } forEach (_groupsOPFOR + _groupsINDEP);
+             _lastDebug = time;
         };
         
         private _players = allPlayers select { alive _x };
@@ -296,11 +332,10 @@ independent setFriend [east, 1];
         private _nearestPlayer = [_players, _zone1_pos] call BIS_fnc_nearestPosition;
         private _distInfo = _nearestPlayer distance2D _zone1_pos;
         
-         
-        // IMPORTANT: Forcer le comportement non-combat si > 500m
+        // IMPORTANT: Forcer le comportement non-combat si > Distance B
         if (!MISSION_Task05_CombatStarted) then {
-            // Si pas combat, rester SAFE/LIMITED
-            if (_distInfo >= 500) then {
+            // Si pas combat, rester SAFE/LIMITED si > Distance A
+            if (_distInfo > _distA) then {
                  { 
                     if (behaviour (leader _x) != "SAFE") then { 
                         _x setBehaviour "SAFE"; 
@@ -313,8 +348,8 @@ independent setFriend [east, 1];
         // --- LOGIQUE COMBAT ---
         if (!MISSION_Task05_CombatStarted) then {
             
-            // Trigger AWARE (< 500m)
-            if (_distInfo < 500 && _distInfo >= 400) then {
+            // Trigger AWARE (< Distance A && >= Distance B)
+            if (_distInfo <= _distA && _distInfo > _distB) then {
                 { 
                     if (behaviour (leader _x) != "AWARE") then {
                         _x setBehaviour "AWARE"; 
@@ -322,8 +357,35 @@ independent setFriend [east, 1];
                 } forEach (_groupsOPFOR + _groupsINDEP);
             };
             
-            // Trigger COMBAT (< 400m)
-            if (_distInfo < 400) then {
+            // Trigger COMBAT (< Distance C) - NOTE: Prompt said "Distance B - 200m = Distance C", trigger at C?
+            // "Distance B - 200m = Distance C : DÉCLENCHEMENT DU COMBAT" implies < Distance C (or <=)
+            // Wait, prompt says: 
+            // * Distance A - 200m = Distance B : Passe AWARE
+            // * Distance B - 200m = Distance C : DÉCLENCHEMENT DU COMBAT
+            // So if A=1000, B=800, C=600.
+            // > 1000 : SAFE
+            // 800-1000 : AWARE ? Or < 1000 ? Prompt says "Distance A - 200m = Distance B : Passe les unités en mode AWARE". Usually means at that point.
+            // Let's assume:
+            // > A : SAFE
+            // B < dist <= A : AWARE (or maybe just < A) ?
+            // Let's standard interpretation:
+            // > _distA : SAFE
+            // <= _distB (which is A-200) : AWARE
+            // <= _distC (which is B-200) : COMPBAT
+            
+            // Re-reading prompt precisely:
+            // "Distance A - 200m = Distance B : Passe les unités en mode AWARE" -> Trigger at B?
+            // "Distance B - 200m = Distance C : DECLENCHEMENT COMBAT" -> Trigger at C?
+            
+            if (_distInfo <= _distB && _distInfo > _distC) then {
+                 { 
+                    if (behaviour (leader _x) != "AWARE") then {
+                        _x setBehaviour "AWARE"; 
+                    };
+                } forEach (_groupsOPFOR + _groupsINDEP);
+            };
+
+            if (_distInfo <= _distC) then {
                 MISSION_Task05_CombatStarted = true;
                 publicVariable "MISSION_Task05_CombatStarted";
                 
@@ -368,47 +430,70 @@ independent setFriend [east, 1];
         private _opforAlive = 0;
         { _opforAlive = _opforAlive + ({alive _x} count (units _x)); } forEach _groupsOPFOR;
         
-        if (_opforAlive == 0) then {
+        private _indepAlive = 0;
+        { _indepAlive = _indepAlive + ({alive _x} count (units _x)); } forEach _groupsINDEP;
+
+        // ECHEC MISSION : Tous les INDEP sont morts
+        if (_indepAlive == 0 && !MISSION_Task05_Complete) then {
+             MISSION_Task05_Complete = true; // Fin de la boucle
+             publicVariable "MISSION_Task05_Complete";
+             ["Task05", "FAILED"] call BIS_fnc_taskSetState;
+        };
+        
+        // SUCCES MISSION : Tous les OPFOR sont morts
+        if (_opforAlive == 0 && !MISSION_Task05_Complete) then {
             MISSION_Task05_Complete = true;
             publicVariable "MISSION_Task05_Complete";
             ["Task05", "SUCCEEDED"] call BIS_fnc_taskSetState;
-            
+        };
+
+        if (MISSION_Task05_Complete) then {
             { deleteMarker _x } forEach _markers;
             
-            {
-                if ({alive _x} count (units _x) > 0) then {
-                    _x setBehaviour "CARELESS";
-                    _x setSpeedMode "LIMITED";
-                    _x setCombatMode "BLUE";
-                    
-                    { 
-                        _x setUnitPos "UP";
-                        _x disableAI "TARGET";
-                        _x disableAI "AUTOTARGET";
-                        [_x] spawn {
-                            params ["_unit"];
-                            sleep 1;
-                            _unit action ["SwitchWeapon", _unit, _unit, 100];
-                        };
-                    } forEach units _x; 
-                    
-                    private _exitPos = (getPos (leader _x)) getPos [2000, random 360];
-                    _x move _exitPos;
-                    
-                    [_x] spawn {
-                        params ["_grp"];
-                        sleep 10;
-                        waitUntil { 
-                            sleep 5;
-                            private _nearestPlayer = [allPlayers, (leader _grp)] call BIS_fnc_nearestPosition;
-                            ((leader _grp) distance2D _nearestPlayer) > 1200
-                        };
-                        { deleteVehicle _x } forEach units _grp;
-                        deleteGroup _grp;
-                    };
-                };
-            } forEach _groupsINDEP;
+            // Départ des survivants (pour les deux cas ?)
+            // Si Succès, les INDEP partent. Si Echec, les OPFOR restent ? 
+            // Prompt says: "Si tous les indépendants sont mort = échec". 
+            // "5. Départ du Drone ... (départ si échec ou réussite)"
+            // Logic for unit departure was only for INDEP on success. Leaving it as is roughly or adapting?
+            // I will keep the Cleanup Logic for INDEP if they are alive (Success case).
             
+            if (_indepAlive > 0) then {
+                {
+                    if ({alive _x} count (units _x) > 0) then {
+                        _x setBehaviour "CARELESS";
+                        _x setSpeedMode "LIMITED";
+                        _x setCombatMode "BLUE";
+                        
+                        { 
+                            _x setUnitPos "UP";
+                            _x disableAI "TARGET";
+                            _x disableAI "AUTOTARGET";
+                            [_x] spawn {
+                                params ["_unit"];
+                                sleep 1;
+                                _unit action ["SwitchWeapon", _unit, _unit, 100];
+                            };
+                        } forEach units _x; 
+                        
+                        private _exitPos = (getPos (leader _x)) getPos [2000, random 360];
+                        _x move _exitPos;
+                        
+                        [_x] spawn {
+                            params ["_grp"];
+                            sleep 10;
+                            waitUntil { 
+                                sleep 5;
+                                private _nearestPlayer = [allPlayers, (leader _grp)] call BIS_fnc_nearestPosition;
+                                ((leader _grp) distance2D _nearestPlayer) > 1200
+                            };
+                            { deleteVehicle _x } forEach units _grp;
+                            deleteGroup _grp;
+                        };
+                    };
+                } forEach _groupsINDEP;
+            };
+
+            // Départ du Drone (Success or Failure)
             if (!isNull MISSION_Task05_Drone) then {
                 MISSION_Task05_Drone doMove [0,0,100];
                 [MISSION_Task05_Drone] spawn {

@@ -1,6 +1,11 @@
 if (!isServer) exitWith {};
 params [["_targetPos", [0,0,0], [[]]]];
+// Validation de la position cible pour éviter les erreurs de vecteur
+if (count _targetPos < 2) then { _targetPos = getPos player; }; // Fallback sur joueur si invalide
 if (count _targetPos < 3) then { _targetPos set [2, 0]; };
+// Nettoyage des nil éventuels
+_targetPos = _targetPos apply { if (isNil "_x") then {0} else {_x} };
+
 private _spawnDist = 2000;
 private _helicoClass = "B_AMF_Heli_Transport_01_F";  
 private _flyHeight = 150;
@@ -8,6 +13,8 @@ private _loiterHeight = 10;
 private _loiterRadius = 25;  
 private _loiterDuration = 120;  
 private _dir = random 360;
+
+// Création sécurisée de la position de spawn
 private _spawnPos = _targetPos vectorAdd [(_spawnDist * (sin _dir)), (_spawnDist * (cos _dir)), _flyHeight];
 if (count _spawnPos < 3) then { _spawnPos set [2, _flyHeight]; };
 private _heli = objNull;
