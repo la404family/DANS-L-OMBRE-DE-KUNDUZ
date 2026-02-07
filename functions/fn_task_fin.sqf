@@ -1,6 +1,6 @@
 if (!isServer) exitWith {};
 diag_log "[FIN_MISSION] === Démarrage du système de fin de mission ===";
-private _delayBeforeMessage = 2100 + floor(random 600); 
+private _delayBeforeMessage = 2000 + floor(random 650); 
 private _heliClass = "amf_nh90_tth_transport"; 
 private _flyTime = 80;  
 private _heliFinObj = missionNamespace getVariable ["heli_fin", objNull];
@@ -355,7 +355,6 @@ diag_log format ["[FIN_MISSION] Extraction dans %1 secondes", _delayBeforeMessag
         };
     } forEach allPlayers;
     _heli land "NONE";
-    ["outro_00"] remoteExec ["playMusic", 0];  
     _heli animateSource ["door_rear_source", 0];
     _heli animateDoor ["door_rear_source", 0];
     _heli animateDoor ["ramp", 0];
@@ -382,6 +381,11 @@ diag_log format ["[FIN_MISSION] Extraction dans %1 secondes", _delayBeforeMessag
     _heli flyInHeight 50;
     _heli doMove _exitPos;
     _heli limitspeed 300;
-    sleep _flyTime;
+    
+    // === MUSIQUE OUTRO (15s après décollage) ===
+    sleep 10;
+    ["outro_00"] remoteExec ["playMusic", 0];
+    
+    sleep (_flyTime - 10);  
     ["END1", true] remoteExec ["BIS_fnc_endMission", 0];
 };

@@ -17,7 +17,6 @@ Ce document liste les emplacements où des messages radio peuvent être ajoutés
 
 | Moment | Ligne(s) | Description | Son existant |
 |--------|----------|-------------|--------------|
-| **Début mission** | ~90 | Après création de la tâche | `task01_start` ✓ |
 | **Documents récupérés** | ~150 | Après `MISSION_Task01_Complete = true` | `task01_success` ✓ |
 
 ---
@@ -37,7 +36,7 @@ Ce document liste les emplacements où des messages radio peuvent être ajoutés
 
 | Moment | Ligne(s) | Description | Son existant |
 |--------|----------|-------------|--------------|
-| **Début (crash visible)** | ~68 | Quand hélico se crashe | A IMPLEMENTER : task03_01, task03_02, task03_03 |
+
 ❌ Trouver la ligne de fin de mission pour message : "mission accomplished" 
 
 
@@ -47,7 +46,6 @@ Ce document liste les emplacements où des messages radio peuvent être ajoutés
 
 | Moment | Ligne(s) | Description | Son existant |
 |--------|----------|-------------|--------------|
-| **Début mission** | ~212 | Après création tâche | A IMPLEMENTER : task04_01, task04_02, task04_03 |
 | **Scénario 1 - Succès** | ~229 | Mines révélées | ❌ À ajouter |
 | **Scénario 2 - Trahison** | ~245 | Combat déclenché | ❌ À ajouter |
 | **Scénario 3 - Mutinerie** | Variable | Chef rejoint BLUFOR | ❌ À ajouter |

@@ -37,9 +37,9 @@ for "_i" from 0 to 33 do {
 
         // 4. Méthode MOTS-CLÉS ÉTENDUE (Classname + DisplayName + Visage + Type)
         if (!_isFemale) then {
-            private _keywords = ["woman", "female", "girl", "lady", "dress", "burqa", "abaya", "hijab", "chador", "skirt", "young"];
+            private _keywords = ["woman", "female", "girl", "lady", "dress", "burqa", "abaya", "hijab", "chador", "skirt", "young", "maxi", "dr_"];
             
-            // On récupère aussi le NOM D'AFFICHAGE de l'uniforme (ex: "Takistani Dress")
+            // On récupère le NOM D'AFFICHAGE de l'uniforme
             private _uniformDisplayName = "";
             if (_uniform != "") then {
                 _uniformDisplayName = toLower (getText (configFile >> "CfgWeapons" >> _uniform >> "displayName"));

@@ -58,6 +58,7 @@ class CfgFunctions
             class addAction_search {};
             class addAction_engagement {};
             class task04 {};
+            class task05 {};
 		};
 	};
 };
@@ -221,11 +222,6 @@ class CfgSounds
     class task01_03 {
         name = "task01_03";
         sound[] = {"audio\task01_03.ogg", db+10, 1.15};
-        titles[] = {};
-    };
-    class task01_success {
-        name = "task01_success";
-        sound[] = {"audio\task01_success.ogg", db+10, 1.0};
         titles[] = {};
     };
     class task04_01 {

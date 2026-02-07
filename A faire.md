@@ -6,3 +6,6 @@ A faire :
 ajouter audio task_fin (vous pouvez rentrer une équipe... BLBELBELEB)
 ajouter audio pour task01 (début de mission, mort de l'officier, récupération des documents)
 mettre des lampe pour les ennemis dans les task !!
+retirer les explosifs des joueurs
+
+modifier task 05 distance d'attaque etc...
